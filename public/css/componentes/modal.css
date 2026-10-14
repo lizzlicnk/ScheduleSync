@@ -1,0 +1,168 @@
+/* ==========================================
+   MODAL GENERAL DE CONFIRMACIÓN
+   ========================================== */
+
+/* Fondo oscuro del modal */
+.modal-confirmacion {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(24, 20, 35, 0.60);
+    backdrop-filter: blur(5px);
+}
+
+/* Respetar el atributo hidden */
+.modal-confirmacion[hidden] {
+    display: none !important;
+}
+
+/* Contenedor principal */
+.modal-contenido {
+    position: relative;
+    width: 100%;
+    max-width: 430px;
+    padding: 35px 30px 28px;
+    background: #ffffff;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(20, 15, 35, 0.25);
+    animation: aparecer-modal 0.25s ease;
+}
+
+/* Botón para cerrar */
+.modal-cerrar {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    border: none;
+    background: transparent;
+    color: #777184;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+/* Ícono del modal */
+.modal-icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: #fff0ed;
+    color: #c94242;
+    font-size: 30px;
+}
+
+/* Título */
+.modal-contenido h2 {
+    margin: 0 0 14px;
+    color: #302442;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+/* Mensaje principal */
+.modal-mensaje {
+    margin: 0 0 8px;
+    color: #777184;
+    font-size: 14px;
+}
+
+/* Nombre u otro dato destacado */
+.modal-destacado {
+    display: block;
+    overflow-wrap: anywhere;
+    color: #542b79;
+    font-size: 17px;
+    margin-bottom: 15px;
+}
+
+/* Nota o descripción */
+.modal-nota {
+    margin: 0 0 25px;
+    color: #777184;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* Contenedor de botones */
+.modal-acciones {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+/* Estilos generales de los botones */
+.boton-modal-cancelar,
+.boton-modal-confirmar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 11px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+/* Botón cancelar */
+.boton-modal-cancelar {
+    border: 1px solid #ded9e6;
+    background: #ffffff;
+    color: #51465f;
+}
+
+.boton-modal-cancelar:hover {
+    background: #f5f2f8;
+}
+
+/* Botón confirmar */
+.boton-modal-confirmar {
+    border: none;
+    background: #c94242;
+    color: #ffffff;
+}
+
+.boton-modal-confirmar:hover {
+    background: #a92f35;
+    transform: translateY(-1px);
+}
+
+/* Animación de entrada */
+@keyframes aparecer-modal {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Adaptación para pantallas pequeñas */
+@media (max-width: 420px) {
+    .modal-contenido {
+        padding: 32px 20px 22px;
+    }
+
+    .modal-acciones {
+        flex-direction: column-reverse;
+    }
+
+    .boton-modal-cancelar,
+    .boton-modal-confirmar {
+        width: 100%;
+    }
+}
+

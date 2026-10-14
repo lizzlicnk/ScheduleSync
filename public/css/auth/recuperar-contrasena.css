@@ -1,0 +1,487 @@
+
+/* =========================================
+   SCHEDULE-SYNC | RECUPERAR CONTRASEÑA
+   Estilos exclusivos de esta vista
+   ========================================= */
+
+html,
+body {
+    min-height: 100%;
+    margin: 0;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: #30243A;
+    background: #FFFFFF;
+}
+
+.contenedor-login {
+    width: 100%;
+    min-height: 100vh;
+    padding: 0;
+    background: #FFFFFF;
+}
+
+.contenedor-login > .row {
+    min-height: 100vh;
+}
+
+
+
+/* =========================================
+   PANEL Y CONTENIDO DEL FORMULARIO
+   ========================================= */
+
+.panel-formulario {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 100vh;
+    padding: 48px 38px;
+    background: #FFFFFF;
+}
+
+.contenido-formulario {
+    width: 100%;
+    max-width: 440px;
+    margin: 0 auto;
+}
+
+.encabezado-formulario {
+    margin-bottom: 24px;
+}
+
+.encabezado-formulario h2 {
+    margin: 0 0 10px;
+    color: #30243A;
+    font-size: 1.9rem;
+    font-weight: 750;
+    letter-spacing: -0.5px;
+}
+
+.encabezado-formulario p {
+    margin: 0;
+    color: #89838E;
+    font-size: 0.93rem;
+    line-height: 1.7;
+}
+
+.encabezado-formulario h2 {
+color: #51346F;
+}
+
+/* =========================================
+   INDICADOR DE LOS TRES PASOS
+   Clases reales del Blade:
+   paso-activo, nombre-paso y linea-paso
+   ========================================= */
+
+.pasos-recuperacion {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+    margin: 30px 0 34px;
+}
+
+.paso-recuperacion {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+    text-align: center;
+}
+
+.numero-paso {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    border: 2px solid #E3DCE9;
+    border-radius: 50%;
+    background: #FFFFFF;
+    color: #8D8298;
+    font-size: 0.9rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.paso-recuperacion.paso-activo .numero-paso {
+    border-color: #654282;
+    background: #654282;
+    color: #FFFFFF;
+    box-shadow: 0 0 0 5px rgba(101, 66, 130, 0.11);
+}
+
+.paso-recuperacion.completado .numero-paso {
+    border-color: #654282;
+    background: #654282;
+    color: #FFFFFF;
+}
+
+.nombre-paso {
+    display: block;
+    margin-top: 10px;
+    color: #89838E;
+    font-size: 0.8rem;
+    font-weight: 500;
+    line-height: 1.35;
+    white-space: nowrap;
+}
+
+.paso-recuperacion.paso-activo .nombre-paso,
+.paso-recuperacion.completado .nombre-paso {
+    color: #51346F;
+    font-weight: 700;
+}
+
+.linea-paso {
+    position: relative;
+    top: 18px;
+    flex: 0 1 54px;
+    min-width: 12px;
+    height: 2px;
+    margin: 0 5px;
+    background: #E3DCE9;
+}
+
+/* =========================================
+   ENCABEZADO DE LA ETAPA
+   ========================================= */
+
+.encabezado-etapa {
+    margin-bottom: 24px;
+}
+
+.etiqueta-etapa {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding: 7px 11px;
+    border-radius: 6px;
+    background: #F1EAF7;
+    color: #654282;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+}
+
+.encabezado-etapa h3 {
+    margin: 0 0 9px;
+    color: #30243A;
+    font-size: 1.45rem;
+    font-weight: 750;
+}
+
+.encabezado-etapa p {
+    margin: 0;
+    color: #89838E;
+    font-size: 0.9rem;
+    line-height: 1.65;
+}
+
+/* =========================================
+   CAMPO DE CORREO Y ETIQUETAS
+   ========================================= */
+
+.contenido-formulario .form-label {
+    display: block;
+    margin-bottom: 9px;
+    color: #403448;
+    font-size: 0.88rem;
+    font-weight: 650;
+}
+
+.contenido-formulario .form-label i {
+    margin-right: 5px;
+    color: #654282;
+}
+
+.campo-requerido {
+    color: #D74654;
+}
+
+.contenido-formulario .form-control {
+    display: block;
+    width: 100%;
+    min-height: 49px;
+    padding: 12px 14px;
+    border: 1px solid #DED7E5;
+    border-radius: 9px;
+    background-color: #FFFFFF;
+    color: #30243A;
+    font-size: 0.92rem;
+    box-shadow: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contenido-formulario .form-control::placeholder {
+    color: #B0A8B7;
+}
+
+.contenido-formulario .form-control:focus {
+    border-color: #654282;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(101, 66, 130, 0.12);
+}
+
+/* =========================================
+   BOTÓN CONTINUAR
+   ========================================= */
+
+.contenido-formulario .boton-iniciar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 49px;
+    margin-top: 20px;
+    padding: 12px 18px;
+    border: 0;
+    border-radius: 9px;
+    background: #654282;
+    color: #FFFFFF;
+    font-size: 0.94rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 5px 12px rgba(81, 52, 111, 0.15);
+    transition: background 0.2s ease, transform 0.2s ease;
+    cursor: pointer;
+}
+
+.contenido-formulario .boton-iniciar:hover {
+    background: #3E2757;
+    color: #FFFFFF;
+    transform: translateY(-1px);
+}
+
+.contenido-formulario .boton-iniciar:focus-visible {
+    outline: 3px solid rgba(101, 66, 130, 0.3);
+    outline-offset: 3px;
+}
+
+/* =========================================
+   REGRESAR AL LOGIN
+   ========================================= */
+
+.contenido-formulario .enlace-recuperacion {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    color: #654282;
+    font-size: 0.87rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.contenido-formulario .enlace-recuperacion:hover {
+    color: #3E2757;
+    text-decoration: underline;
+}
+
+/* =========================================
+   MENSAJES DE VALIDACIÓN
+   ========================================= */
+
+.contenido-formulario .alert {
+    margin-bottom: 20px;
+    border-radius: 9px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+}
+
+/* Mensaje de error general enviado por el controlador */
+.mensaje-error-recuperacion {
+    margin-bottom: 20px;
+    padding: 12px 14px;
+    border: 1px solid #F1C4C7;
+    border-radius: 9px;
+    background: #FFF0F1;
+    color: #A72F3A;
+    font-size: 0.88rem;
+}
+
+/* =========================================
+   PIE DE PÁGINA
+   ========================================= */
+
+.texto-pie {
+    margin: 32px 0 0;
+    color: #98909F;
+    font-size: 0.76rem;
+    line-height: 1.6;
+    text-align: center;
+}
+
+/* =========================================
+   MODAL DE RESULTADO
+   ========================================= */
+
+.modal-correo {
+    max-width: 440px;
+}
+
+.modal-correo .modal-content {
+    overflow: hidden;
+    border: 0;
+    border-radius: 18px;
+    box-shadow: 0 20px 65px rgba(36, 21, 49, 0.2);
+}
+
+.modal-correo .modal-body {
+    padding: 35px 30px 30px;
+}
+
+.icono-resultado {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 68px;
+    height: 68px;
+    margin: 0 auto 19px;
+    border-radius: 50%;
+    font-size: 27px;
+}
+
+.icono-correcto {
+    background: #E4F7EC;
+    color: #239B59;
+}
+
+.icono-error {
+    background: #FDE8E9;
+    color: #D64550;
+}
+
+.modal-correo h4 {
+    margin-bottom: 12px;
+    color: #30243A;
+    font-size: 1.35rem;
+    font-weight: 750;
+}
+
+.mensaje-modal {
+    margin-bottom: 20px;
+    color: #79717F;
+    font-size: 0.9rem;
+    line-height: 1.7;
+}
+
+.aviso-spam {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 23px;
+    padding: 13px;
+    border: 1px solid #F4D98A;
+    border-radius: 9px;
+    background: #FFF8E4;
+    color: #74591B;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    text-align: left;
+}
+
+.aviso-spam i {
+    margin-top: 3px;
+    color: #C28A12;
+}
+
+.boton-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 47px;
+    border: 0;
+    border-radius: 9px;
+    background: #654282;
+    color: #FFFFFF;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.boton-modal:hover,
+.boton-modal:focus {
+    background: #3E2757;
+    color: #FFFFFF;
+}
+
+/* =========================================
+   DISEÑO RESPONSIVO
+   ========================================= */
+
+@media (max-width: 991.98px) {
+    .panel-lateral {
+        min-height: 260px;
+        padding: 35px 24px;
+    }
+
+    .contenido-panel-lateral .logo-icon {
+        width: 62px;
+        height: 62px;
+        margin-bottom: 15px;
+        border-radius: 18px;
+        font-size: 30px;
+    }
+
+    .contenido-panel-lateral h1 {
+        margin-bottom: 8px;
+        font-size: 2rem;
+    }
+
+    .contenido-panel-lateral p {
+        font-size: 0.9rem;
+    }
+
+    .panel-formulario {
+        min-height: auto;
+        padding: 40px 24px;
+    }
+
+    .contenido-formulario {
+        max-width: 460px;
+    }
+}
+
+@media (max-width: 400px) {
+    .panel-formulario {
+        padding: 30px 18px;
+    }
+
+    .encabezado-formulario h2 {
+        font-size: 1.65rem;
+    }
+
+    .pasos-recuperacion {
+        margin: 24px 0 28px;
+    }
+
+    .numero-paso {
+        width: 32px;
+        height: 32px;
+        flex-basis: 32px;
+        font-size: 0.8rem;
+    }
+
+    .linea-paso {
+        top: 15px;
+        min-width: 8px;
+        margin: 0 3px;
+    }
+
+    .nombre-paso {
+        font-size: 0.7rem;
+    }
+
+    .modal-correo .modal-body {
+        padding: 28px 20px 23px;
+    }
+}

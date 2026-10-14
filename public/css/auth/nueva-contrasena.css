@@ -1,0 +1,427 @@
+
+/* =========================================
+   PANTALLA PRINCIPAL
+   ========================================= */
+
+.pantalla-auth {
+    min-height: 100vh;
+    background: #f7f5fa;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #30283a;
+}
+
+.contenedor-auth {
+    min-height: 100vh;
+    width: 100%;
+}
+
+.panel-auth-lateral {
+    min-height: 100vh;
+    background: #51346f;
+    overflow: hidden;
+}
+
+.contenido-auth {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 45px 35px;
+    background: #ffffff;
+}
+
+.formulario-auth {
+    width: 100%;
+    max-width: 440px;
+}
+
+/* =========================================
+   INDICADOR DE LAS TRES ETAPAS
+   ========================================= */
+
+.pasos-recuperacion {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+    margin: 0 0 28px;
+}
+
+.paso-recuperacion {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+    text-align: center;
+}
+
+.numero-paso {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    border: 2px solid #e3dce9;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #8d8298;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.paso-recuperacion.completado .numero-paso {
+    border-color: #654282;
+    background: #654282;
+    color: #ffffff;
+}
+
+.paso-recuperacion.paso-activo .numero-paso {
+    border-color: #654282;
+    background: #654282;
+    color: #ffffff;
+    box-shadow: 0 0 0 5px rgba(101, 66, 130, 0.13);
+}
+
+.nombre-paso {
+    display: block;
+    margin-top: 10px;
+    color: #89838e;
+    font-size: 0.8rem;
+    font-weight: 500;
+    line-height: 1.35;
+    white-space: nowrap;
+}
+
+.paso-recuperacion.completado .nombre-paso,
+.paso-recuperacion.paso-activo .nombre-paso {
+    color: #51346f;
+    font-weight: 700;
+}
+
+.linea-paso {
+    position: relative;
+    top: 18px;
+    flex: 0 1 54px;
+    min-width: 12px;
+    height: 2px;
+    margin: 0 5px;
+    background: #e3dce9;
+}
+
+.linea-paso.linea-completada {
+    background: #654282;
+}
+
+.etiqueta-etapa {
+    display: inline-block;
+    margin-bottom: 16px;
+    padding: 7px 11px;
+    border-radius: 6px;
+    background: #f1eaf7;
+    color: #654282;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+}
+
+/* =========================================
+   ENCABEZADO
+   ========================================= */
+
+.encabezado-verificacion {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+    margin-bottom: 24px;
+}
+
+.encabezado-verificacion .icono-pagina {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 76px;
+    width: 76px;
+    height: 76px;
+    margin: 0;
+    border-radius: 18px;
+    background: #f1eaf7;
+    color: #654282;
+    font-size: 2.8rem;
+}
+
+.textos-encabezado {
+    flex: 1;
+    min-width: 0;
+}
+
+.encabezado-verificacion .etiqueta-auth {
+    margin: 0 0 7px;
+    color: #8a6aa8;
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    line-height: 1.4;
+}
+
+.encabezado-verificacion h1 {
+    margin: 0;
+    color: #51346f;
+    font-size: clamp(1.55rem, 3vw, 1.9rem);
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.descripcion-auth {
+    margin-bottom: 28px;
+    color: #77717e;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+/* =========================================
+   CAMPOS DE CONTRASEÑA
+   ========================================= */
+
+.campo-auth {
+    margin-bottom: 23px;
+}
+
+.campo-auth label {
+    display: block;
+    margin-bottom: 9px;
+    color: #45384f;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.entrada-con-icono {
+    position: relative;
+}
+
+.entrada-con-icono > i {
+    position: absolute;
+    top: 50%;
+    left: 16px;
+    transform: translateY(-50%);
+    color: #8a6aa8;
+    font-size: 16px;
+    pointer-events: none;
+}
+
+.entrada-con-icono input {
+    width: 100%;
+    min-height: 54px;
+    padding: 13px 48px 13px 45px;
+    border: 1px solid #ded7e6;
+    border-radius: 11px;
+    outline: none;
+    background: #ffffff;
+    color: #51346f;
+    font-size: 15px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.entrada-con-icono input:focus {
+    border-color: #76529a;
+    box-shadow: 0 0 0 4px rgba(81, 52, 111, 0.10);
+}
+
+.entrada-con-icono input::placeholder {
+    color: #aaa1b2;
+    font-weight: 400;
+}
+
+.boton-ver-contrasena {
+    position: absolute;
+    top: 50%;
+    right: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    color: #8a6aa8;
+    cursor: pointer;
+}
+
+.boton-ver-contrasena:hover {
+    color: #51346f;
+}
+
+.ayuda-campo {
+    display: block;
+    margin-top: 9px;
+    color: #89828f;
+    font-size: 12px;
+}
+
+.ayuda-campo.coincide {
+    color: #237342;
+}
+
+.ayuda-campo.no-coincide {
+    color: #a12c3a;
+}
+
+/* =========================================
+   BOTONES Y ENLACES
+   ========================================= */
+
+.boton-auth {
+    display: flex;
+    width: 100%;
+    min-height: 52px;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    border: none;
+    border-radius: 11px;
+    background: #51346f;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.boton-auth:hover {
+    background: #402653;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.enlace-regreso {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 9px;
+    margin-top: 25px;
+    color: #62447e;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.enlace-regreso:hover {
+    color: #a64b82;
+}
+
+.nota-auth {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 28px;
+    color: #89828f;
+    font-size: 12px;
+}
+
+.nota-auth i {
+    color: #d19b13;
+}
+
+/* =========================================
+   ALERTAS
+   ========================================= */
+
+.alerta-auth {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 13px 15px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.alerta-auth p {
+    margin: 0 0 5px;
+}
+
+.alerta-auth p:last-child {
+    margin-bottom: 0;
+}
+
+.alerta-exito {
+    border: 1px solid #b8e4c8;
+    background: #effaf2;
+    color: #236b3c;
+}
+
+.alerta-error {
+    border: 1px solid #f1c2c7;
+    background: #fff1f2;
+    color: #a12c3a;
+}
+
+/* =========================================
+   RESPONSIVIDAD
+   Bootstrap 5 administra las columnas.
+   Estas reglas ajustan solo el diseño visual.
+   ========================================= */
+
+@media (max-width: 991.98px) {
+    .panel-auth-lateral {
+        min-height: auto;
+    }
+
+    .contenido-auth {
+        padding: 40px 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .contenido-auth {
+        padding: 32px 20px;
+    }
+
+    .encabezado-verificacion {
+        gap: 12px;
+    }
+
+    .encabezado-verificacion .icono-pagina {
+        flex-basis: 62px;
+        width: 62px;
+        height: 62px;
+        font-size: 2.2rem;
+    }
+
+    .encabezado-verificacion .etiqueta-auth {
+        font-size: 0.68rem;
+    }
+
+    .encabezado-verificacion h1 {
+        font-size: 1.45rem;
+    }
+
+    .numero-paso {
+        width: 32px;
+        height: 32px;
+        flex-basis: 32px;
+        font-size: 0.8rem;
+    }
+
+    .linea-paso {
+        top: 15px;
+        min-width: 8px;
+        margin: 0 3px;
+    }
+
+    .nombre-paso {
+        font-size: 0.7rem;
+        white-space: normal;
+    }
+
+    .pasos-recuperacion {
+        margin-bottom: 24px;
+    }
+}

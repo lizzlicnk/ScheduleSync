@@ -1,0 +1,424 @@
+/* Distribución general de la pantalla */
+.contenedor-login {
+    width: 100%;
+    min-height: 100vh;
+    background-color: #ffffff;
+}
+
+/* Panel blanco del formulario */
+.panel-formulario {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 45px 40px;
+    background-color: #FFFFFF;
+    box-sizing: border-box;
+}
+
+/* Formulario centrado vertical y horizontalmente */
+.contenido-formulario {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+/* Encabezado del formulario */
+.encabezado-formulario {
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.encabezado-formulario h2 {
+    margin-bottom: 10px;
+    color: #51346F;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.encabezado-formulario p {
+    margin: 0;
+    color: #77717D;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* Iconos morados en las etiquetas */
+.panel-formulario .form-label i {
+    margin-right: 7px;
+    color: #51346F;
+}
+
+/* Campos de entrada */
+.panel-formulario .form-control {
+    min-height: 48px;
+    padding: 12px 14px;
+    border: 1px solid #DED9E4;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+.panel-formulario .form-control:focus {
+    border-color: #73528F;
+    box-shadow: 0 0 0 0.2rem rgba(81, 52, 111, 0.14);
+}
+
+/* Enlace para recuperar contraseña */
+.enlace-recuperacion {
+    color: #654282;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.enlace-recuperacion:hover {
+    color: #51346F;
+    text-decoration: underline;
+}
+
+/* Botón principal */
+.boton-iniciar {
+    min-height: 49px;
+    border: none;
+    border-radius: 8px;
+    background-color: #51346F;
+    color: #FFFFFF;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.boton-iniciar:hover,
+.boton-iniciar:focus {
+    background-color: #3E2757;
+    color: #FFFFFF;
+}
+
+/* Texto inferior */
+.texto-pie {
+    margin-top: 30px;
+    color: #89838E;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    text-align: center;
+}
+
+/* Adaptación para tabletas y celulares */
+@media (max-width: 991.98px) {
+    .panel-formulario {
+        min-height: auto;
+        padding: 40px 30px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .panel-formulario {
+        padding: 35px 22px;
+    }
+
+    .encabezado-formulario h2 {
+        font-size: 1.7rem;
+    }
+}
+
+
+/* Cuadro del icono */
+.panel-lateral .logo-icon {
+    width: 65px;
+    height: 65px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.17);
+    color: #FFFFFF;
+}
+
+/* Icono del calendario más grande */
+.panel-lateral .logo-icon i {
+    font-size: 38px;
+    line-height: 1;
+}
+
+
+/* ==========================================
+   MODAL DE CONTRASEÑA ACTUALIZADA
+   ========================================== */
+
+/* Fondo oscurecido detrás del modal */
+#modalContrasenaActualizada {
+    backdrop-filter: blur(5px);
+}
+
+/* Contenedor principal del modal */
+#modalContrasenaActualizada .modal-content {
+    overflow: hidden;
+    border: none;
+    border-radius: 20px;
+    background-color: #FFFFFF;
+    box-shadow: 0 20px 60px rgba(35, 20, 48, 0.22);
+    animation: aparecerModalContrasena 0.35s ease-out;
+}
+
+/* Encabezado */
+#modalContrasenaActualizada .modal-header {
+    justify-content: center;
+    padding: 25px 24px 10px;
+    border: none;
+    background-color: #FFFFFF;
+}
+
+/* Título */
+#modalContrasenaActualizada .modal-title {
+    color: #51346F;
+    font-size: 1.35rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* Contenido */
+#modalContrasenaActualizada .modal-body {
+    padding: 12px 30px 28px;
+    color: #77717D;
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+/* Primer mensaje */
+#modalContrasenaActualizada .modal-body p:first-child {
+    margin-top: 12px;
+    margin-bottom: 8px;
+    color: #30263A;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+/* Segundo mensaje */
+#modalContrasenaActualizada .modal-body p:nth-of-type(2) {
+    margin-bottom: 20px;
+}
+
+/* Icono de éxito */
+#modalContrasenaActualizada .icono-exito-contrasena {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 18px;
+    border: 5px solid #DDF5E7;
+    border-radius: 50%;
+    background-color: #EAF9F0;
+    color: #218653;
+    font-size: 32px;
+    animation: aparecerIconoExito 0.45s ease-out;
+}
+
+/* Indicador de cierre */
+#modalContrasenaActualizada .spinner-border {
+    display: none;
+}
+
+/* Barra de progreso */
+#modalContrasenaActualizada .progreso-contrasena {
+    overflow: hidden;
+    width: 100%;
+    height: 5px;
+    margin-top: 22px;
+    border-radius: 20px;
+    background-color: #EEE8F3;
+}
+
+#modalContrasenaActualizada .progreso-contrasena span {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #51346F, #9475B3);
+    transform-origin: left;
+    animation: progresoCierreContrasena 3s linear forwards;
+}
+
+/* Texto de cierre */
+#modalContrasenaActualizada .texto-cierre-contrasena {
+    margin-top: 12px;
+    margin-bottom: 0;
+    color: #89838E;
+    font-size: 0.8rem;
+}
+
+/* Animación de entrada */
+@keyframes aparecerModalContrasena {
+    from {
+        opacity: 0;
+        transform: translateY(15px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Animación del icono */
+@keyframes aparecerIconoExito {
+    from {
+        opacity: 0;
+        transform: scale(0.65);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Barra que avanza durante los 3 segundos */
+@keyframes progresoCierreContrasena {
+    from {
+        transform: scaleX(1);
+    }
+
+    to {
+        transform: scaleX(0);
+    }
+}
+
+/* Ajustes para celulares */
+@media (max-width: 575.98px) {
+    #modalContrasenaActualizada .modal-dialog {
+        margin: 18px;
+    }
+
+    #modalContrasenaActualizada .modal-title {
+        font-size: 1.2rem;
+    }
+
+    #modalContrasenaActualizada .modal-body {
+        padding-right: 22px;
+        padding-left: 22px;
+    }
+
+    #modalContrasenaActualizada .icono-exito-contrasena {
+        width: 68px;
+        height: 68px;
+        font-size: 28px;
+    }
+}
+
+
+/* Fondo oscuro detrás del modal */
+#modalSesionCaducada.modal {
+    background-color: rgba(25, 18, 35, 0.55);
+}
+
+/* Contenedor principal del modal */
+#modalSesionCaducada .modal-dialog {
+    max-width: 430px;
+    margin: 1.75rem auto;
+}
+
+/* Tarjeta del modal */
+#modalSesionCaducada .modal-content {
+    border: none;
+    border-radius: 18px;
+    overflow: hidden;
+    background-color: #ffffff;
+    box-shadow: 0 15px 45px rgba(35, 20, 50, 0.22);
+}
+
+/* Encabezado del modal */
+#modalSesionCaducada .modal-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 28px 24px 12px;
+    border-bottom: none;
+    text-align: center;
+}
+
+/* Icono de advertencia */
+#modalSesionCaducada .icono-sesion-caducada {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    background-color: #f5eefa;
+    color: #5a3e7d;
+    font-size: 28px;
+}
+
+/* Título */
+#modalSesionCaducada .modal-title {
+    margin: 0;
+    color: #4b2e68;
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+/* Cuerpo del mensaje */
+#modalSesionCaducada .modal-body {
+    padding: 8px 28px 24px;
+    color: #62606a;
+    font-size: 0.96rem;
+    line-height: 1.6;
+    text-align: center;
+}
+
+/* Pie del modal */
+#modalSesionCaducada .modal-footer {
+    justify-content: center;
+    padding: 0 24px 26px;
+    border-top: none;
+}
+
+/* Botón para aceptar */
+#modalSesionCaducada #botonEntendidoSesionCaducada {
+    width: 100%;
+    max-width: 240px;
+    padding: 11px 24px;
+    border: none;
+    border-radius: 9px;
+    background-color: #5a3e7d;
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease,
+                transform 0.2s ease;
+}
+
+/* Efecto al pasar el cursor */
+#modalSesionCaducada #botonEntendidoSesionCaducada:hover {
+    background-color: #452d63;
+    transform: translateY(-1px);
+}
+
+/* Accesibilidad: indicador de enfoque */
+#modalSesionCaducada #botonEntendidoSesionCaducada:focus-visible {
+    outline: 3px solid #d7c5ec;
+    outline-offset: 3px;
+}
+
+/* Adaptación para celulares */
+@media (max-width: 480px) {
+    #modalSesionCaducada .modal-dialog {
+        margin: 1rem;
+    }
+
+    #modalSesionCaducada .modal-header {
+        padding: 24px 18px 10px;
+    }
+
+    #modalSesionCaducada .modal-body {
+        padding: 8px 20px 22px;
+    }
+
+    #modalSesionCaducada .modal-title {
+        font-size: 1.2rem;
+    }
+}

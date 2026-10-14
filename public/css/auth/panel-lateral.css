@@ -1,0 +1,316 @@
+:root {
+    --morado-upemor: #51346F;
+    --amarillo-upemor: #FFD43B;
+    --rosa-upemor: #FF7A9C;
+    --blanco-upemor: #FFFFFF;
+}
+
+/* Panel lateral principal */
+.panel-lateral {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 55px 50px;
+    overflow: hidden;
+    box-sizing: border-box;
+    background: linear-gradient(
+        180deg,
+        #45126F 0%,
+        #5A1FA8 55%,
+        #6D2BD6 100%
+    );
+    color: var(--blanco-upemor);
+}
+
+/* Contenedor de la información institucional */
+.contenido-lateral {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+/* ---------- Logo y nombre de UPEMOR ---------- */
+
+.panel-lateral .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 32px;
+}
+
+/* Icono del calendario */
+.panel-lateral .logo-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 82px;
+    height: 82px;
+    border: 3px solid var(--amarillo-upemor);
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.10);
+    color: var(--amarillo-upemor);
+    font-size: 39px;
+    line-height: 1;
+}
+
+/* Texto institucional */
+.panel-lateral .logo-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.panel-lateral .logo-text h2 {
+    margin: 0;
+    color: var(--blanco-upemor);
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    line-height: 1.15;
+}
+
+.panel-lateral .logo-text p {
+    margin: 5px 0 0;
+    color: #E6DCF5;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.35;
+}
+
+/* ---------- Líneas de colores institucionales ---------- */
+
+.lineas-institucionales {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 34px;
+}
+
+.lineas-institucionales span {
+    display: block;
+    height: 5px;
+    border-radius: 5px;
+}
+
+.linea-amarilla {
+    width: 66px;
+    background-color: var(--amarillo-upemor);
+}
+
+.linea-roja {
+    width: 34px;
+    background-color: var(--rosa-upemor);
+}
+
+.linea-morada {
+    width: 16px;
+    background-color: #B9A6D6;
+}
+
+/* ---------- Descripción del sistema ---------- */
+
+.descripcion-sistema {
+    max-width: 480px;
+}
+
+.descripcion-sistema p {
+    max-width: 460px;
+    margin: 0 0 16px;
+    color: #F1EAFA;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.45;
+}
+
+/* Nombre Schedule-Sync */
+.descripcion-sistema h2 {
+    margin: 0;
+    color: var(--amarillo-upemor);
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    line-height: 1.2;
+}
+
+/* ---------- Etiquetas de las carreras ---------- */
+
+.carreras {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 35px;
+}
+
+.carreras span {
+    padding: 8px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.40);
+    border-radius: 30px;
+    background-color: rgba(255, 255, 255, 0.14);
+    color: var(--blanco-upemor);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* ---------- Figuras decorativas inferiores ---------- */
+
+.decoracion-inferior {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    width: 320px;
+    height: 320px;
+    pointer-events: none;
+}
+
+.figura-circulo {
+    position: absolute;
+    right: -90px;
+    bottom: -90px;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.10);
+}
+
+.figura-naranja {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 170px;
+    height: 170px;
+    border-radius: 100% 0 0 0;
+    background-color: rgba(255, 160, 120, 0.75);
+}
+
+/* =====================================================
+   ADAPTACIÓN PARA TABLETAS
+   ===================================================== */
+
+@media (max-width: 991.98px) {
+    .panel-lateral {
+        min-height: auto;
+        padding: 40px 35px;
+    }
+
+    .contenido-lateral {
+        max-width: 600px;
+    }
+
+    .panel-lateral .logo-icon {
+        width: 72px;
+        height: 72px;
+        font-size: 33px;
+    }
+
+    .panel-lateral .logo-text h2 {
+        font-size: 28px;
+    }
+
+    .panel-lateral .logo-text p {
+        font-size: 13px;
+    }
+
+    .lineas-institucionales {
+        margin-bottom: 25px;
+    }
+
+    .descripcion-sistema p {
+        font-size: 18px;
+    }
+
+    .descripcion-sistema h2 {
+        font-size: 31px;
+    }
+
+    .carreras {
+        padding-top: 28px;
+    }
+
+    .decoracion-inferior {
+        transform: scale(0.8);
+        transform-origin: bottom right;
+    }
+}
+
+/* =====================================================
+   ADAPTACIÓN PARA CELULARES
+   ===================================================== */
+
+@media (max-width: 575.98px) {
+    .panel-lateral {
+        min-height: auto;
+        padding: 28px 22px 35px;
+    }
+
+    .panel-lateral .sidebar-logo {
+        gap: 13px;
+        margin-bottom: 24px;
+    }
+
+    .panel-lateral .logo-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 15px;
+        font-size: 25px;
+    }
+
+    .panel-lateral .logo-text h2 {
+        font-size: 23px;
+    }
+
+    .panel-lateral .logo-text p {
+        font-size: 12px;
+    }
+
+    .lineas-institucionales {
+        gap: 7px;
+        margin-bottom: 22px;
+    }
+
+    .linea-amarilla {
+        width: 48px;
+    }
+
+    .linea-roja {
+        width: 26px;
+    }
+
+    .linea-morada {
+        width: 12px;
+    }
+
+    .descripcion-sistema p {
+        margin-bottom: 12px;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    .descripcion-sistema h2 {
+        font-size: 27px;
+    }
+
+    .carreras {
+        gap: 8px;
+        padding-top: 25px;
+    }
+
+    .carreras span {
+        padding: 6px 13px;
+        font-size: 12px;
+    }
+
+    .decoracion-inferior {
+        transform: scale(0.55);
+        transform-origin: bottom right;
+    }
+}

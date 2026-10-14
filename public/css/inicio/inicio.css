@@ -1,0 +1,172 @@
+
+.pagina-inicio {
+    width: 100%;
+    padding: 10px 0 30px;
+}
+
+.encabezado-inicio {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+.etiqueta-inicio {
+    margin-bottom: 8px;
+    color: #72528d;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+.encabezado-inicio h1 {
+    margin: 0;
+    color: #30243b;
+    font-size: 30px;
+    font-weight: 750;
+}
+
+.descripcion-inicio {
+    margin-top: 10px;
+    margin-bottom: 0;
+    color: #77717f;
+    font-size: 15px;
+}
+
+.panel-bienvenida {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    padding: 30px;
+    border: 1px solid #eee8f3;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 5px 20px rgba(50, 30, 65, 0.05);
+}
+
+.icono-bienvenida {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: #f1eaf7;
+    color: #5a3e7d;
+    font-size: 26px;
+}
+
+.texto-bienvenida h2 {
+    margin: 0 0 10px;
+    color: #352442;
+    font-size: 21px;
+    font-weight: 700;
+}
+
+.texto-bienvenida p {
+    margin: 0;
+    color: #77717f;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+@media (max-width: 576px) {
+    .encabezado-inicio h1 {
+        font-size: 25px;
+    }
+
+    .panel-bienvenida {
+        align-items: flex-start;
+        gap: 15px;
+        padding: 20px;
+    }
+
+    .icono-bienvenida {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+    }
+}
+
+/* Botón para cerrar sesión en el encabezado */
+.boton-cerrar-sesion-inicio {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 18px;
+
+    background-color: #5A3E7D;
+    color: #ffffff;
+
+    border: none;
+    border-radius: 8px;
+
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+
+    transition: background-color 0.3s ease;
+}
+
+/* Efecto al pasar el cursor */
+.boton-cerrar-sesion-inicio:hover {
+    background-color: #432c60;
+}
+
+/* Ajuste para pantallas pequeñas */
+@media (max-width: 600px) {
+    .encabezado-inicio {
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .boton-cerrar-sesion-inicio {
+        width: 100%;
+    }
+}
+
+/* Fondo del modal de permisos */
+.modal-permisos {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 16px;
+    background-color: rgba(25, 18, 35, 0.60);
+    overflow-y: auto;
+}
+
+
+/* Ajustes para pantalla */
+@media (max-width: 480px) {
+    .modal-permisos {
+        padding: 12px;
+    }
+
+    .contenido-modal-permisos {
+        max-width: 100%;
+        max-height: calc(100vh - 24px);
+        padding: 25px 20px;
+        border-radius: 12px;
+    }
+
+    .icono-modal-permisos {
+        width: 56px;
+        height: 56px;
+        font-size: 23px;
+    }
+
+    .contenido-modal-permisos h2 {
+        font-size: 20px;
+    }
+
+    .contenido-modal-permisos p {
+        font-size: 14px;
+    }
+}

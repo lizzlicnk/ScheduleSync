@@ -1,0 +1,327 @@
+
+/* =====================================================
+   SCHEDULESYNC | ESTILOS GENERALES
+   public/css/app.css
+   ===================================================== */
+
+:root {
+    --morado: #5A3E7D;
+    --morado-oscuro: #452E62;
+    --morado-claro: #F2EDF8;
+    --fondo: #F7F6FA;
+    --blanco: #FFFFFF;
+    --texto: #292433;
+    --texto-secundario: #777181;
+    --borde: #EAE5F0;
+    --sombra: 0 4px 18px rgba(45, 30, 60, 0.045);
+    --radio: 14px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--texto);
+    background: var(--fondo);
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+a {
+    color: inherit;
+}
+
+/* Distribución general */
+
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.contenido-principal {
+    flex: 1;
+    min-width: 0;
+    padding: 32px;
+    background: var(--fondo);
+}
+
+/* Encabezados */
+
+.encabezado-modulo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.ruta-modulo {
+    margin: 0 0 8px;
+    color: var(--morado);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.encabezado-modulo h1 {
+    margin: 0;
+    color: var(--texto);
+    font-size: clamp(25px, 3vw, 32px);
+    font-weight: 750;
+    letter-spacing: -0.7px;
+    line-height: 1.2;
+}
+
+.descripcion-modulo {
+    margin: 10px 0 0;
+    color: var(--texto-secundario);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.texto-secundario {
+    color: var(--texto-secundario);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+/* Botón principal */
+
+.boton-principal {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 43px;
+    padding: 11px 18px;
+    border: 1px solid var(--morado);
+    border-radius: 9px;
+    background: var(--morado);
+    color: var(--blanco);
+    font-size: 13px;
+    font-weight: 650;
+    text-decoration: none;
+    box-shadow: 0 3px 8px rgba(90, 62, 125, 0.16);
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.boton-principal:hover {
+    transform: translateY(-1px);
+    background: var(--morado-oscuro);
+    box-shadow: 0 5px 12px rgba(90, 62, 125, 0.2);
+}
+
+/* Botón secundario */
+
+.boton-secundario {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 39px;
+    padding: 9px 14px;
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    background: var(--blanco);
+    color: #62576E;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.boton-secundario:hover {
+    border-color: #D3C4E4;
+    background: var(--morado-claro);
+    color: var(--morado);
+}
+
+.boton-principal:focus-visible,
+.boton-secundario:focus-visible {
+    outline: 3px solid rgba(90, 62, 125, 0.23);
+    outline-offset: 3px;
+}
+
+/* Formularios compartidos */
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.campo label {
+    color: #40364D;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+    width: 100%;
+    min-height: 43px;
+    padding: 11px 13px;
+    border: 1px solid #E0DAE8;
+    border-radius: 8px;
+    outline: none;
+    background: #FFFFFF;
+    color: var(--texto);
+    font-family: inherit;
+    font-size: 13px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.campo input::placeholder,
+.campo textarea::placeholder {
+    color: #A19AA9;
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+    border-color: #8A6AAF;
+    box-shadow: 0 0 0 3px rgba(90, 62, 125, 0.10);
+}
+
+.campo textarea {
+    min-height: 95px;
+    resize: vertical;
+}
+
+.mensaje-error,
+.mensaje-exito,
+.mensaje-informativo {
+    margin-bottom: 20px;
+    padding: 14px 17px;
+    border-radius: 9px;
+    font-size: 13px;
+}
+
+.mensaje-error {
+    border: 1px solid #F2CACA;
+    background: #FFF2F2;
+    color: #A42626;
+}
+
+.mensaje-error ul {
+    margin-bottom: 0;
+}
+
+.mensaje-exito {
+    border: 1px solid #C4E8D0;
+    background: #EFFAF3;
+    color: #187747;
+}
+
+.mensaje-informativo {
+    border: 1px solid #DED2ED;
+    background: #F5F0FA;
+    color: var(--morado);
+}
+
+/* Pie de página */
+
+.pie-pagina {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 12px;
+    padding: 24px 0 8px;
+    color: var(--texto-secundario);
+    font-size: 11px;
+}
+
+.pie-pagina strong {
+    color: var(--morado);
+    font-size: 13px;
+}
+
+.pie-pagina p {
+    margin: 5px 0 0;
+}
+
+.enlaces-pie {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 17px;
+}
+
+.enlaces-pie a {
+    color: #6F667B;
+    text-decoration: none;
+}
+
+.enlaces-pie a:hover {
+    color: var(--morado);
+    text-decoration: underline;
+}
+
+.copyright {
+    width: 100%;
+    margin-top: 10px !important;
+    padding-top: 15px;
+    border-top: 1px solid var(--borde);
+}
+
+.version-sistema {
+    width: 100%;
+    text-align: right;
+}
+
+/* Adaptación a pantallas pequeñas */
+
+@media (max-width: 1000px) {
+    .contenido-principal {
+        padding: 23px;
+    }
+}
+
+@media (max-width: 700px) {
+    .app-layout {
+        flex-direction: column;
+    }
+
+    .contenido-principal {
+        padding: 18px 14px;
+    }
+
+    .encabezado-modulo {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 17px;
+    }
+
+    .pie-pagina {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .version-sistema {
+        text-align: left;
+    }
+}

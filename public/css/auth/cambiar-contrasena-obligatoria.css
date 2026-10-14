@@ -1,0 +1,530 @@
+
+/* =========================================
+   PANTALLA PRINCIPAL
+========================================= */
+
+.pantalla-auth {
+    min-height: 100vh;
+    background: #f7f5fa;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #30283a;
+}
+
+.contenedor-login {
+    min-height: 100vh;
+    width: 100%;
+}
+
+.panel-auth-lateral {
+    min-height: 100vh;
+    background: #51346f;
+    overflow: hidden;
+}
+
+.panel-formulario {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 45px 35px;
+    background: #ffffff;
+}
+
+.contenido-formulario {
+    width: 100%;
+    max-width: 440px;
+}
+
+/* =========================================
+   ENCABEZADO
+========================================= */
+
+.encabezado-formulario {
+    margin-bottom: 30px;
+}
+
+.icono-cambio {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 76px;
+    height: 76px;
+    margin-bottom: 22px;
+    border-radius: 18px;
+    background: #f1eaf7;
+    color: #654282;
+    font-size: 2.5rem;
+}
+
+.encabezado-formulario h2 {
+    margin: 0 0 12px;
+    color: #51346f;
+    font-size: clamp(1.55rem, 3vw, 1.9rem);
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.encabezado-formulario p {
+    margin: 0;
+    color: #77717e;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+/* =========================================
+   CAMPOS DEL FORMULARIO
+========================================= */
+
+.panel-formulario .mb-3,
+.panel-formulario .mb-4 {
+    margin-bottom: 23px !important;
+}
+
+.panel-formulario .form-label {
+    display: block;
+    margin-bottom: 9px;
+    color: #45384f;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.campo-requerido {
+    color: #a64b82;
+    font-weight: 800;
+}
+
+.entrada-con-icono {
+    position: relative;
+}
+
+.entrada-con-icono > i {
+    position: absolute;
+    top: 50%;
+    left: 16px;
+    transform: translateY(-50%);
+    color: #8a6aa8;
+    font-size: 16px;
+    pointer-events: none;
+}
+
+.entrada-con-icono input {
+    width: 100%;
+    min-height: 54px;
+    padding: 13px 48px 13px 45px;
+    border: 1px solid #ded7e6;
+    border-radius: 11px;
+    outline: none;
+    background: #ffffff;
+    color: #51346f;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.entrada-con-icono input:focus {
+    border-color: #76529a;
+    box-shadow: 0 0 0 4px rgba(81, 52, 111, 0.10);
+}
+
+.entrada-con-icono input::placeholder {
+    color: #aaa1b2;
+    font-weight: 400;
+    opacity: 1;
+}
+
+/* =========================================
+   MOSTRAR U OCULTAR CONTRASEÑA
+========================================= */
+
+.boton-ver-contrasena {
+    position: absolute;
+    top: 50%;
+    right: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    color: #8a6aa8;
+    cursor: pointer;
+}
+
+.boton-ver-contrasena:hover {
+    color: #51346f;
+}
+
+.boton-ver-contrasena:focus-visible {
+    outline: 2px solid #76529a;
+    outline-offset: 2px;
+    border-radius: 5px;
+}
+
+/* =========================================
+   MENSAJES DE AYUDA Y COINCIDENCIA
+========================================= */
+
+.texto-ayuda,
+.ayuda-campo {
+    display: block;
+    margin-top: 9px;
+    color: #89828f;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.ayuda-campo.coincide {
+    color: #237342;
+}
+
+.ayuda-campo.no-coincide {
+    color: #a12c3a;
+}
+
+/* =========================================
+   BOTÓN PRINCIPAL
+========================================= */
+
+.boton-iniciar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 52px;
+    padding: 13px 18px;
+    border: none;
+    border-radius: 11px;
+    background: #51346f;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.boton-iniciar:hover {
+    background: #402653;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.boton-iniciar:focus-visible {
+    outline: 3px solid rgba(101, 66, 130, 0.35);
+    outline-offset: 3px;
+}
+
+.boton-iniciar:disabled {
+    background: #8a789b;
+    color: #ffffff;
+    cursor: not-allowed;
+    transform: none;
+    opacity: 0.8;
+}
+
+/* =========================================
+   ALERTAS DE VALIDACIÓN
+========================================= */
+
+.panel-formulario .alert-danger {
+    margin-bottom: 22px;
+    padding: 13px 15px;
+    border: 1px solid #f1c2c7;
+    border-radius: 10px;
+    background: #fff1f2;
+    color: #a12c3a;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.panel-formulario .alert-danger ul {
+    padding-left: 20px;
+}
+
+.panel-formulario .alert-danger li + li {
+    margin-top: 4px;
+}
+
+/* =========================================
+   PIE DE PÁGINA
+========================================= */
+
+.texto-pie {
+    margin: 28px 0 0;
+    color: #89828f;
+    font-size: 12px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+/* =========================================
+   RESPONSIVIDAD
+========================================= */
+
+@media (max-width: 991.98px) {
+    .panel-auth-lateral {
+        min-height: auto;
+    }
+
+    .panel-formulario {
+        padding: 40px 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .panel-formulario {
+        padding: 32px 20px;
+    }
+
+    .icono-cambio {
+        width: 62px;
+        height: 62px;
+        margin-bottom: 18px;
+        border-radius: 15px;
+        font-size: 2.1rem;
+    }
+
+    .encabezado-formulario h2 {
+        font-size: 1.45rem;
+    }
+
+    .encabezado-formulario p {
+        font-size: 14px;
+    }
+
+    .entrada-con-icono input {
+        min-height: 51px;
+        font-size: 14px;
+    }
+}
+
+
+
+/* Bootstrap administra las columnas y el espaciado general. */
+
+.contenedor-login {
+    width: 100%;
+    min-height: 100vh;
+}
+
+.panel-formulario {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    padding: 45px 35px;
+    background: #ffffff;
+}
+
+.contenido-formulario {
+    width: 100%;
+    max-width: 440px;
+}
+
+/* Los campos conservan el diseño morado personalizado. */
+
+.entrada-con-icono .form-control {
+    width: 100%;
+    min-height: 54px;
+    padding: 13px 48px 13px 45px;
+    border: 1px solid #ded7e6;
+    border-radius: 11px;
+    background-color: #ffffff;
+    color: #51346f;
+    box-shadow: none;
+}
+
+.entrada-con-icono .form-control:focus {
+    border-color: #76529a;
+    box-shadow: 0 0 0 4px rgba(81, 52, 111, 0.10);
+}
+
+/* Ajustes para tabletas y celulares. */
+
+@media (max-width: 991.98px) {
+    .panel-formulario {
+        padding: 40px 24px;
+    }
+
+    .contenido-formulario {
+        max-width: 520px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .panel-formulario {
+        padding: 30px 20px;
+    }
+
+    .contenido-formulario {
+        max-width: 100%;
+    }
+
+    .encabezado-formulario h2 {
+        font-size: 1.45rem;
+    }
+
+    .entrada-con-icono .form-control {
+        min-height: 51px;
+        font-size: 14px;
+    }
+
+    .boton-iniciar {
+        min-height: 50px;
+        font-size: 14px;
+    }
+}
+
+
+/*ICONO*/
+
+/* Coloca el icono y el texto uno al lado del otro. */
+.encabezado-contenido {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 28px;
+}
+
+/* Evita que el icono se encoja. */
+.icono-cambio {
+    flex-shrink: 0;
+}
+
+/* Organiza el título y la descripción. */
+.texto-encabezado {
+    flex: 1;
+    min-width: 0;
+}
+
+.texto-encabezado h2 {
+    margin: 0 0 8px;
+}
+
+.texto-encabezado p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Ajustes para móviles con Bootstrap. */
+@media (max-width: 575.98px) {
+    .encabezado-contenido {
+        gap: 12px;
+    }
+
+    .texto-encabezado h2 {
+        font-size: 1.3rem;
+    }
+
+    .texto-encabezado p {
+        font-size: 0.9rem;
+    }
+}
+
+/* ============================================================
+   MODAL DE CONFIRMACIÓN DEL CAMBIO DE CONTRASEÑA
+   ============================================================ */
+
+.modal-contrasena-exito {
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 45px rgba(35, 20, 50, 0.18);
+}
+
+.modal-contrasena-exito .modal-body {
+    padding: 38px 30px 32px;
+}
+
+.icono-modal-exito {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: #f1eaf7;
+    color: #51346f;
+    font-size: 2.5rem;
+}
+
+.modal-contrasena-exito h2 {
+    margin-bottom: 12px;
+    color: #51346f;
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+.modal-contrasena-exito p {
+    margin-bottom: 25px;
+    color: #77717e;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.boton-modal-aceptar {
+    width: 100%;
+    min-height: 50px;
+    border: none;
+    border-radius: 10px;
+    background: #51346f;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.boton-modal-aceptar:hover {
+    background: #402653;
+}
+
+@media (max-width: 575.98px) {
+    .modal-contrasena-exito .modal-body {
+        padding: 30px 22px;
+    }
+
+    .modal-contrasena-exito h2 {
+        font-size: 1.3rem;
+    }
+}
+
+/* Barra de tiempo para la redirección automática */
+.barra-tiempo-contenedor {
+    width: 100%;
+    height: 7px;
+    margin-top: 25px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #e9e1f0;
+}
+
+.barra-tiempo-progreso {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    background: #51346f;
+    transform: scaleX(1);
+    transform-origin: left;
+    animation: disminuirTiempo 4s linear forwards;
+}
+
+.texto-redireccion {
+    display: block;
+    margin-top: 12px;
+    color: #77717e;
+    font-size: 12px;
+}
+
+@keyframes disminuirTiempo {
+    from {
+        transform: scaleX(1);
+    }
+
+    to {
+        transform: scaleX(0);
+    }
+}
