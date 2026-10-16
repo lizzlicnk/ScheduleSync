@@ -1,7 +1,4 @@
-/* =====================================================
-   SCHEDULESYNC | GESTIÓN DE USUARIOS
-   public/css/usuarios/gestion-usuarios.css
-   ===================================================== */
+/* Contenedor principal de la página de usuarios */
 
 .pagina-usuarios {
     width: 100%;
@@ -14,9 +11,7 @@
     display: none !important;
 }
 
-/* =====================================================
-   ENCABEZADO
-   ===================================================== */
+/*  Encabezado  */
 
 .pagina-usuarios .encabezado-modulo {
     margin-bottom: 27px;
@@ -54,13 +49,22 @@
     margin-top: 10px;
     font-size: 15px;
 }
-
+/*
 .botones-encabezado {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     flex-wrap: wrap;
     gap: 11px;
+}*/
+/* BOTONES DE ACCIONES */
+.botones-encabezado {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-left: auto;
 }
 
 .botones-encabezado .boton-principal,
@@ -75,9 +79,7 @@
     color: #5A347F !important;
 }
 
-/* =====================================================
-   ESTADÍSTICAS
-   ===================================================== */
+/*   Estadísticas */
 
 .estadisticas-usuarios {
     display: grid;
@@ -142,9 +144,7 @@
     letter-spacing: -0.8px;
 }
 
-/* =====================================================
-   PANELES
-   ===================================================== */
+/*   PANELES */
 
 .panel-usuarios {
     min-width: 0;
@@ -182,9 +182,7 @@
     line-height: 1.65;
 }
 
-/* =====================================================
-   FILTROS DESPLEGABLES
-   ===================================================== */
+/*   FILTROS DESPLEGABLES */
 
 .panel-filtros {
     padding: 23px 25px;
@@ -207,9 +205,7 @@
     min-height: 46px;
 }
 
-/* =====================================================
-   CAMPOS COMPARTIDOS DEL MÓDULO
-   ===================================================== */
+/*  CAMPOS COMPARTIDOS DEL MÓDULO */
 
 .pagina-usuarios .campo {
     display: flex;
@@ -255,16 +251,59 @@
     color: #C04464;
 }
 
-/* =====================================================
-   BÚSQUEDA DE LA TABLA
-   ===================================================== */
-
+/*   BÚSQUEDA DE LA TABLA */
+/*
 .encabezado-tabla {
     align-items: flex-end;
+}*/
+/* ENCABEZADO DE LA TABLA */
+.encabezado-tabla {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    width: 100%;
+    text-align: left;
 }
 
+/*
 .busqueda-tabla {
     width: min(100%, 370px);
+}*/
+
+/* BUSCADOR DE USUARIOS */
+.busqueda-tabla {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 280px;
+    max-width: 100%;
+    margin: 0;
+    text-align: left;
+}
+
+
+/* OCULTAR EL BOTÓN DE FILTROS */
+#boton-filtros[hidden] {
+    display: none !important;
+}
+
+/* DISEÑO PARA PANTALLAS PEQUEÑAS */
+@media (max-width: 768px) {
+    .encabezado-tabla {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .botones-encabezado {
+        margin-left: 0;
+    }
+
+    .busqueda-tabla {
+        width: 100%;
+    }
 }
 
 .busqueda-tabla label,
@@ -312,9 +351,7 @@
     color: #A49AAE;
 }
 
-/* =====================================================
-   TABLA
-   ===================================================== */
+/*    TABLA */
 
 .tabla-contenedor {
     width: 100%;
@@ -397,9 +434,7 @@
     font-weight: 650;
 }
 
-/* =====================================================
-   ESTADOS
-   ===================================================== */
+/*  ESTADOS */
 
 .estado-usuario {
     display: inline-flex;
@@ -433,9 +468,7 @@
     color: #B94048;
 }
 
-/* =====================================================
-   ACCIONES DE LA TABLA
-   ===================================================== */
+/*  ACCIONES DE LA TABLA */
 
 .acciones-tabla {
     display: flex;
@@ -481,9 +514,7 @@
     text-align: center;
 }
 
-/* =====================================================
-   PAGINACIÓN
-   ===================================================== */
+/*  PAGINACIÓN */
 
 .paginacion-usuarios {
     display: flex;
@@ -528,9 +559,7 @@
     cursor: not-allowed;
 }
 
-/* =====================================================
-   FORMULARIO
-   ===================================================== */
+/*   FORMULARIO */
 
 #formulario-usuario {
     position: relative;
@@ -703,9 +732,7 @@
     font-size: 14px;
 }
 
-/* =====================================================
-   CONSULTA DE USUARIO
-   ===================================================== */
+/*  CONSULTA DE USUARIO */
 
 #panel-consulta {
     scroll-margin-top: 24px;
@@ -871,9 +898,7 @@
     color: #B94048;
 }
 
-/* =====================================================
-   RESPONSIVE
-   ===================================================== */
+/*  RESPONSIVE */
 
 @media (max-width: 1150px) {
     .estadisticas-usuarios {
@@ -1068,4 +1093,43 @@ html body #modal-registro-usuario button#aceptar-modal-registro.boton-modal-conf
     background-color: #d4ac0d !important;
     color: #333333 !important;
     border-color: #d4ac0d !important;
+}
+
+/* ALINEAR BOTÓN Y BUSCADOR */
+.encabezado-tabla {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+/* BOTONES DE ACCIONES */
+.botones-encabezado {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    margin-left: auto;
+}
+
+/* CAMPO DE BÚSQUEDA */
+.busqueda-tabla {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 6px;
+    width: 280px;
+    margin: 0;
+}
+
+/* ALTURA DEL CAMPO */
+.busqueda-tabla .entrada-busqueda {
+    min-height: 42px;
+    box-sizing: border-box;
+}
+
+/* ALTURA DEL BOTÓN NUEVO USUARIO */
+.botones-encabezado .boton-principal {
+    min-height: 42px;
+    box-sizing: border-box;
 }

@@ -21,14 +21,18 @@
     <main class="pantalla-auth container-fluid p-0">
         <div class="contenedor-auth row g-0">
 
+            <!-- Panel institucional reutilizable -->
             <section class="panel-auth-lateral col-12 col-lg-6">
                 @include('components.auth.panel-lateral')
             </section>
 
+            <!-- Panel del formulario de nueva contraseña -->
             <section class="contenido-auth col-12 col-lg-6">
                 <div class="formulario-auth">
 
+                    <!-- Indicador de las tres etapas de recuperación -->
                     <div class="pasos-recuperacion">
+                        <!-- Etapa 1: correo completado -->
                         <div class="paso-recuperacion completado">
                             <span class="numero-paso">
                                 <i class="fa-solid fa-check"></i>
@@ -38,6 +42,7 @@
 
                         <div class="linea-paso linea-completada"></div>
 
+                        <!-- Etapa 2: código completado -->
                         <div class="paso-recuperacion completado">
                             <span class="numero-paso">
                                 <i class="fa-solid fa-check"></i>
@@ -45,14 +50,17 @@
                             <span class="nombre-paso">Código</span>
                         </div>
 
+                        <!-- Línea que indica la etapa completada -->
                         <div class="linea-paso linea-completada"></div>
 
+                        <!-- Etapa 3: nueva contraseña actual -->
                         <div class="paso-recuperacion paso-activo">
                             <span class="numero-paso">3</span>
                             <span class="nombre-paso">Nueva contraseña</span>
                         </div>
                     </div>
 
+                    <!-- Identificador de la etapa actual -->
                     <span class="etiqueta-etapa">ETAPA 3 DE 3</span>
 
                     <div class="encabezado-verificacion">
@@ -67,9 +75,10 @@
                     </div>
 
                     <p class="descripcion-auth">
-                        Registra una contraseña nueva para volver a ingresar a ScheduleSync.
+                        Registra una contraseña nueva para volver a ingresar a Schedule-Sync.
                     </p>
 
+                    <!-- Mensaje de éxito -->
                     @if (session('mensaje'))
                         <div class="alerta-auth alerta-exito" role="status">
                             <i class="fa-solid fa-circle-check"></i>
@@ -77,6 +86,7 @@
                         </div>
                     @endif
 
+                    <!-- Mensajes de error de validación -->
                     @if ($errors->any())
                         <div class="alerta-auth alerta-error" role="alert">
                             <i class="fa-solid fa-circle-exclamation"></i>
@@ -88,14 +98,13 @@
                         </div>
                     @endif
 
-                    <form
-                        id="formulario-nueva-contrasena"
-                        action="{{ route('contrasena.actualizar') }}"
-                        method="POST"
-                    >
+                    <!-- Formulario para actualizar la contraseña -->                    
+                    <form id="formulario-nueva-contrasena" action="{{ route('contrasena.actualizar') }}" method="POST">
                         @csrf
 
                         <div class="campo-auth">
+
+                            <!-- Nueva contraseña -->
                             <label for="password">Nueva contraseña <span class="campo-requerido">*</span> </label>
 
                             <div class="entrada-con-icono">
@@ -111,6 +120,7 @@
                                     required
                                 >
 
+                                <!-- Botón para mostrar u ocultar la contraseña -->
                                 <button
                                     type="button"
                                     class="boton-ver-contrasena"
@@ -121,11 +131,13 @@
                                 </button>
                             </div>
 
+                            <!-- Requisitos de la contraseña -->
                             <small class="ayuda-campo">
                                 Usa al menos 8 caracteres, letras y números.
                             </small>
                         </div>
 
+                        <!-- Confirmar contraseña -->
                         <div class="campo-auth">
                             <label for="password_confirmation"> Confirmar contraseña <span class="campo-requerido">*</span> </label>
                             
@@ -142,6 +154,7 @@
                                     required
                                 >
 
+                                <!-- Botón para mostrar u ocultar la confirmación -->
                                 <button
                                     type="button"
                                     class="boton-ver-contrasena"
@@ -152,17 +165,20 @@
                                 </button>
                             </div>
 
+                            <!-- Mensaje informativo sobre la coincidencia -->
                             <small id="mensaje-coincidencia" class="ayuda-campo">
                                 Ambas contraseñas deben coincidir.
                             </small>
                         </div>
 
+                        <!--Actualizar la contraseña -->
                         <button type="submit" id="botonActualizarContrasena" class="boton-auth" >
                             Actualizar contraseña
                             <i class="fa-solid fa-check"></i>
                         </button>
                     </form>
 
+                    <!-- Regresar al inicio -->
                     <a href="{{ route('login') }}" class="enlace-regreso">
                         <i class="fa-solid fa-arrow-left"></i>
                         Volver al inicio de sesión

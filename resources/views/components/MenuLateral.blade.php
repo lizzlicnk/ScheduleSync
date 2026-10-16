@@ -1,6 +1,6 @@
 <aside class="sidebar">
 
-    {{-- Logo y nombre de la institución --}}
+    <!-- Logo y nombre de la institución -->
     <div class="sidebar-logo">
         <div class="logo-icon">
             <i class="fa-regular fa-calendar-days"></i>
@@ -46,7 +46,7 @@
 
         @else
 
-            {{-- Gestión de docentes para los demás roles --}}
+            <!-- Gestión de docentes para los demás roles -->
             <a href="{{ url('/docentes') }}"
                 class="menu-item {{ request()->is('docentes*') ? 'activo' : '' }}">
 
@@ -56,56 +56,56 @@
 
         @endif
 
-        {{-- Gestión de asignaturas --}}
+        <!-- Gestión de asignaturas -->
         <a href="{{ url('/asignaturas') }}"
             class="menu-item {{ request()->is('asignaturas*') ? 'activo' : '' }}">
             <i class="fa-solid fa-book-open"></i>
             <span>Asignaturas</span>
         </a>
 
-        {{-- Gestión de grupos --}}
+        <!-- Gestión de grupos -->
         <a href="{{ url('/grupos') }}"
             class="menu-item {{ request()->is('grupos*') ? 'activo' : '' }}">
             <i class="fa-solid fa-people-group"></i>
             <span>Grupos</span>
         </a>
 
-        {{-- Gestión de carreras --}}
+        <!-- Gestión de carreras -->
         <a href="{{ url('/carreras') }}"
             class="menu-item {{ request()->is('carreras*') ? 'activo' : '' }}">
             <i class="fa-solid fa-graduation-cap"></i>
             <span>Carreras</span>
         </a>
 
-        {{-- Disponibilidad docente --}}
+        <!-- Disponibilidad docente -->
         <a href="{{ url('/disponibilidad') }}"
             class="menu-item {{ request()->is('disponibilidad*') ? 'activo' : '' }}">
             <i class="fa-solid fa-clock"></i>
             <span>Disponibilidad docente</span>
         </a>
 
-        {{-- Carga académica --}}
+        <!-- Carga académica -->
         <a href="{{ url('/carga-academica') }}"
             class="menu-item {{ request()->is('carga-academica*') ? 'activo' : '' }}">
             <i class="fa-solid fa-clipboard"></i>
             <span>Carga académica</span>
         </a>
 
-        {{-- Gestión de horarios --}}
+        <!-- Gestión de horarios -->
         <a href="{{ url('/horarios') }}"
             class="menu-item {{ request()->is('horarios*') ? 'activo' : '' }}">
             <i class="fa-solid fa-calendar"></i>
             <span>Horarios</span>
         </a>
 
-        {{-- Generación de reportes --}}
+        <!-- Generación de reportes -->
         <a href="{{ url('/reportes') }}"
             class="menu-item {{ request()->is('reportes*') ? 'activo' : '' }}">
             <i class="fa-solid fa-file"></i>
             <span>Reportes</span>
         </a>
 
-        {{-- Notificaciones --}}
+        <!-- Notificaciones -->
         <a href="{{ url('/notificaciones') }}"
             class="menu-item {{ request()->is('notificaciones*') ? 'activo' : '' }}">
             <i class="fa-solid fa-bell"></i>
@@ -114,7 +114,7 @@
 
     </nav>
 
-    {{-- Información del usuario que inició sesión --}}
+    <!-- Información del usuario que inició sesión -->
     <div class="sidebar-usuario">
         <div class="usuario-icono">
             <i class="fa-solid fa-user"></i>
@@ -126,7 +126,7 @@
                 {{ auth()->user()->apellidoPaterno ?? '' }}
             </p>
 
-            {{-- Mostrar el nombre del rol del usuario que inició sesión --}}
+            <!-- Mostrar el nombre del rol del usuario que inició sesión -->
             <p class="usuario-rol">
                 @switch(auth()->user()->rol ?? null)
                     @case(1)

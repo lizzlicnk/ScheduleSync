@@ -7,12 +7,11 @@
 
     <title>Recuperar contraseña | Schedule-Sync</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
-
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Icono -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <!-- Estilos-->
     <link rel="stylesheet" href="{{ asset('css/auth/panel-lateral.css') }}">
     <link rel="stylesheet" href="{{ asset('css/auth/login.css') }}">
     <link rel="stylesheet" href="{{ asset('css/auth/recuperar-contrasena.css') }}">
@@ -22,19 +21,20 @@
 <main class="contenedor-login container-fluid p-0">
     <div class="row g-0 min-vh-100">
 
-        {{-- Panel institucional --}}
+    <!-- Panel institucional -->
             <div class="col-12 col-lg-6">
                 @include('components.auth.panel-lateral')
             </div>
 
 
-        {{-- Formulario de recuperación --}}
+        <!-- Formulario de recuperación -->
         <div class="col-12 col-lg-6 panel-formulario">
             <div class="contenido-formulario">
 
-                {{-- Indicador de las tres etapas --}}
+                <!-- Indicador de las tres etapas -->
                 <div class="pasos-recuperacion">
-
+                    
+                    <!-- Indicar que la etapa actual es la del correo electrónico. -->
                     <div class="paso-recuperacion paso-activo">
                         <span class="numero-paso">1</span>
                         <span class="nombre-paso">Correo</span>
@@ -57,22 +57,22 @@
                 </div>
 
                 <p></p>
+                <!-- Indicar el número de la etapa actual. -->
                 <span class="etiqueta-etapa">ETAPA 1 DE 3</span>
 
-                
+                <!-- Mostrar el título y las instrucciones del formulario. -->
                 <div class="encabezado-formulario">
                     <h2>Recuperar contraseña</h2>
                     <p>Ingresa tu correo y te enviaremos un código de verificación.</p>
                 </div>
 
-                {{-- Errores de validación tradicionales --}}
+                <!-- Errores de validación  -->
                 @if ($errors->any())
                     <div class="alert alert-danger">
                         {{ $errors->first() }}
                     </div>
                 @endif
 
-                
                 @if (session('error'))
                     <div class="alert alert-warning" role="alert">
                         <i class="fa-solid fa-circle-info me-2"></i>
@@ -85,6 +85,7 @@
                     @csrf
 
                     <div class="mb-4">
+                        <!-- Correo electrónico -->
                         <label for="correo" class="form-label">
                             <i class="fa-solid fa-envelope"></i>
                             Correo electrónico
@@ -104,12 +105,14 @@
                         >
                     </div>
 
+                    <!-- Enviar el formulario para validar el correo y continuar. -->
                     <button type="submit" class="btn boton-iniciar w-100">
                         Continuar
                         <i class="fa-solid fa-arrow-right ms-2"></i>
                     </button>
                 </form>
 
+                <!-- Enlace para regresar al inicio de sesión. -->
                 <div class="text-center mt-4">
                     <a href="{{ route('login') }}" class="enlace-recuperacion">
                         <i class="fa-solid fa-arrow-left me-2"></i>
@@ -125,7 +128,12 @@
     </div>
 </main>
 
-{{-- Modal de resultado --}}
+<!-- Cargar bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!--                     MODALES                    -->
+
+<!-- Modal de resultado -->
 <div class="modal fade" id="modalResultadoCorreo"
      tabindex="-1" aria-labelledby="tituloModalCorreo"
      aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -135,6 +143,7 @@
 
             <div class="modal-body text-center">
 
+                <!-- Mostrar el contenido correspondiente cuando el correo es válido. -->
                 @if (session('modal_tipo') === 'correcto')
                     <div class="icono-resultado icono-correcto">
                         <i class="fa-solid fa-check"></i>
@@ -156,11 +165,13 @@
                         </span>
                     </div>
 
+                     <!-- Dirigir al usuario al formulario para ingresar el código. -->
                     <a href="{{ route('contrasena.formulario-pin') }}"
                        class="btn boton-modal w-100">
                         Aceptar
                     </a>
 
+                <!-- Mostrar el contenido correspondiente cuando el correo no es válido. -->
                 @elseif (session('modal_tipo') === 'error')
                     <div class="icono-resultado icono-error">
                         <i class="fa-solid fa-xmark"></i>
@@ -174,9 +185,7 @@
                         correctamente e intenta de nuevo.
                     </p>
 
-                    <button type="button"
-                            class="btn boton-modal w-100"
-                            data-bs-dismiss="modal">
+                    <button type="button" class="btn boton-modal w-100" data-bs-dismiss="modal">
                         Aceptar
                     </button>
                 @endif
@@ -186,14 +195,13 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-{{-- Mostrar el modal solo cuando el controlador indique un resultado --}}
+<!-- Mostrar el modal solo cuando el controlador indique un resultado -->
 @if (in_array(session('modal_tipo'), ['correcto', 'error']))
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const elementoModal = document.getElementById('modalResultadoCorreo');
-
+        
+        // Verificar que el modal exista antes de intentar mostrarlo.
         if (elementoModal) {
             const modalCorreo = new bootstrap.Modal(elementoModal);
             modalCorreo.show();
@@ -204,7 +212,7 @@
 </script>
 @endif
 
-{{-- Ocultar las alertas después de 5 segundos --}}
+<!-- Ocultar las alertas después de 5 segundos -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const alertasRecuperacion = document.querySelectorAll(

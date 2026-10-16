@@ -11,13 +11,14 @@ class VerificarAdministrador
     /**
      * Descripción: Restringe el acceso a las rutas de administración.
      *
-     * Entrada: Solicitud del usuario autenticado.
+     * Entradas:
+     * $solicitud: contiene la información de la solicitud HTTP recibida.
+     * $siguiente: permite continuar con la ejecución de los siguientes
+     * middleware o del controlador correspondiente.
+     * 
      * Salida: Permite el acceso al administrador o lo rechaza.
      */
-    public function handle(
-        Request $solicitud,
-        Closure $siguiente
-    ): Response {
+    public function handle(Request $solicitud, Closure $siguiente ): Response {
         // Obtener el usuario que inició sesión.
         $usuarioAutenticado = auth()->user();
 

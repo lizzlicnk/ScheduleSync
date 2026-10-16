@@ -4,15 +4,23 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Usuario;
+// Importar la clase para recibir y validar solicitudes HTTP.
 use Illuminate\Http\Request;
+// Importar las herramientas para iniciar y cerrar sesiones de autenticación.
 use Illuminate\Support\Facades\Auth;
+// Importar la herramienta para verificar contraseñas mediante hashes.
 use Illuminate\Support\Facades\Hash;
+// Importar la herramienta para consultar los datos temporales almacenados en caché.
 use Illuminate\Support\Facades\Cache;
 
 class LoginController extends Controller
 {
     /**
      * Descripción: Muestra el formulario de inicio de sesión.
+     *
+     * Entradas: No recibe parámetros.
+     *
+     * Salidas: Retorna la vista Blade del formulario de inicio de sesión.
      */
     public function mostrarFormulario()
     {
@@ -20,8 +28,17 @@ class LoginController extends Controller
     }
 
     /**
- * Descripción: Valida las credenciales e inicia la sesión del usuario.
- */
+     * Descripción: Valida las credenciales del usuario, verifica que su cuenta
+     * esté activa e inicia la sesión correspondiente.
+     *
+     * Entradas:
+     * $solicitud: contiene el correo electrónico y la contraseña ingresados
+     * en el formulario de inicio de sesión.
+     *
+     * Salidas: Redirige al formulario con un mensaje de error si las
+     * credenciales no son válidas, al cambio obligatorio de contraseña
+     * si corresponde o a la página de inicio.
+     */
     public function iniciarSesion(Request $solicitud)
     {
         // Validar los datos ingresados en el formulario.
@@ -35,16 +52,14 @@ class LoginController extends Controller
         ]);
 
         // Buscar al usuario mediante su correo electrónico.
-        $usuarioEncontrado = Usuario::where(
-            'correo',
-            $datosValidados['correo']
-        )->first();
+        $usuarioEncontrado = Usuario::where('correo', $datosValidados['correo'])->first();
 
         // Verificar que exista y que su cuenta esté activa.
         if (
             !$usuarioEncontrado ||
             (int) $usuarioEncontrado->estado !== 1
         ) {
+            // Mostrar un mensaje de error y conservar únicamente el correo ingresado.
             return back()
                 ->withErrors([
                     'correo' => 'Las credenciales son incorrectas o la cuenta está inactiva.',
@@ -86,6 +101,7 @@ class LoginController extends Controller
         // Verificar si el usuario debe cambiar su contraseña.
         $claveCambioObligatorio = 'usuario_debe_cambiar_contrasena_' . $usuarioEncontrado->id_usuario;
 
+        // Redirigir al formulario de cambio obligatorio si existe la indicación.
         if (Cache::store('file')->has($claveCambioObligatorio)) {
             return redirect()->route('contrasena.obligatoria');
         }   
@@ -119,7 +135,14 @@ class LoginController extends Controller
     }
 
     /**
-     * Descripción: Cierra la sesión del usuario actual.
+     * Descripción: Cierra la sesión del usuario autenticado y elimina
+     * los datos asociados con la sesión actual.
+     *
+     * Entradas:
+     * $solicitud: permite acceder a la sesión que se desea invalidar.
+     *
+     * Salidas: Redirige al formulario de inicio de sesión después
+     * de cerrar la sesión y generar un nuevo token de seguridad.
      */
     public function cerrarSesion(Request $solicitud)
     {

@@ -6,12 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Cambiar contraseña | ScheduleSync</title>
+    <title>Cambiar contraseña | Schedule-Sync</title>
 
+    <!-- Bootstrap 5 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-
+    <!-- Icono -->
     <link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" >
-
+    <!--Estilos-->
     <link rel="stylesheet" href="{{ asset('css/auth/panel-lateral.css') }}">
     <link rel="stylesheet" href="{{ asset('css/auth/cambiar-contrasena-obligatoria.css') }}" >
 </head>
@@ -20,18 +21,19 @@
     <main class="contenedor-login container-fluid p-0">
         <div class="row g-0 min-vh-100">
 
-            {{-- Panel institucional: ocupa la mitad en pantallas grandes. --}}
+            <!-- Panel institucional: ocupa la mitad en pantallas grandes. -->
             <div class="col-12 col-lg-6">
                 @include('components.auth.panel-lateral')
             </div>
 
-            {{-- Formulario: ocupa toda la pantalla en móviles. --}}
+            <!-- Formulario de cambio de contraseña. -->
             <div class="col-12 col-lg-6 panel-formulario">
                 <div class="contenido-formulario">
                     <div class="encabezado-formulario">
 
                         <div class="d-flex align-items-center gap-3 mb-4">
 
+                            <!-- Icono de seguridad. -->
                             <div class="icono-cambio flex-shrink-0">
                                 <i class="fa-solid fa-shield-halved"></i>
                             </div>
@@ -41,7 +43,7 @@
 
                                 <p class="mb-0">
                                     Para continuar, establece una nueva contraseña
-                                    para tu cuenta de ScheduleSync.
+                                    para tu cuenta de Schedule-Sync.
                                 </p>
                             </div>
 
@@ -49,6 +51,7 @@
 
                     </div>
 
+                    <!-- Errores de validación. -->
                     @if ($errors->any())
                         <div class="alert alert-danger" role="alert">
                             <ul class="mb-0">
@@ -59,9 +62,11 @@
                         </div>
                     @endif
 
+                    <!-- Enviar la contraseña actual y la nueva al controlador mediante POST. -->
                     <form id="formulario-cambio-contrasena" action="{{ route('contrasena.obligatoria.actualizar') }}" method="POST" >
                         @csrf
 
+                        <!-- Contraseña actual. -->
                         <div class="mb-3">
                             <label for="password_actual" class="form-label">
                                 Contraseña actual
@@ -92,6 +97,7 @@
                             </div>
                         </div>
 
+                        <!-- Nueva contraseña. -->
                         <div class="mb-3">
                             <label for="password" class="form-label">
                                 Nueva contraseña
@@ -122,16 +128,15 @@
                                 </button>
                             </div>
 
+                            <!-- Requisitos mínimos. -->
                             <small class="texto-ayuda">
                                 Mínimo 8 caracteres, una letra y un número.
                             </small>
                         </div>
 
+                        <!-- Confirme la nueva contraseña. -->
                         <div class="mb-4">
-                            <label
-                                for="password_confirmation"
-                                class="form-label"
-                            >
+                            <label for="password_confirmation" class="form-label" >
                                 Confirmar nueva contraseña
                                 <span class="campo-requerido">*</span>
                             </label>
@@ -160,20 +165,14 @@
                                 </button>
                             </div>
 
-                            <small
-                                id="mensaje-coincidencia"
-                                class="ayuda-campo"
-                                aria-live="polite"
-                            >
+                             <!-- Mostrar el resultado de la comparación entre ambas contraseñas. -->
+                            <small id="mensaje-coincidencia" class="ayuda-campo" aria-live="polite" >
                                 Ambas contraseñas deben coincidir.
                             </small>
                         </div>
 
-                        <button
-                            type="submit"
-                            id="botonActualizarContrasena"
-                            class="btn boton-iniciar w-100"
-                        >
+                        <!-- Nueva contraseña. -->
+                        <button type="submit" id="botonActualizarContrasena" class="btn boton-iniciar w-100" >
                             <i class="fa-solid fa-lock me-2"></i>
                             Guardar nueva contraseña
                         </button>
@@ -188,11 +187,15 @@
         </div>
     </main>
 
+<!--                     MODALES                    -->
+
+    <!-- Mostrar el modal de confirmación de contraseña. -->
     @if (session('mensaje_contrasena'))
         <div class="modal fade" id="modalContrasenaActualizada"
             tabindex="-1" aria-hidden="true"
             data-bs-backdrop="static" data-bs-keyboard="false">
 
+            <!-- Centrar el modal de confirmación en la pantalla. -->
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content modal-contrasena-exito">
                     <div class="modal-body text-center">
@@ -201,10 +204,12 @@
                             <i class="fa-solid fa-circle-check"></i>
                         </div>
 
+                        <!-- Informar que el cambio de contraseña se completó. -->
                         <h2>¡Contraseña actualizada!</h2>
 
                         <p>{{ session('mensaje_contrasena') }}</p>
 
+                        <!-- Mostrar la barra de progreso del tiempo restante. -->
                         <div class="barra-tiempo-contenedor">
                             <div id="barraTiempoRedireccion"
                                 class="barra-tiempo-progreso"></div>
@@ -220,7 +225,10 @@
         </div>
     @endif
 
+     <!-- Bootstrap. -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript del cambio de contraseña. -->
     <script src="{{ asset('js/usuarios/auth/cambiar-contrasena-obligatoria.js') }}"></script>
 </body>
 </html>

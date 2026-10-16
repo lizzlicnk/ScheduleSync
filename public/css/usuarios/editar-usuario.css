@@ -1,4 +1,6 @@
 
+/* Contenedor principal */
+
 .pagina-editar-usuario {
     width: min(100% - 32px, 850px);
     margin: 35px auto;
@@ -14,6 +16,7 @@
     box-shadow: 0 8px 28px rgba(69, 46, 98, 0.08);
 }
 
+/* Franja decorativa superior del panel */
 .panel-editar-usuario::before {
     content: "";
     position: absolute;
@@ -24,6 +27,7 @@
     background: linear-gradient(90deg, #452E62, #6B4C91, #B9A2D3);
 }
 
+/* Encabezado de la página de edición */
 .encabezado-editar {
     margin-bottom: 28px;
 }
@@ -42,6 +46,7 @@
     font-size: 1rem;
 }
 
+/* Distribución de los campos del formulario */
 .campos-edicion {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -91,6 +96,7 @@
     box-shadow: 0 0 0 3px rgba(107, 76, 145, 0.13);
 }
 
+/* Texto de ayuda debajo de los campos */
 .campo-edicion small {
     color: #716879;
     font-size: 0.875rem;
@@ -107,6 +113,7 @@
     border-top: 1px solid #eee8f3;
 }
 
+/* Estilos compartidos de los botones de edición */
 .boton-guardar-cambios,
 .boton-cancelar-edicion {
     display: inline-flex;
@@ -149,6 +156,7 @@
     transform: translateY(-1px);
 }
 
+/* Contenedor de los mensajes de validación */
 .alerta-edicion {
     margin-bottom: 22px;
     padding: 14px 16px;
@@ -156,17 +164,20 @@
     font-size: 0.95rem;
 }
 
+/* Lista de errores dentro de la alerta */
 .alerta-edicion ul {
     margin: 8px 0 0;
     padding-left: 22px;
 }
 
+/* Estilos para los mensajes de error */
 .alerta-error {
     color: #842029;
     background: #f8d7da;
     border: 1px solid #f1aeb5;
 }
 
+/* Adaptación del formulario - Responsivo */
 @media (max-width: 600px) {
     .pagina-editar-usuario {
         width: min(100% - 20px, 850px);
@@ -199,22 +210,21 @@
 
 }
 
+/* MODAL DE MODIFICACIÓN EXITOSA */
 
-    /* MODAL DE MODIFICACIÓN EXITOSA */
+#modal-modificar-usuario .modal-icono-exito {
+    background: #fff4cc;
+    color: #b8860b;
+}
 
-    #modal-modificar-usuario .modal-icono-exito {
-        background: #fff4cc;
-        color: #b8860b;
-    }
+#modal-modificar-usuario .boton-modal-confirmar {
+    background: #f1c40f !important;
+    color: #333333 !important;
+    border: 1px solid #f1c40f !important;
+}
 
-    #modal-modificar-usuario .boton-modal-confirmar {
-        background: #f1c40f !important;
-        color: #333333 !important;
-        border: 1px solid #f1c40f !important;
-    }
-
-    #modal-modificar-usuario .boton-modal-confirmar:hover {
-        background: #d4ac0d !important;
-        color: #333333 !important;
-        border-color: #d4ac0d !important;
-    }
+#modal-modificar-usuario .boton-modal-confirmar:hover {
+    background: #d4ac0d !important;
+    color: #333333 !important;
+    border-color: #d4ac0d !important;
+}

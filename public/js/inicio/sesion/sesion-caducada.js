@@ -1,3 +1,7 @@
+/* 
+    Descripción: Espera a que el documento HTML esté cargado para ejecutar 
+    las funciones encargadas de controlar el modal de sesión caducada.
+ */
 document.addEventListener('DOMContentLoaded', function () {
 
     console.log('JavaScript de sesión caducada cargado.');
@@ -18,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
+    // Verificar que Bootstrap esté disponible 
     if (typeof bootstrap === 'undefined') {
         console.error('Bootstrap no está cargado.');
         return;
@@ -54,6 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 window.location.pathname
             );
 
+            // Colocar el cursor en el campo de correo electrónico.
             document.getElementById('correo')?.focus();
         });
     }

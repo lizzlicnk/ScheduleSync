@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+// Importar Closure para continuar con la ejecución de la solicitud.
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,13 +12,14 @@ class PrevenirCachePrivada
     /**
      * Descripción: Evita que el navegador almacene páginas privadas.
      *
-     * Entrada: Solicitud HTTP del usuario.
+     * Entradas:
+     * $solicitud: contiene la información de la solicitud HTTP recibida.
+     * $siguiente: permite continuar con la ejecución de los siguientes
+     * middleware o del controlador 
+     *
      * Salida: Respuesta con encabezados que impiden guardar la página en caché.
      */
-    public function handle(
-        Request $solicitud,
-        Closure $siguiente
-    ): Response {
+    public function handle(Request $solicitud, Closure $siguiente): Response {
         // Procesar la solicitud y obtener la respuesta.
         $respuesta = $siguiente($solicitud);
 

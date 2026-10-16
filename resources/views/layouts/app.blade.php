@@ -10,6 +10,7 @@
     <!-- FontAwesome -->
     <script src="https://kit.fontawesome.com/2ef364f4e8.js" crossorigin="anonymous"></script>
 
+    <!-- Funcionalidades de Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
 </head>

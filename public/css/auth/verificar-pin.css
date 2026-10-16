@@ -1,5 +1,6 @@
 
-/* Pantalla principal de verificación */
+/* PANTALLA PRINCIPAL */
+
 .pantalla-auth {
     min-height: 100vh;
     background: #f7f5fa;
@@ -8,14 +9,12 @@
 }
 
 .contenedor-auth {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
     min-height: 100vh;
     width: 100%;
 }
 
 .panel-auth-lateral {
-    min-height: 100%;
+    min-height: 100vh;
     background: #51346f;
     overflow: hidden;
 }
@@ -24,165 +23,176 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    min-width: 0;
     padding: 45px 35px;
     background: #ffffff;
 }
 
 .formulario-auth {
+    display: flex;
+    flex-direction: column;
     width: 100%;
     max-width: 440px;
+    min-width: 0;
 }
 
-.icono-pagina {
-    width: 62px;
-    height: 62px;
+/* INDICADOR DE LAS TRES ETAPAS */
+
+.pasos-recuperacion {
     display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+    margin: 0 0 28px;
+}
+
+.paso-recuperacion {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+    text-align: center;
+}
+
+.numero-paso {
+    display: flex;
+    flex: 0 0 38px;
     align-items: center;
     justify-content: center;
-    margin-bottom: 25px;
-    border-radius: 18px;
-    background: #f0e8f8;
+    width: 38px;
+    height: 38px;
+    border: 2px solid #e3dce9;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #8d8298;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.paso-recuperacion.completado .numero-paso,
+.paso-recuperacion.paso-activo .numero-paso {
+    border-color: #654282;
+    background: #654282;
+    color: #ffffff;
+}
+
+.paso-recuperacion.paso-activo .numero-paso {
+    box-shadow: 0 0 0 5px rgba(101, 66, 130, 0.13);
+}
+
+.nombre-paso {
+    display: block;
+    margin-top: 10px;
+    color: #89838e;
+    font-size: 0.8rem;
+    font-weight: 500;
+    line-height: 1.35;
+    white-space: nowrap;
+}
+
+.paso-recuperacion.completado .nombre-paso,
+.paso-recuperacion.paso-activo .nombre-paso {
     color: #51346f;
-    font-size: 25px;
+    font-weight: 700;
 }
 
-.etiqueta-auth {
-    margin-bottom: 10px;
-    color: #8a6aa8;
-    font-size: 12px;
+.linea-paso {
+    position: relative;
+    top: 18px;
+    flex: 0 1 54px;
+    min-width: 12px;
+    height: 2px;
+    margin: 0 5px;
+    background: #e3dce9;
+}
+
+.linea-paso.linea-completada {
+    background: #654282;
+}
+
+/* IDENTIFICADOR DE LA ETAPA */
+
+.etiqueta-etapa {
+    display: inline-block;
+    align-self: flex-start;
+    margin-bottom: 16px;
+    padding: 7px 11px;
+    border-radius: 6px;
+    background: #f1eaf7;
+    color: #654282;
+    font-size: 0.72rem;
     font-weight: 800;
-    letter-spacing: 1.5px;
+    letter-spacing: 0.8px;
 }
 
-.formulario-auth h1 {
-    margin-bottom: 15px;
-    color: #352342;
-    font-size: clamp(28px, 3vw, 36px);
+/* ENCABEZADO */
+
+.encabezado-verificacion {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+    margin-bottom: 24px;
+}
+
+.encabezado-verificacion .icono-pagina {
+    display: flex;
+    flex: 0 0 76px;
+    align-items: center;
+    justify-content: center;
+    width: 76px;
+    height: 76px;
+    margin: 0;
+    border-radius: 18px;
+    background: #f1eaf7;
+    color: #654282;
+    font-size: 2.5rem;
+}
+
+.textos-encabezado {
+    flex: 1;
+    min-width: 0;
+}
+
+.encabezado-verificacion .etiqueta-auth {
+    margin: 0 0 7px;
+    color: #8a6aa8;
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    line-height: 1.4;
+}
+
+.encabezado-verificacion h1 {
+    margin: 0;
+    color: #51346f;
+    font-size: clamp(1.55rem, 3vw, 1.9rem);
     font-weight: 800;
     line-height: 1.2;
 }
 
 .descripcion-auth {
-    margin-bottom: 28px;
+    display: block;
+    margin: 0 0 28px;
     color: #77717e;
     font-size: 15px;
     line-height: 1.7;
 }
 
-.campo-auth {
-    margin-bottom: 23px;
-}
-
-.campo-auth label {
-    display: block;
-    margin-bottom: 9px;
-    color: #45384f;
-    font-size: 14px;
-    font-weight: 700;
-}
-
-.entrada-con-icono {
-    position: relative;
-}
-
-.entrada-con-icono > i {
-    position: absolute;
-    top: 50%;
-    left: 16px;
-    transform: translateY(-50%);
-    color: #8a6aa8;
-    font-size: 16px;
-}
-
-.entrada-con-icono input {
-    width: 100%;
-    min-height: 56px;
-    padding: 13px 15px 13px 45px;
-    border: 1px solid #ded7e6;
-    border-radius: 11px;
-    outline: none;
-    background: #ffffff;
-    color: #51346f;
-    font-size: 24px;
-    font-weight: 800;
-    letter-spacing: 8px;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.entrada-con-icono input:focus {
-    border-color: #76529a;
-    box-shadow: 0 0 0 4px rgba(81, 52, 111, 0.10);
-}
-
-.entrada-con-icono input::placeholder {
-    color: #c9bfd3;
-    letter-spacing: 8px;
-}
-
-.ayuda-campo {
-    display: block;
-    margin-top: 9px;
-    color: #89828f;
-    font-size: 12px;
-}
-
-.boton-auth {
-    display: flex;
-    width: 100%;
-    min-height: 52px;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    border: none;
-    border-radius: 11px;
-    background: #51346f;
-    color: #ffffff;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
-}
-
-.boton-auth:hover {
-    background: #402653;
-    transform: translateY(-1px);
-}
-
-.enlace-regreso {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 9px;
-    margin-top: 25px;
-    color: #62447e;
-    font-size: 14px;
-    font-weight: 700;
-    text-decoration: none;
-}
-
-.enlace-regreso:hover {
-    color: #a64b82;
-}
-
-.nota-auth {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 28px;
-    color: #89828f;
-    font-size: 12px;
-}
-
-.nota-auth i {
-    color: #d19b13;
-}
+/* MENSAJES DE ESTADO */
 
 .alerta-auth {
     display: flex;
+    flex-direction: row;
     align-items: flex-start;
     gap: 10px;
-    margin-bottom: 20px;
+    width: 100%;
+    margin: 0 0 20px;
     padding: 13px 15px;
     border-radius: 10px;
     font-size: 13px;
@@ -209,11 +219,150 @@
     color: #a12c3a;
 }
 
-@media (max-width: 850px) {
-    .contenedor-auth {
-        grid-template-columns: 1fr;
-    }
+/* FORMULARIO DEL PIN */
 
+#formulario-pin {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#formulario-pin > .mb-4 {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 24px !important;
+}
+
+#formulario-pin .form-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    color: #45384f;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* SEIS CUADROS DEL PIN */
+
+#contenedor-pin {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    margin: 0;
+}
+
+#contenedor-pin .pin-cuadro {
+    display: block;
+    flex: 1 1 0;
+    width: 0;
+    min-width: 0;
+    height: 58px;
+    padding: 0;
+    border: 2px solid #ded5e8;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #51346f;
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-align: center;
+    box-shadow: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#contenedor-pin .pin-cuadro:focus {
+    border-color: #654282;
+    box-shadow: 0 0 0 4px rgba(101, 66, 130, 0.13);
+    outline: none;
+}
+
+#contenedor-pin .pin-cuadro.pin-completado {
+    border-color: #654282;
+    background: #f7f2fb;
+}
+
+#ayuda-pin {
+    display: block;
+    margin-top: 10px;
+    color: #89828f;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+/* BOTÓN PRINCIPAL */
+
+.boton-auth {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 52px;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 11px;
+    background: #51346f;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.boton-auth:hover {
+    background: #402653;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+/* ENLACE PARA REGRESAR */
+
+.enlace-regreso {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    margin-top: 25px;
+    color: #62447e;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+}
+
+.enlace-regreso:hover {
+    color: #a64b82;
+}
+
+/* NOTA INFORMATIVA */
+
+.nota-auth {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 28px 0 0;
+    color: #89828f;
+    font-size: 12px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.nota-auth i {
+    flex-shrink: 0;
+    color: #d19b13;
+}
+
+/* RESPONSIVIDAD PARA TABLET Y MÓVIL */
+
+@media (max-width: 991.98px) {
     .panel-auth-lateral {
         min-height: auto;
     }
@@ -228,127 +377,14 @@
         padding: 32px 20px;
     }
 
-    .formulario-auth h1 {
-        font-size: 28px;
-    }
-
-    .entrada-con-icono input {
-        font-size: 21px;
-        letter-spacing: 6px;
-    }
-}
-
-/* =========================================
-   INDICADOR DE LAS TRES ETAPAS
-   ========================================= */
-
-.pasos-recuperacion {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    width: 100%;
-    margin: 0 0 28px;
-}
-
-.paso-recuperacion {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex: 1 1 0;
-    flex-direction: column;
-    align-items: center;
-    min-width: 0;
-    text-align: center;
-}
-
-/* Círculos numerados */
-.numero-paso {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 38px;
-    height: 38px;
-    flex: 0 0 38px;
-    border: 2px solid #E3DCE9;
-    border-radius: 50%;
-    background: #FFFFFF;
-    color: #8D8298;
-    font-size: 0.9rem;
-    font-weight: 700;
-    transition: all 0.2s ease;
-}
-
-/* Etapa actual iluminada */
-.paso-recuperacion.paso-activo .numero-paso {
-    border-color: #654282;
-    background: #654282;
-    color: #FFFFFF;
-    box-shadow: 0 0 0 5px rgba(101, 66, 130, 0.13);
-}
-
-/* Etapa completada */
-.paso-recuperacion.completado .numero-paso {
-    border-color: #654282;
-    background: #654282;
-    color: #FFFFFF;
-}
-
-/* Nombres de las etapas */
-.nombre-paso {
-    display: block;
-    margin-top: 10px;
-    color: #89838E;
-    font-size: 0.8rem;
-    font-weight: 500;
-    line-height: 1.35;
-    white-space: nowrap;
-}
-
-.paso-recuperacion.paso-activo .nombre-paso,
-.paso-recuperacion.completado .nombre-paso {
-    color: #51346F;
-    font-weight: 700;
-}
-
-/* Líneas que conectan los pasos */
-.linea-paso {
-    position: relative;
-    top: 18px;
-    flex: 0 1 54px;
-    min-width: 12px;
-    height: 2px;
-    margin: 0 5px;
-    background: #E3DCE9;
-}
-
-/* Línea de la etapa ya completada */
-.linea-paso.linea-completada {
-    background: #654282;
-}
-
-/* Etiqueta ETAPA 2 DE 3 */
-.etiqueta-etapa {
-    display: inline-block;
-    margin-bottom: 16px;
-    padding: 7px 11px;
-    border-radius: 6px;
-    background: #F1EAF7;
-    color: #654282;
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.8px;
-}
-
-/* Ajustes para celulares */
-@media (max-width: 400px) {
     .pasos-recuperacion {
         margin-bottom: 24px;
     }
 
     .numero-paso {
+        flex-basis: 32px;
         width: 32px;
         height: 32px;
-        flex-basis: 32px;
         font-size: 0.8rem;
     }
 
@@ -359,61 +395,11 @@
     }
 
     .nombre-paso {
-        font-size: 0.7rem;
+        font-size: 0.68rem;
+        white-space: normal;
+        overflow-wrap: anywhere;
     }
-}
 
-
-/* Encabezado: icono grande a la izquierda y textos a la derecha */
-.encabezado-verificacion {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    width: 100%;
-    margin-bottom: 24px;
-}
-
-/* Icono del correo */
-.encabezado-verificacion .icono-pagina {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 0 0 76px;
-    width: 76px;
-    height: 76px;
-    margin: 0;
-    border-radius: 18px;
-    background: #F1EAF7;
-    color: #654282;
-    font-size: 2.8rem;
-}
-
-/* Contenedor de los dos textos */
-.textos-encabezado {
-    flex: 1;
-    min-width: 0;
-}
-
-/* Texto superior */
-.encabezado-verificacion .etiqueta-auth {
-    margin: 0 0 7px;
-    font-size: 0.76rem;
-    font-weight: 800;
-    letter-spacing: 0.8px;
-    line-height: 1.4;
-}
-
-/* Título principal */
-.encabezado-verificacion h1 {
-    margin: 0;
-    font-size: 1.9rem;
-    font-weight: 800;
-    line-height: 1.2;
-    color: #51346F;
-}
-
-/* Ajuste para pantallas pequeñas */
-@media (max-width: 480px) {
     .encabezado-verificacion {
         gap: 12px;
     }
@@ -422,7 +408,7 @@
         flex-basis: 62px;
         width: 62px;
         height: 62px;
-        font-size: 2.2rem;
+        font-size: 2rem;
     }
 
     .encabezado-verificacion .etiqueta-auth {
@@ -430,48 +416,16 @@
     }
 
     .encabezado-verificacion h1 {
-        font-size: 1.55rem;
-    }
-}
-
-
-/* Cuadros individuales para ingresar el PIN */
-.pin-cuadro {
-    width: 100%;
-    min-width: 0;
-    height: 62px;
-    padding: 0.25rem;
-    border: 2px solid #ded5e8;
-    border-radius: 12px;
-    background-color: #ffffff;
-    color: #51346f;
-    font-size: 1.6rem;
-    box-shadow: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-/* Resaltar el cuadro seleccionado */
-.pin-cuadro:focus {
-    border-color: #654282;
-    box-shadow: 0 0 0 4px rgba(101, 66, 130, 0.16);
-    outline: none;
-}
-
-/* Identificar los cuadros que ya tienen un dígito */
-.pin-cuadro.pin-completado {
-    border-color: #654282;
-    background-color: #f7f2fb;
-}
-
-/* Adaptar los cuadros a pantallas pequeñas */
-@media (max-width: 400px) {
-    .pin-cuadro {
-        height: 50px;
-        border-radius: 9px;
-        font-size: 1.3rem;
+        font-size: 1.45rem;
     }
 
     #contenedor-pin {
-        gap: 6px !important;
+        gap: 6px;
+    }
+
+    #contenedor-pin .pin-cuadro {
+        height: 50px;
+        border-radius: 9px;
+        font-size: 1.25rem;
     }
 }

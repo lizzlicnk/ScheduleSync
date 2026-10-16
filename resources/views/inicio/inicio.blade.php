@@ -1,7 +1,7 @@
 
 @extends('layouts.DisenoPrincipal')
 
-@section('titulo', 'Inicio | ScheduleSync')
+@section('titulo', 'Inicio | Schedule-Sync')
 
 @push('estilos')
     <link rel="stylesheet" href="{{ asset('css/inicio/inicio.css') }}">
@@ -11,7 +11,7 @@
 
 <div class="container-fluid px-3 px-md-4 py-3 py-md-4 pagina-inicio">
 
-    {{-- Encabezado responsivo --}}
+    <!-- Encabezado responsivo -->
     <div class="row align-items-center g-3 mb-4 encabezado-inicio">
 
         <div class="col-12 col-md">
@@ -20,11 +20,11 @@
             <h1 class="mb-2">¡Bienvenido!</h1>
 
             <p class="descripcion-inicio mb-0">
-                Bienvenido al sistema de gestión de horarios académicos.
+                Bienvenido al sistema de gestión de horarios académicos de UPEMOR.
             </p>
         </div>
 
-        {{-- Botón de cerrar sesión --}}
+        <!-- Botón de cerrar sesión -->
         <div class="col-12 col-md-auto">
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
@@ -68,12 +68,11 @@
     </section>
 
 </div>
-{{-- Indicador para mostrar el modal de permisos --}}
+
+<!-- Indicador para mostrar el modal de permisos -->
 @if (session('modal_sin_permisos'))
     <div id="aviso-permisos" data-mostrar="true"></div>
 @endif
 
 @endsection
 
-{{-- JavaScript del modal de permisos --}}
-<script src="{{ asset('js/inicio/modal-permisos.js') }}" defer></script>

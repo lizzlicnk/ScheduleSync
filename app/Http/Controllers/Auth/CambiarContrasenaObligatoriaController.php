@@ -3,23 +3,35 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+// Importar la clase para recibir y validar solicitudes HTTP.
 use Illuminate\Http\Request;
+// Importar las herramientas para consultar al usuario autenticado y administrar su sesión.
 use Illuminate\Support\Facades\Auth;
+// Importar la herramienta para consultar y eliminar datos temporales en caché.
 use Illuminate\Support\Facades\Cache;
+// Importar la herramienta para verificar y generar hashes de contraseñas.
 use Illuminate\Support\Facades\Hash;
+// Importar las reglas de validación para establecer requisitos de seguridad en contraseñas.
 use Illuminate\Validation\Rules\Password;
 
 class CambiarContrasenaObligatoriaController extends Controller
 {
     /**
-     * Descripción: Muestra el formulario de cambio obligatorio.
+     * Descripción: Muestra el formulario para realizar el cambio obligatorio 
+     * de contraseña del usuario autenticado.
+     *
+     * Entradas: No recibe parámetros.
+     *
+     * Salidas: Retorna la vista Blade del formulario de cambio de contraseña
+     * o redirige a la página de inicio si no existe un cambio pendiente
      */
     public function mostrarFormulario()
     {
+        // Obtener los datos del usuario que inició sesión.
         $usuario = Auth::user();
 
-        $claveCambioObligatorio =
-            'usuario_debe_cambiar_contrasena_' . $usuario->id_usuario;
+        // Generar la clave de caché que identifica el cambio de contraseña.
+        $claveCambioObligatorio = 'usuario_debe_cambiar_contrasena_' . $usuario->id_usuario;
 
         // Permitir mostrar el formulario si existe el mensaje de éxito.
         if (
@@ -34,11 +46,20 @@ class CambiarContrasenaObligatoriaController extends Controller
 
 
     /**
-     * Descripción: Actualiza la contraseña del usuario.
+     * Descripción: Valida la contraseña actual y los datos de la nueva contraseña,
+     * actualiza la contraseña del usuario y elimina la indicación de cambio obligatorio.
+     *
+     * Entradas:
+     * $solicitud: contiene la contraseña actual, la nueva contraseña
+     * y su confirmación
+     *
+     * Salidas: Redirige al formulario con un mensaje de error si la validación
+     * falla o si la contraseña actual es incorrecta. Si el cambio se completa,
+     * redirige al formulario con un mensaje de confirmación.
      */
     public function actualizarContrasena(Request $solicitud)
     {
-
+        // Validar la contraseña actual y los requisitos de la nueva contraseña.
         $datosValidados = $solicitud->validate(
             [
                 'password_actual' => [
@@ -63,6 +84,7 @@ class CambiarContrasenaObligatoriaController extends Controller
 
         $usuario = Auth::user();
 
+        // Comprobar que la contraseña actual ingresada coincida con la almacenada.
         if (!Hash::check(
             $datosValidados['password_actual'],
             $usuario->password
@@ -72,6 +94,7 @@ class CambiarContrasenaObligatoriaController extends Controller
             ]);
         }
 
+         // Verificar que la nueva contraseña sea diferente de la actual.
         if (Hash::check(
             $datosValidados['password'],
             $usuario->password
@@ -81,15 +104,17 @@ class CambiarContrasenaObligatoriaController extends Controller
                     'La nueva contraseña debe ser diferente de la actual.',
             ]);
         }
-
+        // Encriptar y guardar la nueva contraseña.
         $usuario->password = Hash::make($datosValidados['password']);
         $usuario->save();
 
         $claveCambioObligatorio =
             'usuario_debe_cambiar_contrasena_' . $usuario->id_usuario;
 
+        // Eliminar la indicación de cambio obligatorio.
         Cache::store('file')->forget($claveCambioObligatorio);
 
+        // Regenerar el identificador de sesión.
         $solicitud->session()->regenerate();
 
         return redirect()->route('contrasena.obligatoria')

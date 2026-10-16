@@ -1,8 +1,5 @@
 
-/* =========================================
-   SCHEDULE-SYNC | RECUPERAR CONTRASEÑA
-   Estilos exclusivos de esta vista
-   ========================================= */
+/* RECUPERAR CONTRASEÑA */
 
 html,
 body {
@@ -29,9 +26,7 @@ body {
 
 
 
-/* =========================================
-   PANEL Y CONTENIDO DEL FORMULARIO
-   ========================================= */
+/*  PANEL Y CONTENIDO DEL FORMULARIO */
 
 .panel-formulario {
     display: flex;
@@ -72,11 +67,7 @@ body {
 color: #51346F;
 }
 
-/* =========================================
-   INDICADOR DE LOS TRES PASOS
-   Clases reales del Blade:
-   paso-activo, nombre-paso y linea-paso
-   ========================================= */
+/*  INDICADOR DE LOS TRES PASOS  */
 
 .pasos-recuperacion {
     display: flex;
@@ -152,9 +143,7 @@ color: #51346F;
     background: #E3DCE9;
 }
 
-/* =========================================
-   ENCABEZADO DE LA ETAPA
-   ========================================= */
+/*  ENCABEZADO DE LA ETAPA  */
 
 .encabezado-etapa {
     margin-bottom: 24px;
@@ -186,9 +175,7 @@ color: #51346F;
     line-height: 1.65;
 }
 
-/* =========================================
-   CAMPO DE CORREO Y ETIQUETAS
-   ========================================= */
+/*  CAMPO DE CORREO Y ETIQUETAS  */
 
 .contenido-formulario .form-label {
     display: block;
@@ -231,9 +218,7 @@ color: #51346F;
     box-shadow: 0 0 0 4px rgba(101, 66, 130, 0.12);
 }
 
-/* =========================================
-   BOTÓN CONTINUAR
-   ========================================= */
+/*  BOTÓN CONTINUAR */
 
 .contenido-formulario .boton-iniciar {
     display: flex;
@@ -266,9 +251,7 @@ color: #51346F;
     outline-offset: 3px;
 }
 
-/* =========================================
-   REGRESAR AL LOGIN
-   ========================================= */
+/*  REGRESAR AL LOGIN  */
 
 .contenido-formulario .enlace-recuperacion {
     display: inline-flex;
@@ -287,9 +270,7 @@ color: #51346F;
     text-decoration: underline;
 }
 
-/* =========================================
-   MENSAJES DE VALIDACIÓN
-   ========================================= */
+/*  MENSAJES DE VALIDACIÓN  */
 
 .contenido-formulario .alert {
     margin-bottom: 20px;
@@ -309,9 +290,7 @@ color: #51346F;
     font-size: 0.88rem;
 }
 
-/* =========================================
-   PIE DE PÁGINA
-   ========================================= */
+/*  PIE DE PÁGINA  */
 
 .texto-pie {
     margin: 32px 0 0;
@@ -321,9 +300,7 @@ color: #51346F;
     text-align: center;
 }
 
-/* =========================================
-   MODAL DE RESULTADO
-   ========================================= */
+/*  MODAL DE RESULTADO  */
 
 .modal-correo {
     max-width: 440px;
@@ -414,9 +391,7 @@ color: #51346F;
     color: #FFFFFF;
 }
 
-/* =========================================
-   DISEÑO RESPONSIVO
-   ========================================= */
+/*  DISEÑO RESPONSIVO  */
 
 @media (max-width: 991.98px) {
     .panel-lateral {

@@ -1,45 +1,23 @@
 @extends('layouts.DisenoPrincipal')
 
-@section('titulo', 'Gestión de usuarios | ScheduleSync')
+@section('titulo', 'Gestión de usuarios | Schedule-Sync')
 
 @push('estilos')
+    <!-- Estilos-->
     <link rel="stylesheet" href="{{ asset('css/usuarios/gestion-usuarios.css') }}">
 @endpush
 
 @section('contenido')
 
 <div class="pagina-usuarios">
-
-        <div class="botones-encabezado">
-            <button
-                type="button"
-                class="boton-secundario"
-                id="boton-filtros"
-                aria-expanded="false"
-                aria-controls="contenedor-filtros">
-                <span aria-hidden="true">☷</span>
-                Filtros
-            </button>
-
-            <button
-                type="button"
-                class="boton-principal"
-                onclick="abrirFormularioUsuario()">
-                <span aria-hidden="true">＋</span>
-                Nuevo usuario
-            </button>
-        </div>
-        <p> </p> 
-    </div>
-
-    {{-- MENSAJES --}}
-
+    <!-- Mensajes de error -->
     @if (session('error'))
         <div class="mensaje-error">
             {{ session('error') }}
         </div>
     @endif
 
+    <!-- Errores de validación del formulario -->
     @if ($errors->any())
         <div class="mensaje-error">
             <strong>Revisa los siguientes campos:</strong>
@@ -51,7 +29,7 @@
         </div>
     @endif
 
-    {{-- FILTROS DESPLEGABLES --}}
+    <!-- FILTROS DESPLEGABLES -->
     <section
         class="panel-usuarios panel-filtros"
         id="contenedor-filtros"
@@ -65,15 +43,14 @@
                 </p>
             </div>
 
-            <button
-                type="button"
-                class="boton-secundario"
-                id="limpiar-filtros">
+            <button type="button" class="boton-secundario" id="limpiar-filtros">
                 Limpiar filtros
             </button>
         </div>
 
+        <!-- Campos para filtrar por rol y estado -->
         <div class="filtros-usuarios">
+            <!-- Filtro por rol -->
             <div class="campo">
                 <label for="filtro-rol">Rol</label>
                 <select id="filtro-rol">
@@ -84,6 +61,7 @@
                 </select>
             </div>
 
+            <!-- Filtro por estado -->
             <div class="campo">
                 <label for="filtro-estado">Estado</label>
                 <select id="filtro-estado">
@@ -95,7 +73,7 @@
         </div>
     </section>
 
-    {{-- TABLA DE USUARIOS --}}
+    <!-- TABLA DE USUARIOS -->
     <section class="panel-usuarios">
         <div class="encabezado-panel encabezado-tabla">
             <div>
@@ -106,6 +84,29 @@
                 </p>
             </div>
 
+                <!-- Botón para mostrar u ocultar los filtros -->
+                <div class="botones-encabezado">
+                    <button
+                        type="button"
+                        class="boton-secundario"
+                        id="boton-filtros"
+                        aria-expanded="false"
+                        aria-controls="contenedor-filtros">
+                        <span aria-hidden="true">☷</span>
+                        Filtros
+                    </button>
+
+                    <!-- Botón para abrir el formulario de registro -->
+                    <button
+                        type="button"
+                        class="boton-principal"
+                        onclick="abrirFormularioUsuario()">
+                        <span aria-hidden="true">＋</span>
+                        Nuevo usuario
+                    </button>
+                </div>
+                
+            <!-- Campo para buscar usuarios por nombre, apellido o correo -->
             <div class="busqueda-tabla campo">
                 <label for="buscar-usuario">Buscar usuario</label>
                 <div class="entrada-busqueda">
@@ -119,6 +120,7 @@
             </div>
         </div>
 
+        <!-- Tabla usuarios -->
         <div class="tabla-contenedor">
             <table class="tabla-usuarios">
                 <thead>
@@ -131,6 +133,7 @@
                     </tr>
                 </thead>
 
+                <!-- Mostrar los usuarios registrados -->
                 <tbody id="tabla-usuarios">
                     @foreach ($usuariosRegistrados as $usuario)
                         @php
@@ -164,9 +167,7 @@
                             </td>
 
                             <td>
-                                <span class="rol-usuario">
-                                    {{ $nombreRol }}
-                                </span>
+                                <span class="rol-usuario"> {{ $nombreRol }} </span>
                             </td>
 
                             <td>
@@ -195,8 +196,8 @@
                                         Modificar
                                     </a>
 
-                                    {{-- Mostrar Eliminar únicamente para usuarios activos --}}
-                                    @if ((int) $usuario->estado === 1)
+                                    <!-- Mostrar Eliminar únicamente para usuarios activos -->
+                                    @if ( (int) $usuario->estado === 1 && (int) $usuario->id_usuario !== (int) auth()->id() )
                                         <button
                                             type="button"
                                             class="boton-accion boton-eliminar"
@@ -214,12 +215,14 @@
                         </tr>
                     @endforeach
 
+                    <!-- Mensaje cuando no existen usuarios registrados -->
                     <tr id="fila-sin-usuarios" hidden>
                         <td colspan="5" class="tabla-vacia">
                             No se encontraron usuarios.
                         </td>
                     </tr>
 
+                    <!-- Mensaje cuando ningún usuario coincide con los filtros -->
                     <tr id="fila-sin-filtros" hidden>
                         <td colspan="5" class="tabla-vacia">
                             No hay usuarios que coincidan con los filtros seleccionados.
@@ -229,6 +232,7 @@
             </table>
         </div>
 
+        <!-- Controles para cambiar de página -->
         <div class="paginacion-usuarios">
             <span id="informacion-pagina">Página 1 de 1</span>
 
@@ -255,13 +259,9 @@
     </section>
 
 
-    {{-- Modal para confirmar la baja de un usuario --}}
+    <!-- Modal para confirmar la baja de un usuario -->
     <div class="modal-confirmacion" id="modal-baja-usuario" hidden>
-        <div
-            class="modal-contenido"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="titulo-modal-baja">
+        <div class="modal-contenido" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-baja">
 
             <button
                 type="button"
@@ -283,14 +283,9 @@
                 Estás a punto de dar de baja a:
             </p>
 
-            <strong
-                id="nombre-usuario-baja"
-                class="modal-destacado">
-            </strong>
+            <strong id="nombre-usuario-baja" class="modal-destacado"> </strong>
 
-            <p class="modal-nota">
-                El usuario quedará inactivo y ya no tendrá acceso a los modulos del sistema.
-            </p>
+            <p class="modal-nota"> El usuario quedará inactivo y ya no tendrá acceso a los modulos del sistema. </p>
 
             <div class="modal-acciones">
                 <button
@@ -311,15 +306,11 @@
         </div>
     </div>
 
-    {{-- Modal de registro exitoso de usuario --}}
+    <!-- Modal de registro exitoso de usuario -->
     @if (session('tipo_modal_usuario') === 'registro' && session('mensaje_modal_usuario'))
         <div class="modal-confirmacion" id="modal-registro-usuario">
 
-            <div
-                class="modal-contenido"
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="titulo-modal-registro">
+            <div class="modal-contenido" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-registro">
 
                 <button
                     type="button"
@@ -333,9 +324,7 @@
                     <i class="fa-solid fa-check"></i>
                 </div>
 
-                <h2 id="titulo-modal-registro">
-                    ¡Usuario registrado!
-                </h2>
+                <h2 id="titulo-modal-registro"> ¡Usuario registrado! </h2>
 
                 <p class="modal-mensaje">
                     {{ session('mensaje_modal_usuario') }}
@@ -355,7 +344,7 @@
         </div>
     @endif
 
-    {{-- FORMULARIO DE REGISTRO Y MODIFICACIÓN --}}
+    <!-- Formulario para registrar o modificar usuarios -->
     <section class="panel-usuarios panel-formulario" id="formulario-usuario">
 
         <div class="franja-institucional"></div>
@@ -372,18 +361,13 @@
                 </div>
             </div>
 
-            <form
-                id="formulario-datos-usuario"
-                action="{{ url('/usuarios') }}"
-                method="POST">
-
+            <form id="formulario-datos-usuario" action="{{ url('/usuarios') }}" method="POST">
                 @csrf
 
                 <div id="metodo-modificacion"></div>
-
                 <div class="formulario-grid">
 
-                {{-- Nombre --}}
+                <!-- Nombre -->
                 <div class="campo">
                     <label for="nombreUsuario"><i class="fa-solid fa-user"></i>  Nombre <span class="campo-requerido">*</span> </label>
                         <input
@@ -394,7 +378,7 @@
                             required>
                 </div>
 
-                    {{-- Apellido paterno --}}
+                    <!-- Apellido paterno -->
                     <div class="campo">
                         <label for="apellidoPaterno"><i class="fa-solid fa-user"></i> Apellido paterno <span class="campo-requerido">*</span></label>
                         
@@ -408,7 +392,7 @@
                             required>
                     </div>
 
-                    {{-- Apellido materno --}}
+                    <!-- Apellido materno -->
                     <div class="campo">
                         <label for="apellidoMaterno"><i class="fa-solid fa-user"></i> Apellido materno </label>
                         <input
@@ -419,7 +403,7 @@
                             maxlength="100">
                     </div>
 
-                    {{-- Correo --}}
+                    <!-- Correo -->
                     <div class="campo">
                         <label for="correo"><i class="fa-solid fa-envelope"></i> Correo electrónico <span class="campo-requerido">*</span></label>
                         <input
@@ -432,7 +416,7 @@
                             required>
                     </div>
 
-                    {{-- Contraseña --}}
+                    <!-- Contraseña -->
                     <div class="campo campo-contrasena">
                         <label for="password"><i class="fa-solid fa-lock"></i> Contraseña <span id="asterisco-password" class="campo-requerido">*</span></label>
 
@@ -456,12 +440,14 @@
                             </button>
                         </div>
 
+                        <!-- Indicador de seguridad de la contraseña -->
                         <div class="medidor-contrasena">
                             <div class="medidor-textos">
                                 <span><i class="fa-solid fa-shield-alt"></i> Seguridad de la contraseña</span>
                                 <strong id="texto-seguridad">Sin contraseña</strong>
                             </div>
 
+                            <!-- Barra que representa la fortaleza de la contraseña -->
                             <div
                                 class="barra-seguridad"
                                 role="progressbar"
@@ -478,7 +464,7 @@
                         </div>
                     </div>
 
-                    {{-- Rol --}}
+                    <!-- Rol -->
                     <div class="campo">
                         <label for="rol"> <i class="fa-solid fa-shield"></i> Rol <span class="campo-requerido">*</span></label>
                         <select id="rol" name="rol" required>
@@ -489,7 +475,7 @@
                         </select>
                     </div>
 
-                    {{-- Estado --}}
+                    <!-- Estado -->
                     <div class="campo">
                         <label for="estado"> <i class="fa-solid fa-toggle-on"></i> Estado</label>
                         <select id="estado" name="estado">
@@ -499,7 +485,9 @@
                     </div>
                 </div>
 
+                <!-- Botones para cancelar o guardar el formulario -->
                 <div class="acciones-formulario">
+                    <!-- Botón para cancelar la modificación -->
                     <button
                         type="button"
                         class="boton-secundario"
@@ -509,6 +497,7 @@
                         Cancelar
                     </button>
 
+                    <!-- Botón para registrar o guardar los cambios -->
                     <button
                         type="submit"
                         class="boton-principal"
@@ -520,7 +509,7 @@
         </div>
     </section>
 
-    {{-- CONSULTA DE USUARIOS --}}
+    <!-- Panel para consultar los datos de un usuario -->
     <section class="panel-usuarios panel-consulta" id="panel-consulta">
         <div class="encabezado-panel">
             <div>
@@ -531,6 +520,7 @@
             </div>
         </div>
 
+        <!-- Buscador y tarjeta con los detalles del usuario -->
         <div class="consulta-grid">
             <div class="buscador-consulta">
                 <label for="buscar-consulta">Nombre del usuario</label>
@@ -554,6 +544,7 @@
                 </div>
             </div>
 
+            <!-- Tarjeta donde se muestran los detalles del usuario seleccionado -->
             <div class="tarjeta-detalle" id="tarjeta-detalle">
                 <div class="detalle-vacio">
                     <div class="icono-detalle" aria-hidden="true">  <i class="fa-solid fa-user"> </i></div>
@@ -575,6 +566,6 @@
     window.tokenSeguridad = @json(csrf_token());
 </script>
 
-
+<!--  JavaScript para las funciones de gestión de usuarios -->
 <script src="{{ asset('js/usuarios/gestion-usuarios.js') }}" defer></script>
 @endsection

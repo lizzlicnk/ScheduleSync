@@ -1,3 +1,4 @@
+/* Configura la estructura, el tamaño, el fondo degradado y el color del panel lateral. */
 :root {
     --morado-upemor: #51346F;
     --amarillo-upemor: #FFD43B;
@@ -65,6 +66,8 @@
     flex: 1;
     min-width: 0;
 }
+
+/* Apariencia del nombre UPEMOR */
 
 .panel-lateral .logo-text h2 {
     margin: 0;
@@ -192,9 +195,7 @@
     background-color: rgba(255, 160, 120, 0.75);
 }
 
-/* =====================================================
-   ADAPTACIÓN PARA TABLETAS
-   ===================================================== */
+/*  Responsivo */
 
 @media (max-width: 991.98px) {
     .panel-lateral {
@@ -241,10 +242,6 @@
         transform-origin: bottom right;
     }
 }
-
-/* =====================================================
-   ADAPTACIÓN PARA CELULARES
-   ===================================================== */
 
 @media (max-width: 575.98px) {
     .panel-lateral {

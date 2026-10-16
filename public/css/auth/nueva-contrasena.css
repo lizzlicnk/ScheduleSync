@@ -1,7 +1,5 @@
 
-/* =========================================
-   PANTALLA PRINCIPAL
-   ========================================= */
+/*   PANTALLA PRINCIPAL  */
 
 .pantalla-auth {
     min-height: 100vh;
@@ -34,9 +32,7 @@
     max-width: 440px;
 }
 
-/* =========================================
-   INDICADOR DE LAS TRES ETAPAS
-   ========================================= */
+/*  INDICADOR DE LAS TRES ETAPAS */
 
 .pasos-recuperacion {
     display: flex;
@@ -127,9 +123,7 @@
     letter-spacing: 0.8px;
 }
 
-/* =========================================
-   ENCABEZADO
-   ========================================= */
+/*    ENCABEZADO  */
 
 .encabezado-verificacion {
     display: flex;
@@ -182,9 +176,7 @@
     line-height: 1.7;
 }
 
-/* =========================================
-   CAMPOS DE CONTRASEÑA
-   ========================================= */
+/*  CAMPOS DE CONTRASEÑA */
 
 .campo-auth {
     margin-bottom: 23px;
@@ -271,9 +263,7 @@
     color: #a12c3a;
 }
 
-/* =========================================
-   BOTONES Y ENLACES
-   ========================================= */
+/*    BOTONES Y ENLACES   */
 
 .boton-auth {
     display: flex;
@@ -328,9 +318,7 @@
     color: #d19b13;
 }
 
-/* =========================================
-   ALERTAS
-   ========================================= */
+/*    ALERTAS    */
 
 .alerta-auth {
     display: flex;
@@ -363,11 +351,7 @@
     color: #a12c3a;
 }
 
-/* =========================================
-   RESPONSIVIDAD
-   Bootstrap 5 administra las columnas.
-   Estas reglas ajustan solo el diseño visual.
-   ========================================= */
+/*  RESPONSIVIDAD  */
 
 @media (max-width: 991.98px) {
     .panel-auth-lateral {

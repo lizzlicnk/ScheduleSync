@@ -1,11 +1,4 @@
-// ============================================================
-// BLOQUE 1. INICIALIZACIÓN DEL SCRIPT
-// Descripción: Espera a que el documento HTML esté cargado
-// antes de buscar los campos, botones y formulario.
-// Entradas: Documento HTML de cambio de contraseña.
-// Salidas: Referencias a los elementos que se utilizarán.
-// ============================================================
-
+// Descripción: Gestiona la visualización, validación y actualización obligatoria de la contraseña.
 document.addEventListener('DOMContentLoaded', function () {
 
     // Obtener los campos de contraseña y confirmación.
@@ -23,17 +16,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // Obtener todos los botones que permiten mostrar u ocultar contraseñas.
     const botonesMostrarContrasena = document.querySelectorAll('.boton-ver-contrasena');
 
-
-    // ============================================================
-    // BLOQUE 2. MOSTRAR U OCULTAR LAS CONTRASEÑAS
-    // Descripción: Permite visualizar temporalmente la contraseña
-    // o volver a ocultarla al presionar el icono del ojo.
-    // Entradas: Botón presionado, identificador y tipo del campo.
-    // Salidas: Campo visible u oculto e icono actualizado.
-    // ============================================================
-
+    // Permite visualizar temporalmente la contraseña o volver a ocultarla al presionar el icono del ojo.
     botonesMostrarContrasena.forEach(function (botonMostrar) {
 
+        // Detectar cuando el usuario presiona el botón del icono.
         botonMostrar.addEventListener('click', function () {
 
             // Identificar el campo asociado al botón presionado.
@@ -68,21 +54,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 
-
-    // ============================================================
-    // BLOQUE 3. VALIDAR LOS REQUISITOS DE LA CONTRASEÑA
-    // Descripción: Comprueba que la nueva contraseña tenga al
-    // menos ocho caracteres, una letra y un número.
-    // Entradas: Texto escrito en el campo de contraseña nueva.
-    // Salidas: Mensaje de validación del campo, si es necesario.
-    // ============================================================
-
+    // Valida los requisitos de la nueva contraseña
     function comprobarRequisitosContrasena() {
 
-        // Obtener la contraseña escrita.
+        // Obtener la contraseña.
         const contrasena = campoContrasena.value;
-
-        // Comprobar la longitud mínima.
         const cumpleLongitud = contrasena.length >= 8;
 
         // Comprobar que contenga al menos una letra.
@@ -99,14 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
-
-    // ============================================================
-    // BLOQUE 4. COMPROBAR QUE LAS CONTRASEÑAS COINCIDAN
-    // Descripción: Compara la contraseña nueva con su confirmación.
-    // Entradas: Valores de los campos de contraseña y confirmación.
-    // Salidas: Mensaje visual y estado de validación actualizado.
-    // ============================================================
-
+    // Compara la contraseña nueva con su confirmación.
     function comprobarCoincidencia() {
 
         // Obtener los valores de ambos campos.
@@ -116,10 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Si la confirmación está vacía, mostrar el aviso inicial.
         if (confirmacion.length === 0) {
 
-            mensajeCoincidencia.textContent =
-                'Ambas contraseñas deben coincidir.';
-
-            // Quitar los estilos de coincidencia y discrepancia.
+            mensajeCoincidencia.textContent = 'Ambas contraseñas deben coincidir.';
             mensajeCoincidencia.classList.remove('coincide', 'no-coincide');
 
             // Limpiar el mensaje de validación del campo.
@@ -143,30 +109,18 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
 
             // Si los valores son diferentes, mostrar el aviso.
-            mensajeCoincidencia.textContent =
-                'Las contraseñas no coinciden.';
+            mensajeCoincidencia.textContent = 'Las contraseñas no coinciden.';
 
             // Aplicar el estilo de discrepancia.
             mensajeCoincidencia.classList.add('no-coincide');
             mensajeCoincidencia.classList.remove('coincide');
 
             // Impedir que el campo pase la validación del navegador.
-            campoConfirmacion.setCustomValidity(
-                'Las contraseñas deben coincidir.'
-            );
+            campoConfirmacion.setCustomValidity( 'Las contraseñas deben coincidir.');
         }
     }
 
-
-    // ============================================================
-    // BLOQUE 5. VALIDACIÓN MIENTRAS SE ESCRIBE
-    // Descripción: Ejecuta las validaciones cada vez que cambia
-    // el contenido de la contraseña nueva o su confirmación.
-    // Entradas: Eventos de escritura de los campos.
-    // Salidas: Requisitos y coincidencia actualizados en pantalla.
-    // ============================================================
-
-    // Comprobar que existan los campos y el mensaje.
+    // Ejecuta las validaciones cada vez que cambia el contenido de la contraseña nueva o su confirmación.
     if (campoContrasena && campoConfirmacion && mensajeCoincidencia) {
 
         // Validar requisitos y coincidencia al cambiar la contraseña.
@@ -180,15 +134,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    // ============================================================
-    // BLOQUE 6. VALIDAR EL FORMULARIO ANTES DE ENVIARLO
-    // Descripción: Comprueba los requisitos y evita enviar el
-    // formulario si hay errores o las contraseñas son diferentes.
-    // Entradas: Evento de envío del formulario.
-    // Salidas: Formulario enviado si es válido o envío cancelado.
-    // ============================================================
-
-    // Comprobar que el formulario exista.
+    // VALIDAR EL FORMULARIO ANTES DE ENVIARLO
     if (formularioContrasena) {
 
         formularioContrasena.addEventListener('submit', function (evento) {
@@ -198,10 +144,7 @@ document.addEventListener('DOMContentLoaded', function () {
             comprobarCoincidencia();
 
             // Cancelar el envío si hay errores de validación.
-            if (
-                !formularioContrasena.checkValidity() ||
-                campoContrasena.value !== campoConfirmacion.value
-            ) {
+            if ( !formularioContrasena.checkValidity() || campoContrasena.value !== campoConfirmacion.value) {
                 evento.preventDefault();
 
                 // Mostrar los mensajes de validación del navegador.
@@ -217,15 +160,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Deshabilitar el botón mientras se procesa la solicitud.
             botonActualizarContrasena.disabled = true;
-
-            // Mostrar un indicador de carga en el botón.
-            botonActualizarContrasena.innerHTML =
-                'Actualizando contraseña... <i class="fa-solid fa-spinner fa-spin"></i>';
+            botonActualizarContrasena.innerHTML = 'Actualizando contraseña... <i class="fa-solid fa-spinner fa-spin"></i>';
         });
     }
 
 });
 
+// Descripción: Muestra el mensaje de éxito cuando la contraseña se actualiza correctamente 
+// y redirige al usuario después de cuatro segundos.
 document.addEventListener('DOMContentLoaded', function () {
     const elementoModal = document.getElementById(
         'modalContrasenaActualizada'

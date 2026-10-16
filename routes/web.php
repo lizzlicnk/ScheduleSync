@@ -7,6 +7,8 @@ use App\Http\Controllers\Auth\RecuperarContrasenaController;
 use App\Http\Controllers\Auth\CambiarContrasenaObligatoriaController;
 use App\Http\Middleware\ForzarCambioContrasena;
 
+                    /* Rutas de inicio de sesión */
+
 // Mostrar el formulario de inicio de sesión.
 Route::get('/login', [
     LoginController::class,
@@ -27,45 +29,50 @@ Route::post('/logout', [
 
                     /*Recuperación de contraseña */
 
-// solicitar el PIN por correo.
+// Mostrar el formulario para solicitar el PIN por correo.
 Route::get('/recuperar-contrasena', [
     RecuperarContrasenaController::class,
     'mostrarFormularioCorreo'
 ])->name('contrasena.correo');
 
+// Enviar el PIN de recuperación al correo del usuario.
 Route::post('/recuperar-contrasena', [
     RecuperarContrasenaController::class,
     'enviarPin'
 ])->middleware('throttle:3,1')->name('contrasena.enviar-pin');
 
-// verificar el PIN.
+// Mostrar el formulario para verificar el PIN.
 Route::get('/verificar-pin', [
     RecuperarContrasenaController::class,
     'mostrarFormularioPin'
 ])->name('contrasena.formulario-pin');
 
+// Validar el PIN ingresado por el usuario.
 Route::post('/verificar-pin', [
     RecuperarContrasenaController::class,
     'verificarPin'
 ])->middleware('throttle:5,1')->name('contrasena.verificar-pin');
 
-// Establecer una nueva contraseña.
+// Mostrar el formulario para establecer una nueva contraseña.
 Route::get('/nueva-contrasena', [
     RecuperarContrasenaController::class,
     'mostrarFormularioNuevaContrasena'
 ])->name('contrasena.formulario-nueva');
 
+// Guardar la nueva contraseña del usuario.
 Route::post('/nueva-contrasena', [
     RecuperarContrasenaController::class,
     'actualizarContrasena'
 ])->middleware('throttle:5,1')->name('contrasena.actualizar');
+
+                    /* Rutas para el control de actividad de la sesión */
 
 // Actualizar la actividad de la sesión autenticada.
 Route::post('/sesion/actividad', function () {
     return response()->noContent();
 })->middleware('auth')->name('sesion.actividad');
 
-                    //Cambio de contraseña
+                    /* Rutas para el cambio obligatorio de contraseña */
 
 // Formulario de cambio obligatorio de contraseña.
 Route::get('/cambiar-contrasena-obligatoria', [
@@ -81,6 +88,8 @@ Route::post('/cambiar-contrasena-obligatoria', [
   ->middleware('throttle:5,1')
   ->name('contrasena.obligatoria.actualizar');
 
+                    /* Rutas disponibles para usuarios que iniciaron sesión */
+                    
  // Rutas disponibles para usuarios que iniciaron sesión.
 Route::middleware(['auth', \App\Http\Middleware\PrevenirCachePrivada::class, ForzarCambioContrasena::class ])->group(function () {
 
@@ -91,6 +100,8 @@ Route::middleware(['auth', \App\Http\Middleware\PrevenirCachePrivada::class, For
 
     // Rutas exclusivas para el Administrador.
     Route::middleware([\App\Http\Middleware\VerificarAdministrador::class])->group(function () {
+
+                    /* Rutas para la gestión de usuarios */
 
         // Mostrar la gestión de usuarios.
         Route::get('/usuarios', [

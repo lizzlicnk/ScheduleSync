@@ -1,8 +1,4 @@
-
-/* =========================================
-   PANTALLA PRINCIPAL
-========================================= */
-
+/*  PANTALLA PRINCIPAL */
 .pantalla-auth {
     min-height: 100vh;
     background: #f7f5fa;
@@ -34,9 +30,7 @@
     max-width: 440px;
 }
 
-/* =========================================
-   ENCABEZADO
-========================================= */
+/*  ENCABEZADO */
 
 .encabezado-formulario {
     margin-bottom: 30px;
@@ -70,9 +64,7 @@
     line-height: 1.7;
 }
 
-/* =========================================
-   CAMPOS DEL FORMULARIO
-========================================= */
+/*  CAMPOS DEL FORMULARIO */
 
 .panel-formulario .mb-3,
 .panel-formulario .mb-4 {
@@ -131,9 +123,7 @@
     opacity: 1;
 }
 
-/* =========================================
-   MOSTRAR U OCULTAR CONTRASEÑA
-========================================= */
+/*    MOSTRAR U OCULTAR CONTRASEÑA */
 
 .boton-ver-contrasena {
     position: absolute;
@@ -162,9 +152,7 @@
     border-radius: 5px;
 }
 
-/* =========================================
-   MENSAJES DE AYUDA Y COINCIDENCIA
-========================================= */
+/* MENSAJES DE AYUDA Y COINCIDENCIA */
 
 .texto-ayuda,
 .ayuda-campo {
@@ -183,9 +171,7 @@
     color: #a12c3a;
 }
 
-/* =========================================
-   BOTÓN PRINCIPAL
-========================================= */
+/*  BOTÓN PRINCIPAL */
 
 .boton-iniciar {
     display: flex;
@@ -224,9 +210,7 @@
     opacity: 0.8;
 }
 
-/* =========================================
-   ALERTAS DE VALIDACIÓN
-========================================= */
+/*   ALERTAS DE VALIDACIÓN  */
 
 .panel-formulario .alert-danger {
     margin-bottom: 22px;
@@ -247,9 +231,7 @@
     margin-top: 4px;
 }
 
-/* =========================================
-   PIE DE PÁGINA
-========================================= */
+/*   PIE DE PÁGINA  */
 
 .texto-pie {
     margin: 28px 0 0;
@@ -259,9 +241,7 @@
     text-align: center;
 }
 
-/* =========================================
-   RESPONSIVIDAD
-========================================= */
+/*    RESPONSIVO */
 
 @media (max-width: 991.98px) {
     .panel-auth-lateral {
@@ -300,9 +280,56 @@
     }
 }
 
+@media (max-width: 991.98px) {
+    .panel-formulario {
+        padding: 40px 24px;
+    }
 
+    .contenido-formulario {
+        max-width: 520px;
+    }
+}
 
-/* Bootstrap administra las columnas y el espaciado general. */
+@media (max-width: 575.98px) {
+    .panel-formulario {
+        padding: 30px 20px;
+    }
+
+    .contenido-formulario {
+        max-width: 100%;
+    }
+
+    .encabezado-formulario h2 {
+        font-size: 1.45rem;
+    }
+
+    .entrada-con-icono .form-control {
+        min-height: 51px;
+        font-size: 14px;
+    }
+
+    .boton-iniciar {
+        min-height: 50px;
+        font-size: 14px;
+    }
+}
+
+/* Ajustes para móviles con . */
+@media (max-width: 575.98px) {
+    .encabezado-contenido {
+        gap: 12px;
+    }
+
+    .texto-encabezado h2 {
+        font-size: 1.3rem;
+    }
+
+    .texto-encabezado p {
+        font-size: 0.9rem;
+    }
+}
+
+/* administra las columnas y el espaciado general. */
 
 .contenedor-login {
     width: 100%;
@@ -341,46 +368,8 @@
     box-shadow: 0 0 0 4px rgba(81, 52, 111, 0.10);
 }
 
-/* Ajustes para tabletas y celulares. */
+/*  ICONO   */
 
-@media (max-width: 991.98px) {
-    .panel-formulario {
-        padding: 40px 24px;
-    }
-
-    .contenido-formulario {
-        max-width: 520px;
-    }
-}
-
-@media (max-width: 575.98px) {
-    .panel-formulario {
-        padding: 30px 20px;
-    }
-
-    .contenido-formulario {
-        max-width: 100%;
-    }
-
-    .encabezado-formulario h2 {
-        font-size: 1.45rem;
-    }
-
-    .entrada-con-icono .form-control {
-        min-height: 51px;
-        font-size: 14px;
-    }
-
-    .boton-iniciar {
-        min-height: 50px;
-        font-size: 14px;
-    }
-}
-
-
-/*ICONO*/
-
-/* Coloca el icono y el texto uno al lado del otro. */
 .encabezado-contenido {
     display: flex;
     align-items: center;
@@ -408,24 +397,8 @@
     line-height: 1.5;
 }
 
-/* Ajustes para móviles con Bootstrap. */
-@media (max-width: 575.98px) {
-    .encabezado-contenido {
-        gap: 12px;
-    }
 
-    .texto-encabezado h2 {
-        font-size: 1.3rem;
-    }
-
-    .texto-encabezado p {
-        font-size: 0.9rem;
-    }
-}
-
-/* ============================================================
-   MODAL DE CONFIRMACIÓN DEL CAMBIO DE CONTRASEÑA
-   ============================================================ */
+/*   MODAL DE CONFIRMACIÓN DEL CAMBIO DE CONTRASEÑA */
 
 .modal-contrasena-exito {
     border: none;
@@ -523,7 +496,6 @@
     from {
         transform: scaleX(1);
     }
-
     to {
         transform: scaleX(0);
     }

@@ -1,9 +1,4 @@
-
-/* =====================================================
-   SCHEDULESYNC | ESTILOS GENERALES
-   public/css/app.css
-   ===================================================== */
-
+/* Variables de colores y estilos generales */
 :root {
     --morado: #5A3E7D;
     --morado-oscuro: #452E62;
@@ -17,6 +12,7 @@
     --radio: 14px;
 }
 
+/* Ajustar el modelo de caja de todos los elementos */
 * {
     box-sizing: border-box;
 }
@@ -26,6 +22,7 @@ html {
     scroll-behavior: smooth;
 }
 
+/* Definir los estilos generales del documento */
 body {
     margin: 0;
     min-height: 100vh;
@@ -36,13 +33,12 @@ body {
     background: var(--fondo);
 }
 
-button,
-input,
-select,
-textarea {
+/* Heredar la tipografía en los controles de formulario */
+button, input, select, textarea {
     font: inherit;
 }
 
+/* Mostrar el cursor de interacción en los botones */
 button {
     cursor: pointer;
 }
@@ -165,6 +161,7 @@ a {
 
 /* Formularios compartidos */
 
+/* Organizar verticalmente */
 .campo {
     display: flex;
     flex-direction: column;
@@ -210,6 +207,8 @@ a {
     min-height: 95px;
     resize: vertical;
 }
+
+/* Estilos generales de los mensajes del sistema */
 
 .mensaje-error,
 .mensaje-exito,
@@ -293,7 +292,7 @@ a {
     text-align: right;
 }
 
-/* Adaptación a pantallas pequeñas */
+/* Adaptación a pantallas  */
 
 @media (max-width: 1000px) {
     .contenido-principal {
