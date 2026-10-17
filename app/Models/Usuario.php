@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Docente;
 
 //Importar la funcionalidad de SoftDeletes de Laravel para realizar bajas lógicas
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -75,5 +76,18 @@ class Usuario extends Authenticatable
     public function getAuthPasswordName()
     {
         return 'password';
+    }
+
+    /**
+     * Descripción: Obtiene la información académica asociada a la cuenta del usuario.
+     *
+     * Entradas: No recibe parámetros.
+     *
+     * Salidas:Retorna la relación con el registro correspondiente en la tabla docente.
+     */
+    public function docente()
+    {
+        // Relaciona la cuenta con su información académica mediante id_usuario.
+        return $this->hasOne(Docente::class, 'id_usuario', 'id_usuario');
     }
 }

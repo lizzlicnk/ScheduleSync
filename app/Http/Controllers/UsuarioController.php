@@ -198,4 +198,41 @@ class UsuarioController extends Controller
 
         return redirect()->route('usuarios.index')->with('success', 'Usuario desactivado correctamente.');
     }
+
+    /**
+     * Descripción:  Realiza la baja lógica de una cuenta docente desde la gestión de docentes.
+     *
+     * Entradas:
+     * $idUsuario: identificador de la cuenta del docente que se dará de baja.
+     *
+     * Salidas:
+     * Redirige al listado de docentes con un mensaje de confirmación.
+     */
+    public function darBajaDocente($idUsuario)
+    {
+        // Comprueba que el usuario autenticado tenga permiso para dar de baja docentes.
+        abort_unless(
+            in_array((int) auth()->user()->rol, [1, 2], true),
+            403,
+            'No tienes permiso para dar de baja docentes.'
+        );
+
+        // Busca una cuenta activa que pertenezca al rol docente.
+        $usuarioEncontrado = Usuario::where('rol', 3)
+            ->where('estado', 1)
+            ->findOrFail($idUsuario);
+
+        // Cambia el estado de la cuenta para indicar que está inactiva.
+        $usuarioEncontrado->update([
+            'estado' => 0,
+        ]);
+
+        // Realiza la baja lógica sin eliminar definitivamente el registro.
+        $usuarioEncontrado->delete();
+
+        // Regresa al listado de docentes con un mensaje de confirmación.
+        return redirect()
+            ->route('docentes.index')
+            ->with('success', 'El docente se dio de baja correctamente.');
+    }
 }

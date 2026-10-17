@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RecuperarContrasenaController;
 use App\Http\Controllers\Auth\CambiarContrasenaObligatoriaController;
 use App\Http\Middleware\ForzarCambioContrasena;
+use App\Http\Controllers\DocenteController;
 
                     /* Rutas de inicio de sesión */
 
@@ -146,6 +147,58 @@ Route::middleware(['auth', \App\Http\Middleware\PrevenirCachePrivada::class, For
         ])->whereNumber('usuario')->name('usuarios.destroy');
 
     });
+                    /* Rutas para la gestión de docentes */
+
+    // Mostrar el listado de docentes.
+    Route::get('/docentes', [
+        DocenteController::class,
+        'index'
+    ])->name('docentes.index');
+
+    // Mostrar la vista para registrar un docente.
+    Route::get('/docentes/crear', [
+        DocenteController::class,
+        'create'
+    ])->name('docentes.create');
+
+    // Guardar un nuevo docente.
+    Route::post('/docentes', [
+        DocenteController::class,
+        'store'
+    ])->name('docentes.store');
+
+    // Consultar un docente específico.
+    Route::get('/docentes/{idDocente}', [
+        DocenteController::class,
+        'show'
+    ])->whereNumber('idDocente')
+      ->name('docentes.show');
+
+    // Mostrar el formulario para editar un docente.
+    Route::get('/docentes/{idDocente}/editar', [
+        DocenteController::class,
+        'edit'
+    ])->whereNumber('idDocente')
+      ->name('docentes.edit');
+
+    // Actualizar la información del docente.
+    Route::put('/docentes/{idDocente}', [
+        DocenteController::class,
+        'update'
+    ])->whereNumber('idDocente')
+      ->name('docentes.update');
+
+      // Dar de baja a un docente desde la gestión de docentes.
+    Route::delete('/docentes/{idUsuario}/baja', [
+        UsuarioController::class,
+        'darBajaDocente'
+    ])
+        ->whereNumber('idUsuario')
+        ->name('docentes.baja');
+
+    // Redirige la ruta de información personal al módulo de docentes.
+    Route::redirect('/informacion-personal', '/docentes')
+        ->name('informacion-personal');
 
 });
 

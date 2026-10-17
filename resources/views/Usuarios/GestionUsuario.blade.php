@@ -10,6 +10,18 @@
 @section('contenido')
 
 <div class="pagina-usuarios">
+
+    <!-- ENCABEZADO DEL MÓDULO -->
+    <header class="encabezado-modulo">
+        <div>
+            <p class="ruta-modulo">Inicio / Administración / Usuarios</p>
+            <h1>Gestión de Usuarios</h1>
+            <p class="descripcion-modulo">
+                Administra la información de los usuarios que pueden acceder al sistema.
+            </p>
+        </div>
+    </header>
+
     <!-- Mensajes de error -->
     @if (session('error'))
         <div class="mensaje-error">
