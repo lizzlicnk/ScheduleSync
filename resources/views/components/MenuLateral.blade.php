@@ -63,21 +63,22 @@
             <span>Asignaturas</span>
         </a>
 
-        <!-- Gestión de grupos -->
-        <a href="{{ url('/grupos') }}"
-            class="menu-item {{ request()->is('grupos*') ? 'activo' : '' }}">
-            <i class="fa-solid fa-people-group"></i>
-            <span>Grupos</span>
-        </a>
-
+        @if (in_array((int) auth()->user()->rol, [1, 2]))
+            <a href="{{ url('/grupos') }}"
+                class="menu-item {{ request()->is('grupos*') ? 'activo' : '' }}">
+                <i class="fa-solid fa-people-group"></i>
+                <span>Grupos</span>
+            </a>
+        @endif
         <!-- Gestión de carreras -->
         @if (in_array((int) auth()->user()->rol, [1, 2]))
-        <a href="{{ url('/carreras') }}"
-            class="menu-item {{ request()->is('carreras*') ? 'activo' : '' }}">
-            <i class="fa-solid fa-graduation-cap"></i>
-            <span>Carreras</span>
-        </a>
+            <a href="{{ url('/carreras') }}"
+                class="menu-item {{ request()->is('carreras*') ? 'activo' : '' }}">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <span>Carreras</span>
+            </a>
         @endif
+
         <!-- Disponibilidad docente -->
         <a href="{{ url('/disponibilidad') }}"
             class="menu-item {{ request()->is('disponibilidad*') ? 'activo' : '' }}">

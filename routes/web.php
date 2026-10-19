@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DocenteController;
 use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\PeriodoController;
+use App\Http\Controllers\GrupoController;
 
                     /* Rutas de inicio de sesión */
 
@@ -258,7 +259,7 @@ Route::middleware(['auth', \App\Http\Middleware\PrevenirCachePrivada::class, For
     ])->whereNumber('idCarrera')
     ->name('carreras.activar');
 
-                        /* Rutas para la tabla de Periodo */
+                        /* Rutas para la tabla de Periodo 
 
     // Consultar los periodos registrados.
     Route::get('/periodos', [PeriodoController::class, 'index'])
@@ -266,7 +267,55 @@ Route::middleware(['auth', \App\Http\Middleware\PrevenirCachePrivada::class, For
 
     // Registrar los tres periodos de un año.
     Route::post('/periodos', [PeriodoController::class, 'store'])
-        ->name('periodos.store');
+        ->name('periodos.store');*/
+
+                        /* Rutas para la gestión de grupos */
+
+    // Mostrar el listado de grupos.
+    Route::get('/grupos', [
+        GrupoController::class,
+        'index'
+    ])->name('grupos.index');
+
+    // Mostrar el formulario para registrar un grupo.
+    Route::get('/grupos/crear', [
+        GrupoController::class,
+        'create'
+    ])->name('grupos.create');
+
+    // Guardar un grupo nuevo.
+    Route::post('/grupos', [
+        GrupoController::class,
+        'store'
+    ])->name('grupos.store');
+
+    // Consultar los datos de un grupo específico.
+    Route::get('/grupos/{idGrupo}', [
+        GrupoController::class,
+        'show'
+    ])->whereNumber('idGrupo')
+    ->name('grupos.show');
+
+    // Mostrar el formulario para modificar un grupo.
+    Route::get('/grupos/{idGrupo}/editar', [
+        GrupoController::class,
+        'edit'
+    ])->whereNumber('idGrupo')
+    ->name('grupos.edit');
+
+    // Actualizar la información de un grupo.
+    Route::put('/grupos/{idGrupo}', [
+        GrupoController::class,
+        'update'
+    ])->whereNumber('idGrupo')
+    ->name('grupos.update');
+
+    // Eliminar un grupo
+    Route::delete('/grupos/{idGrupo}', [
+        GrupoController::class,
+        'destroy'
+    ])->whereNumber('idGrupo')
+    ->name('grupos.destroy');
 });
 
 

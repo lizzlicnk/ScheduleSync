@@ -28,7 +28,7 @@
         </div>
     @endif
 
-        <section class="panel-carreras panel-filtros" id="contenedor-filtros" hidden>
+    <section class="panel-carreras panel-filtros" id="contenedor-filtros" hidden>
 
         <div class="encabezado-panel">
             <div>

@@ -32,4 +32,18 @@ class Periodo extends Model
             'anio' => 'integer',
         ];
     }
+
+    /**
+     * Descripción: Obtiene los grupos asociados al periodo.
+     * Entradas: Ninguna.
+     * Salidas: Relación con los grupos académicos.
+     */
+    public function grupos(): HasMany
+    {
+        return $this->hasMany(
+            Grupo::class,
+            'id_periodo',
+            'id_periodo'
+        );
+    }
 }
