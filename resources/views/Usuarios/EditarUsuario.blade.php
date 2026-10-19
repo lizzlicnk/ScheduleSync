@@ -5,7 +5,7 @@
 
 @push('estilos')
     <!-- Estilos -->
-    <link rel="stylesheet" href="{{ asset('css/usuarios/editar-usuario.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/Usuarios/editar-usuario.css') }}">
 @endpush
 
 @section('contenido')

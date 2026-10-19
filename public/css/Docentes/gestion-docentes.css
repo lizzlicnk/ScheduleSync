@@ -289,6 +289,35 @@
     min-height: 46px;
 }
 
+/* ---------- ESTILO DE BOTONES DE FILTROS ---------- */
+
+/* Mantiene el mismo tamaño que los botones del encabezado */
+.pagina-docentes .botones-encabezado #boton-filtros,
+.pagina-docentes .botones-encabezado #limpiar-filtros {
+    min-height: 42px;
+    box-sizing: border-box;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+/* Efecto morado iluminado cuando los filtros están abiertos */
+.pagina-docentes #boton-filtros.boton-activo {
+    border-color: #BDA6D9 !important;
+    background: #F1EAF9 !important;
+    color: #5A347F !important;
+    box-shadow: 0 0 0 3px rgba(112, 71, 163, 0.12) !important;
+    font-weight: 700 !important;
+}
+
+/* Efecto de foco para ambos botones */
+.pagina-docentes #boton-filtros:focus,
+.pagina-docentes #limpiar-filtros:focus {
+    outline: none;
+    border-color: #BDA6D9;
+    box-shadow: 0 0 0 3px rgba(112, 71, 163, 0.12);
+}
+
 /* ---------- Campos ---------- */
 
 .pagina-docentes .campo {
@@ -1165,9 +1194,7 @@
     }
 }
 
-/* ==================================================
-   MODAL DE CONFIRMACIÓN (agregar / modificar docente)
-================================================== */
+/*   MODAL DE CONFIRMACIÓN (agregar / modificar docente) */
 
 .modal-confirmacion {
     position: fixed;

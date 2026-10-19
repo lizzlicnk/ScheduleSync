@@ -71,12 +71,13 @@
         </a>
 
         <!-- Gestión de carreras -->
+        @if (in_array((int) auth()->user()->rol, [1, 2]))
         <a href="{{ url('/carreras') }}"
             class="menu-item {{ request()->is('carreras*') ? 'activo' : '' }}">
             <i class="fa-solid fa-graduation-cap"></i>
             <span>Carreras</span>
         </a>
-
+        @endif
         <!-- Disponibilidad docente -->
         <a href="{{ url('/disponibilidad') }}"
             class="menu-item {{ request()->is('disponibilidad*') ? 'activo' : '' }}">

@@ -4,7 +4,7 @@
 
 @push('estilos')
     <!-- Estilos-->
-    <link rel="stylesheet" href="{{ asset('css/usuarios/gestion-usuarios.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/Usuarios/gestion-usuarios.css') }}">
 @endpush
 
 @section('contenido')
@@ -15,7 +15,7 @@
     <header class="encabezado-modulo">
         <div>
             <p class="ruta-modulo">Inicio / Administración / Usuarios</p>
-            <h1>Gestión de Usuarios</h1>
+            <h1>Gestión de usuarios</h1>
             <p class="descripcion-modulo">
                 Administra la información de los usuarios que pueden acceder al sistema.
             </p>
@@ -29,23 +29,8 @@
         </div>
     @endif
 
-    <!-- Errores de validación del formulario -->
-    @if ($errors->any())
-        <div class="mensaje-error">
-            <strong>Revisa los siguientes campos:</strong>
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
     <!-- FILTROS DESPLEGABLES -->
-    <section
-        class="panel-usuarios panel-filtros"
-        id="contenedor-filtros"
-        hidden>
+    <section class="panel-usuarios panel-filtros" id="contenedor-filtros" hidden>
 
         <div class="encabezado-panel">
             <div>
@@ -123,11 +108,7 @@
                 <label for="buscar-usuario">Buscar usuario</label>
                 <div class="entrada-busqueda">
                     <span aria-hidden="true"> <i class="fa-solid fa-magnifying-glass"></i> </span>
-                    <input
-                        type="search"
-                        id="buscar-usuario"
-                        placeholder="Nombre, apellido o correo..."
-                        autocomplete="off">
+                    <input type="search" id="buscar-usuario" placeholder="Nombre, apellido o correo..." autocomplete="off">
                 </div>
             </div>
         </div>
@@ -210,18 +191,13 @@
 
                                     <!-- Mostrar Eliminar únicamente para usuarios activos -->
                                     @if ( (int) $usuario->estado === 1 && (int) $usuario->id_usuario !== (int) auth()->id() )
-                                        <button
-                                            type="button"
-                                            class="boton-accion boton-eliminar"
-                                            onclick="abrirModalBajaUsuario(
+                                        <button type="button" class="boton-accion boton-eliminar" onclick="abrirModalBajaUsuario(
                                                 {{ $usuario->id_usuario }},
                                                 @js($nombreCompleto)
                                             )">
                                             Eliminar
                                         </button>
                                     @endif
-
-                                
                                 </div>
                             </td>
                         </tr>
@@ -249,21 +225,11 @@
             <span id="informacion-pagina">Página 1 de 1</span>
 
             <div class="controles-paginacion">
-                <button
-                    type="button"
-                    class="boton-pagina"
-                    id="pagina-anterior"
-                    aria-label="Página anterior"
-                    disabled>
+                <button type="button" class="boton-pagina" id="pagina-anterior" aria-label="Página anterior" disabled>
                     ‹
                 </button>
 
-                <button
-                    type="button"
-                    class="boton-pagina"
-                    id="pagina-siguiente"
-                    aria-label="Página siguiente"
-                    disabled>
+                <button type="button" class="boton-pagina" id="pagina-siguiente" aria-label="Página siguiente" disabled>
                     ›
                 </button>
             </div>
@@ -275,11 +241,7 @@
     <div class="modal-confirmacion" id="modal-baja-usuario" hidden>
         <div class="modal-contenido" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-baja">
 
-            <button
-                type="button"
-                class="modal-cerrar"
-                onclick="cerrarModalBajaUsuario()"
-                aria-label="Cerrar modal">
+            <button type="button" class="modal-cerrar" onclick="cerrarModalBajaUsuario()" aria-label="Cerrar modal">
                 &times;
             </button>
 
@@ -287,30 +249,19 @@
                 <i class="fa-solid fa-user-minus"></i>
             </div>
 
-            <h2 id="titulo-modal-baja">
-                ¿Dar de baja a este usuario?
-            </h2>
-
-            <p class="modal-mensaje">
-                Estás a punto de dar de baja a:
-            </p>
+            <h2 id="titulo-modal-baja"> ¿Dar de baja a este usuario? </h2>
+            <p class="modal-mensaje"> Estás a punto de dar de baja a: </p>
 
             <strong id="nombre-usuario-baja" class="modal-destacado"> </strong>
 
             <p class="modal-nota"> El usuario quedará inactivo y ya no tendrá acceso a los modulos del sistema. </p>
 
             <div class="modal-acciones">
-                <button
-                    type="button"
-                    class="boton-modal-cancelar"
-                    onclick="cerrarModalBajaUsuario()">
+                <button type="button" class="boton-modal-cancelar" onclick="cerrarModalBajaUsuario()">
                     Cancelar
                 </button>
 
-                <button
-                    type="button"
-                    class="boton-modal-confirmar"
-                    onclick="ejecutarBajaUsuario()">
+                <button type="button" class="boton-modal-confirmar" onclick="ejecutarBajaUsuario()">
                     <i class="fa-solid fa-trash"></i>
                     Sí, dar de baja
                 </button>
@@ -324,11 +275,7 @@
 
             <div class="modal-contenido" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-registro">
 
-                <button
-                    type="button"
-                    class="modal-cerrar"
-                    id="cerrar-modal-registro"
-                    aria-label="Cerrar modal">
+                <button type="button" class="modal-cerrar" id="cerrar-modal-registro" aria-label="Cerrar modal">
                     &times;
                 </button>
 
@@ -338,15 +285,10 @@
 
                 <h2 id="titulo-modal-registro"> ¡Usuario registrado! </h2>
 
-                <p class="modal-mensaje">
-                    {{ session('mensaje_modal_usuario') }}
-                </p>
+                <p class="modal-mensaje"> {{ session('mensaje_modal_usuario') }} </p>
 
                 <div class="modal-acciones">
-                    <button
-                        type="button"
-                        class="boton-modal-confirmar boton-modal-exito"
-                        id="aceptar-modal-registro">
+                    <button type="button" class="boton-modal-confirmar boton-modal-exito" id="aceptar-modal-registro">
                         <i class="fa-solid fa-check"></i>
                         Aceptar
                     </button>
@@ -526,9 +468,7 @@
         <div class="encabezado-panel">
             <div>
                 <h2>Consultar usuario</h2>
-                <p class="texto-secundario">
-                    Busca por nombre o apellido para consultar los datos.
-                </p>
+                <p class="texto-secundario"> Busca por nombre o apellido para consultar los datos. </p>
             </div>
         </div>
 
@@ -539,20 +479,11 @@
 
                 <div class="entrada-busqueda">
                     <span aria-hidden="true"> <i class="fa-solid fa-magnifying-glass"></i></span>
-                    <input
-                        type="search"
-                        id="buscar-consulta"
-                        placeholder="Escribe un nombre..."
-                        autocomplete="off">
+                    <input type="search" id="buscar-consulta" placeholder="Escribe un nombre..." autocomplete="off">
                 </div>
 
-                <div
-                    class="resultados-consulta"
-                    id="resultados-consulta"
-                    aria-live="polite">
-                    <p class="texto-secundario">
-                        Escribe un nombre para encontrar usuarios.
-                    </p>
+                <div class="resultados-consulta" id="resultados-consulta" aria-live="polite">
+                    <p class="texto-secundario"> Escribe un nombre para encontrar usuarios. </p>
                 </div>
             </div>
 
@@ -561,9 +492,7 @@
                 <div class="detalle-vacio">
                     <div class="icono-detalle" aria-hidden="true">  <i class="fa-solid fa-user"> </i></div>
                     <h3>Detalles del usuario</h3>
-                    <p class="texto-secundario">
-                        Selecciona un usuario de los resultados para ver su información.
-                    </p>
+                    <p class="texto-secundario">  Selecciona un usuario de los resultados para ver su información. </p>
                 </div>
             </div>
         </div>
@@ -571,6 +500,34 @@
 
 
 </div>
+
+<!-- Modal de error al registrar un usuario -->
+@if (session('tipo_modal_usuario') === 'error' && session('mensaje_modal_usuario'))
+    <div class="modal-confirmacion" id="modal-error-usuario">
+
+        <div class="modal-contenido" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-error-usuario">
+
+            <button type="button" class="modal-cerrar" id="cerrar-modal-error-usuario" aria-label="Cerrar modal">
+                &times;
+            </button>
+
+            <div class="modal-icono modal-icono-error">
+                <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+            </div>
+
+            <h2 id="titulo-modal-error-usuario"> ¡No se pudo registrar! </h2>
+            <p class="modal-mensaje"> {{ session('mensaje_modal_usuario') }} </p>
+
+            <div class="modal-acciones">
+                <button type="button" class="boton-modal-confirmar boton-modal-error" id="aceptar-modal-error-usuario">
+                    <i class="fa-solid fa-check" aria-hidden="true"></i>
+                    Aceptar
+                </button>
+            </div>
+
+        </div>
+    </div>
+@endif
 
 <script>
     // Rutas y datos que el JavaScript necesita de Laravel.

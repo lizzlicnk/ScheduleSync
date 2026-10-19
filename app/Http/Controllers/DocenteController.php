@@ -6,6 +6,8 @@ use App\Models\Docente;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
+
 
 class DocenteController extends Controller
 {
@@ -102,6 +104,7 @@ class DocenteController extends Controller
      *
      * Salidas: Redirección al listado con un mensaje de confirmación.
      */
+    /*
     public function store(Request $solicitud)
     {
         // Solo el administrador puede registrar docentes.
@@ -164,11 +167,105 @@ class DocenteController extends Controller
             'cargaAcademica.max' => 'La carga académica no puede superar las 20 horas.',
         ]);
 
+        // Obtener la matrícula ingresada para comprobar si ya está registrada.
+        $matriculaDocente = trim($solicitud->input('matricula', ''));
+
+        // Comprobar si la matrícula ya está registrada.
+        if (
+            $matriculaDocente !== '' &&
+            Docente::where('matricula', $matriculaDocente)->exists()
+        ) {
+            return redirect()->back()->withInput()
+                ->with('tipo_modal_docente', 'error')
+                ->with('mensaje_modal_docente', 'No se puede registrar el docente porque esa matrícula ya está registrada.');
+        }
+
         // Registra únicamente los datos académicos validados.
         Docente::create($datosValidados);
 
         // Regresa al listado con un mensaje de confirmación.
         return redirect()->route('docentes.index')->with('docente_agregado', true);
+    }
+*/
+
+
+    /**
+     * Descripción: Registra la información académica de una cuenta docente existente.
+     *
+     * Entradas:
+     * $solicitud: datos enviados desde el formulario.
+     *
+     * Salidas:
+     * Redirección al listado con un mensaje de éxito o al formulario con un modal de error.
+     */
+
+    public function store(Request $solicitud)
+    {
+        // Obtener la matrícula ingresada para comprobar si ya está registrada.
+        $matriculaDocente = trim($solicitud->input('matricula', ''));
+
+        // Comprobar si la matrícula ya está registrada.
+        if (
+            $matriculaDocente !== '' &&
+            Docente::where('matricula', $matriculaDocente)->exists()
+        ) {
+            return redirect()->back()->withInput()
+                ->with('tipo_modal_docente', 'error')
+                ->with('mensaje_modal_docente', 'No se puede registrar el docente porque esa matrícula ya está registrada.');
+        }
+
+        // Validar los datos antes de guardar la información del docente.
+        $datosValidados = $solicitud->validate([
+            'id_usuario' => [
+                'required',
+                'integer',
+                Rule::exists('usuario', 'id_usuario')
+                    ->where('rol', 3)
+                    ->where('estado', 1),
+                Rule::unique('docente', 'id_usuario'),
+            ],
+            'matricula' => [
+                'required',
+                'string',
+                'max:20',
+                Rule::unique('docente', 'matricula'),
+            ],
+            'especialidad' => 'required|string|max:100',
+            'tipoDocente' => 'required|integer|in:1,2',
+            'cargaAcademica' => 'required|numeric|min:0|max:20',
+        ], [
+            'id_usuario.required' => 'Debes seleccionar una cuenta docente.',
+            'id_usuario.integer' => 'La cuenta seleccionada no es válida.',
+            'id_usuario.exists' => 'La cuenta seleccionada no está activa o no tiene el rol de docente.',
+            'id_usuario.unique' => 'Esta cuenta ya tiene información registrada como docente.',
+
+            'matricula.required' => 'La matrícula del docente es obligatoria.',
+            'matricula.string' => 'La matrícula debe ser texto.',
+            'matricula.max' => 'La matrícula no puede superar los 20 caracteres.',
+            'matricula.unique' => 'Esta matrícula ya está registrada.',
+
+            'especialidad.required' => 'La especialidad es obligatoria.',
+            'especialidad.string' => 'La especialidad debe ser texto.',
+            'especialidad.max' => 'La especialidad no puede superar los 100 caracteres.',
+
+            'tipoDocente.required' => 'Debes seleccionar el tipo de docente.',
+            'tipoDocente.integer' => 'El tipo de docente seleccionado no es válido.',
+            'tipoDocente.in' => 'El tipo de docente debe ser válido.',
+
+            'cargaAcademica.required' => 'La carga académica es obligatoria.',
+            'cargaAcademica.numeric' => 'La carga académica debe ser un número.',
+            'cargaAcademica.min' => 'La carga académica no puede ser negativa.',
+            'cargaAcademica.max' => 'La carga académica no puede superar las 20 horas.',
+        ]);
+
+        // Guardar la información académica del docente en la base de datos.
+        Docente::create($datosValidados);
+
+        // Regresar al listado y mostrar el modal de éxito.
+        return redirect()
+            ->route('docentes.index')
+            ->with('tipo_modal_docente', 'registro')
+            ->with('mensaje_modal_docente', 'La información del docente se registró correctamente.');
     }
 
     /**

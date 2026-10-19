@@ -17,7 +17,7 @@
     <!-- Estilos del sistema -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/menu-lateral.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/componentes/modal.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/Componentes/modal.css') }}">
 
      <!-- Permite agregar estilos específicos desde cada vista. -->
     @stack('estilos')

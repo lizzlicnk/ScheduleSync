@@ -47,27 +47,72 @@ class UsuarioController extends Controller
      *
      * Salidas: Redirige al listado con un mensaje de confirmación.
      */
-    public function store(Request $request)
+    public function store(Request $solicitud)
     {
-        // Validar los datos ingresados desde el formulario.
-        $datosNuevoUsuario = $request->validate([
+        // Obtener el correo ingresado para comprobar si ya está registrado.
+        $correoUsuario = trim($solicitud->input('correo', ''));
+
+        // Comprobar si el correo ya está registrado.
+        if (
+            $correoUsuario !== '' &&
+            Usuario::where('correo', $correoUsuario)->exists()
+        ) {
+            return redirect()->back()->withInput()
+                ->with('tipo_modal_usuario', 'error')
+                ->with('mensaje_modal_usuario', 'No se puede registrar el usuario porque ese correo electrónico ya está registrado.');
+        }
+
+        // Validar los datos antes de guardar el usuario.
+        $datosValidados = $solicitud->validate([
             'nombreUsuario' => 'required|string|max:60',
             'apellidoPaterno' => 'required|string|max:60',
             'apellidoMaterno' => 'nullable|string|max:60',
-            'correo' => 'required|email|max:100|unique:usuario,correo',
+            'correo' => [
+                'required',
+                'email',
+                'max:100',
+                Rule::unique('usuario', 'correo'),
+            ],
             'password' => 'required|string|min:8',
             'rol' => 'required|integer|in:1,2,3',
             'estado' => 'required|integer|in:0,1',
+        ], [
+            'nombreUsuario.required' => 'El nombre del usuario es obligatorio.',
+            'nombreUsuario.string' => 'El nombre del usuario debe ser texto.',
+            'nombreUsuario.max' => 'El nombre no puede superar los 60 caracteres.',
+
+            'apellidoPaterno.required' => 'El apellido paterno es obligatorio.',
+            'apellidoPaterno.string' => 'El apellido paterno debe ser texto.',
+            'apellidoPaterno.max' => 'El apellido paterno no puede superar los 60 caracteres.',
+
+            'apellidoMaterno.string' => 'El apellido materno debe ser texto.',
+            'apellidoMaterno.max' => 'El apellido materno no puede superar los 60 caracteres.',
+
+            'correo.required' => 'El correo electrónico es obligatorio.',
+            'correo.email' => 'Ingresa un correo electrónico válido.',
+            'correo.max' => 'El correo no puede superar los 100 caracteres.',
+            'correo.unique' => 'Este correo electrónico ya está registrado.',
+
+            'password.required' => 'La contraseña es obligatoria.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+
+            'rol.required' => 'Debes seleccionar un rol.',
+            'rol.integer' => 'El rol seleccionado no es válido.',
+            'rol.in' => 'El rol seleccionado no es válido.',
+
+            'estado.required' => 'Debes seleccionar el estado del usuario.',
+            'estado.integer' => 'El estado seleccionado no es válido.',
+            'estado.in' => 'El estado debe ser Activo o Inactivo.',
         ]);
 
-        // Encriptar contraseña
-        $datosNuevoUsuario['password'] = Hash::make($datosNuevoUsuario['password']);
+        // Encriptar la contraseña antes de guardar el usuario.
+        $datosValidados['password'] = Hash::make($datosValidados['password']);
 
-
-        $datosNuevoUsuario['fechaRegistro'] = now();
+        // Registrar la fecha de creación del usuario.
+        $datosValidados['fechaRegistro'] = now();
 
         // Guardar el nuevo usuario en la base de datos.
-        $nuevoUsuario = Usuario::create($datosNuevoUsuario);
+        $nuevoUsuario = Usuario::create($datosValidados);
 
         // Registrar que el usuario debe cambiar su contraseña al ingresar.
         Cache::store('file')->forever(
@@ -75,10 +120,11 @@ class UsuarioController extends Controller
             true
         );
 
-        //return redirect()->route('usuarios.index') ->with('success', 'Usuario registrado correctamente.');
-        return redirect()->route('usuarios.index')
-            ->with('mensaje_modal_usuario', 'El usuario se registró correctamente.')
-            ->with('tipo_modal_usuario', 'registro');
+        // Regresar al listado y mostrar el modal de éxito.
+        return redirect()
+            ->route('usuarios.index')
+            ->with('tipo_modal_usuario', 'registro')
+            ->with('mensaje_modal_usuario', 'El usuario se registró correctamente.');
     }
 
     /**

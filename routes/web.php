@@ -1,12 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UsuarioController;
-use App\Http\Controllers\Auth\LoginController;
+
 use App\Http\Controllers\Auth\RecuperarContrasenaController;
 use App\Http\Controllers\Auth\CambiarContrasenaObligatoriaController;
 use App\Http\Middleware\ForzarCambioContrasena;
+use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DocenteController;
+use App\Http\Controllers\CarreraController;
 
                     /* Rutas de inicio de sesión */
 
@@ -199,6 +201,61 @@ Route::middleware(['auth', \App\Http\Middleware\PrevenirCachePrivada::class, For
     // Redirige la ruta de información personal al módulo de docentes.
     Route::redirect('/informacion-personal', '/docentes')
         ->name('informacion-personal');
+
+                    /* Rutas para la gestión de carreras */
+
+    // Mostrar el listado de carreras.
+    Route::get('/carreras', [
+        CarreraController::class,
+        'index'
+    ])->name('carreras.index');
+
+    // Mostrar la vista para registrar una carrera.
+    Route::get('/carreras/crear', [
+        CarreraController::class,
+        'create'
+    ])->name('carreras.create');
+
+    // Guardar una nueva carrera.
+    Route::post('/carreras', [
+        CarreraController::class,
+        'store'
+    ])->name('carreras.store');
+
+    // Consultar una carrera específica.
+    Route::get('/carreras/{idCarrera}', [
+        CarreraController::class,
+        'show'
+    ])->whereNumber('idCarrera')
+    ->name('carreras.show');
+
+    // Mostrar el formulario para editar una carrera.
+    Route::get('/carreras/{idCarrera}/editar', [
+        CarreraController::class,
+        'edit'
+    ])->whereNumber('idCarrera')
+    ->name('carreras.edit');
+
+    // Actualizar la información de una carrera.
+    Route::put('/carreras/{idCarrera}', [
+        CarreraController::class,
+        'update'
+    ])->whereNumber('idCarrera')
+    ->name('carreras.update');
+
+    // Desactivar una carrera mediante borrado lógico.
+    Route::delete('/carreras/{idCarrera}/baja', [
+        CarreraController::class,
+        'destroy'
+    ])->whereNumber('idCarrera')
+    ->name('carreras.baja');
+
+    // Activar nuevamente una carrera.
+    Route::put('/carreras/{idCarrera}/activar', [
+        CarreraController::class,
+        'activar'
+    ])->whereNumber('idCarrera')
+    ->name('carreras.activar');
 
 });
 

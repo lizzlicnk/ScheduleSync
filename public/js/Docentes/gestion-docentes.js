@@ -55,10 +55,17 @@ document.addEventListener('DOMContentLoaded', function () {
     // Abre o cierra el panel de filtros.
     if (botonFiltros && contenedorFiltros) {
         botonFiltros.addEventListener('click', function () {
+            // Comprueba si el panel está oculto.
             const estaOculto = contenedorFiltros.hidden;
 
+            // Cambia la visibilidad del panel de filtros.
             contenedorFiltros.hidden = !estaOculto;
+
+            // Actualiza el estado de accesibilidad del botón.
             botonFiltros.setAttribute('aria-expanded', String(estaOculto));
+
+            // Resalta el botón mientras el panel esté abierto.
+            botonFiltros.classList.toggle('boton-activo', estaOculto);
         });
     }
 
@@ -433,3 +440,29 @@ function ejecutarBajaDocente() {
     // Envía la solicitud de baja lógica.
     formularioBajaDocenteSeleccionado.submit();
 }
+
+// Controla el modal de error al registrar un docente.
+document.addEventListener('DOMContentLoaded', function () {
+
+    // Obtener el modal y sus botones.
+    const modalErrorDocente = document.getElementById('modal-error-docente');
+    const cerrarModalErrorDocente = document.getElementById('cerrar-modal-error-docente');
+    const aceptarModalErrorDocente = document.getElementById('aceptar-modal-error-docente');
+
+    // Cerrar el modal de error.
+    function cerrarErrorDocente() {
+        if (modalErrorDocente) {
+            modalErrorDocente.remove();
+        }
+    }
+
+    // Asignar el evento al botón de cerrar.
+    if (cerrarModalErrorDocente) {
+        cerrarModalErrorDocente.addEventListener('click', cerrarErrorDocente);
+    }
+
+    // Asignar el evento al botón Aceptar.
+    if (aceptarModalErrorDocente) {
+        aceptarModalErrorDocente.addEventListener('click', cerrarErrorDocente);
+    }
+});

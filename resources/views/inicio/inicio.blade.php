@@ -4,7 +4,7 @@
 @section('titulo', 'Inicio | Schedule-Sync')
 
 @push('estilos')
-    <link rel="stylesheet" href="{{ asset('css/inicio/inicio.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/Inicio/inicio.css') }}">
 @endpush
 
 @section('contenido')

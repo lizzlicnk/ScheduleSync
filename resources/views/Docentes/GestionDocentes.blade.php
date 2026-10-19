@@ -35,20 +35,6 @@
         </div>
     @endif
 
-    @if ($errors->any())
-        <div class="alerta-docentes alerta-error" id="mensaje-errores-docente" role="alert">
-            <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
-            <div>
-                <strong>Revisa los siguientes datos:</strong>
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        </div>
-    @endif
-
     <!-- FILTROS DE DOCENTES -->
     <section class="panel-docentes panel-filtros" id="contenedor-filtros" hidden>
         <div class="encabezado-panel">
@@ -99,24 +85,14 @@
 
             <div class="botones-encabezado">
                 @if (in_array((int) auth()->user()->rol, [1, 2], true))
-                    <button
-                        type="button"
-                        class="boton-secundario"
-                        id="boton-filtros"
-                        aria-expanded="false"
-                        aria-controls="contenedor-filtros"
-                    >
+                    <button type="button" class="boton-secundario" id="boton-filtros"aria-expanded="false"aria-controls="contenedor-filtros">
                         <span aria-hidden="true">☷</span>
                         Filtros
                     </button>
                 @endif
 
                 @if ((int) auth()->user()->rol === 1)
-                    <button
-                        type="button"
-                        class="boton-principal"
-                        id="boton-nuevo-docente"
-                    >
+                    <button type="button" class="boton-principal" id="boton-nuevo-docente" >
                         <span aria-hidden="true">＋</span>
                         Nuevo docente
                     </button>
@@ -129,12 +105,7 @@
 
                 <div class="entrada-busqueda">
                     <span aria-hidden="true"><i class="fa-solid fa-magnifying-glass"></i></span>
-                    <input
-                        type="search"
-                        id="buscar-docente"
-                        placeholder="Nombre, apellido o clave..."
-                        autocomplete="off"
-                    >
+                    <input type="search" id="buscar-docente" placeholder="Nombre, apellido o clave..." autocomplete="off" >
                 </div>
                 @endif
             </div>
@@ -226,8 +197,7 @@
 
                             <td>
                                 <div class="acciones-tabla">
-                                    <button
-                                        type="button"
+                                    <button type="button"
                                         class="boton-accion boton-consultar"
                                         data-consultar-usuario="{{ $usuario->id_usuario }}"
                                         title="Consultar información"
@@ -270,8 +240,7 @@
                                             @csrf
                                             @method('DELETE')
 
-                                            <button
-                                                type="button"
+                                            <button type="button"
                                                 class="boton-accion boton-eliminar"
                                                 data-baja-docente
                                                 title="Dar de baja al docente"
@@ -631,12 +600,7 @@
 <script src="{{ asset('js/docentes/gestion-docentes.js') }}" defer></script>
 
 <!-- MODAL DE DOCENTE AGREGADO -->
-<div
-    class="modal-confirmacion"
-    id="modal-docente-agregado"
-    hidden
-    aria-hidden="true"
->
+<div class="modal-confirmacion" id="modal-docente-agregado" hidden aria-hidden="true">
     <div class="modal-confirmacion-contenido">
 
         <!-- Círculo con palomita -->
@@ -651,11 +615,7 @@
         </div>
 
         <!-- Botón aceptar -->
-        <button
-            type="button"
-            class="boton-confirmar"
-            id="boton-aceptar-docente"
-        >
+        <button type="button" class="boton-confirmar" id="boton-aceptar-docente" >
             Aceptar
         </button>
 
@@ -664,17 +624,9 @@
 
 <!-- Modal para confirmar la baja de un docente -->
 <div class="modal-confirmacion" id="modal-baja-docente" hidden>
-    <div
-        class="modal-contenido"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="titulo-modal-baja-docente">
+    <div class="modal-contenido" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-baja-docente">
 
-        <button
-            type="button"
-            class="modal-cerrar"
-            onclick="cerrarModalBajaDocente()"
-            aria-label="Cerrar modal">
+        <button type="button" class="modal-cerrar" onclick="cerrarModalBajaDocente()" aria-label="Cerrar modal">
             &times;
         </button>
 
@@ -682,40 +634,54 @@
             <i class="fa-solid fa-user-minus"></i>
         </div>
 
-        <h2 id="titulo-modal-baja-docente">
-            ¿Dar de baja a este docente?
-        </h2>
+        <h2 id="titulo-modal-baja-docente"> ¿Dar de baja a este docente? </h2>
 
-        <p class="modal-mensaje">
-            Estás a punto de dar de baja a:
-        </p>
+        <p class="modal-mensaje"> Estás a punto de dar de baja a: </p>
 
-        <strong
-            id="nombre-docente-baja"
-            class="modal-destacado">
-        </strong>
+        <strong id="nombre-docente-baja" class="modal-destacado"> </strong>
 
-        <p class="modal-nota">
-            El docente quedará inactivo y ya no tendrá acceso a los módulos del sistema.
-        </p>
+        <p class="modal-nota"> El docente quedará inactivo y ya no tendrá acceso a los módulos del sistema. </p>
 
         <div class="modal-acciones">
-            <button
-                type="button"
-                class="boton-modal-cancelar"
-                onclick="cerrarModalBajaDocente()">
+            <button type="button" class="boton-modal-cancelar" onclick="cerrarModalBajaDocente()">
                 Cancelar
             </button>
 
-            <button
-                type="button"
-                class="boton-modal-confirmar"
-                onclick="ejecutarBajaDocente()">
+            <button type="button" class="boton-modal-confirmar" onclick="ejecutarBajaDocente()">
                 <i class="fa-solid fa-trash"></i>
                 Sí, dar de baja
             </button>
         </div>
     </div>
 </div>
+
+<!-- Modal de error al registrar un docente -->
+@if (session('tipo_modal_docente') === 'error' && session('mensaje_modal_docente'))
+    <div class="modal-confirmacion" id="modal-error-docente">
+
+        <div class="modal-contenido" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-error-docente">
+
+            <button type="button" class="modal-cerrar"id="cerrar-modal-error-docente" aria-label="Cerrar modal">
+                &times;
+            </button>
+
+            <div class="modal-icono modal-icono-error">
+                <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+            </div>
+
+            <h2 id="titulo-modal-error-docente"> ¡No se pudo registrar! </h2>
+
+            <p class="modal-mensaje"> {{ session('mensaje_modal_docente') }} </p>
+
+            <div class="modal-acciones">
+                <button type="button" class="boton-modal-confirmar boton-modal-error" id="aceptar-modal-error-docente">
+                    <i class="fa-solid fa-check" aria-hidden="true"></i>
+                    Aceptar
+                </button>
+            </div>
+
+        </div>
+    </div>
+@endif
 
 @endsection

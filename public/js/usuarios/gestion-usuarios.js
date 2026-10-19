@@ -625,23 +625,49 @@ document.addEventListener('DOMContentLoaded', function () {
     
 });
 
-    // Cerrar el modal después de modificar un usuario.
-    document.addEventListener('DOMContentLoaded', function () {
+// Cerrar el modal después de modificar un usuario.
+document.addEventListener('DOMContentLoaded', function () {
 
-        const modalModificacion = document.getElementById('modal-modificar-usuario');
-        const botonAceptarModificacion = document.getElementById('aceptar-modal-modificacion');
+    const modalModificacion = document.getElementById('modal-modificar-usuario');
+    const botonAceptarModificacion = document.getElementById('aceptar-modal-modificacion');
 
-        // Configurar el cierre cuando ambos elementos estén disponibles.
-        if (modalModificacion && botonAceptarModificacion) {
+    // Configurar el cierre cuando ambos elementos estén disponibles.
+    if (modalModificacion && botonAceptarModificacion) {
 
-            botonAceptarModificacion.addEventListener('click', function () {
-                // Cerrar el modal.
-                modalModificacion.remove();
-                // Permitir nuevamente el desplazamiento de la página.
-                document.body.style.overflow = '';
+        botonAceptarModificacion.addEventListener('click', function () {
+        // Cerrar el modal.
+        modalModificacion.remove();
+        // Permitir nuevamente el desplazamiento de la página.
+        document.body.style.overflow = '';
 
-            });
+        });
 
+    }
+
+});
+
+// Controla el modal de error al registrar un usuario.
+document.addEventListener('DOMContentLoaded', function () {
+
+    // Obtiene el modal de error y sus botones.
+    const modalErrorUsuario = document.getElementById('modal-error-usuario');
+    const cerrarModalErrorUsuario = document.getElementById('cerrar-modal-error-usuario');
+    const aceptarModalErrorUsuario = document.getElementById('aceptar-modal-error-usuario');
+
+    // Cierra el modal cuando se presiona el botón correspondiente.
+    function cerrarErrorUsuario() {
+        if (modalErrorUsuario) {
+            modalErrorUsuario.remove();
         }
+    }
 
-    });
+    // Asigna el evento al botón para cerrar el modal.
+    if (cerrarModalErrorUsuario) {
+        cerrarModalErrorUsuario.addEventListener('click', cerrarErrorUsuario);
+    }
+
+    // Asigna el evento al botón Aceptar.
+    if (aceptarModalErrorUsuario) {
+        aceptarModalErrorUsuario.addEventListener('click', cerrarErrorUsuario);
+    }
+});
