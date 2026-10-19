@@ -9,6 +9,7 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DocenteController;
 use App\Http\Controllers\CarreraController;
+use App\Http\Controllers\PeriodoController;
 
                     /* Rutas de inicio de sesión */
 
@@ -257,6 +258,15 @@ Route::middleware(['auth', \App\Http\Middleware\PrevenirCachePrivada::class, For
     ])->whereNumber('idCarrera')
     ->name('carreras.activar');
 
+                        /* Rutas para la tabla de Periodo */
+
+    // Consultar los periodos registrados.
+    Route::get('/periodos', [PeriodoController::class, 'index'])
+        ->name('periodos.index');
+
+    // Registrar los tres periodos de un año.
+    Route::post('/periodos', [PeriodoController::class, 'store'])
+        ->name('periodos.store');
 });
 
 

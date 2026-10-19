@@ -36,11 +36,11 @@
         <!-- Mostrar una opción diferente según el rol del usuario -->
         @if ((int) auth()->user()->rol === 3)
 
-            {{-- Información personal para docentes --}}
+            <!-- Información personal para docentes -->
             <a href="{{ url('/informacion-personal') }}"
                 class="menu-item {{ request()->is('informacion-personal*') ? 'activo' : '' }}">
 
-                <i class="fa-regular fa-user"></i>
+                <i class="fa-solid fa-user"></i>
                 <span>Información personal</span>
             </a>
 
@@ -50,7 +50,7 @@
             <a href="{{ url('/docentes') }}"
                 class="menu-item {{ request()->is('docentes*') ? 'activo' : '' }}">
 
-                <i class="fa-regular fa-user"></i>
+                <i class="fa-solid fa-user"></i>
                 <span>Docentes</span>
             </a>
 
