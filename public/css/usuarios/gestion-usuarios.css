@@ -49,14 +49,7 @@
     margin-top: 10px;
     font-size: 15px;
 }
-/*
-.botones-encabezado {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-    gap: 11px;
-}*/
+
 /* BOTONES DE ACCIONES */
 .botones-encabezado {
     display: flex;
@@ -77,71 +70,6 @@
     border-color: #BDA6D9 !important;
     background: #F1EAF9 !important;
     color: #5A347F !important;
-}
-
-/*   Estadísticas */
-
-.estadisticas-usuarios {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 18px;
-    margin-bottom: 27px;
-}
-
-.tarjeta-estadistica {
-    position: relative;
-    min-width: 0;
-    overflow: hidden;
-    padding: 23px 23px 23px 25px;
-    border: 1px solid #EAE3F1;
-    border-radius: 14px;
-    background: #FFFFFF;
-    box-shadow: 0 4px 17px rgba(45, 30, 60, 0.045);
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.tarjeta-estadistica::before {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 4px;
-    background: #7047A3;
-    content: "";
-}
-
-.tarjeta-estadistica:nth-child(2)::before {
-    background: #299764;
-}
-
-.tarjeta-estadistica:nth-child(3)::before {
-    background: #D66A70;
-}
-
-.tarjeta-estadistica:nth-child(4)::before {
-    background: #D49A35;
-}
-
-.tarjeta-estadistica:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 9px 23px rgba(45, 30, 60, 0.08);
-}
-
-.estadistica-etiqueta {
-    display: block;
-    margin-bottom: 12px;
-    color: #777181;
-    font-size: 13px;
-    font-weight: 650;
-}
-
-.tarjeta-estadistica strong {
-    display: block;
-    color: #39264F;
-    font-size: 33px;
-    font-weight: 750;
-    line-height: 1.2;
-    letter-spacing: -0.8px;
 }
 
 /*   PANELES */
@@ -252,64 +180,68 @@
 }
 
 /*   BÚSQUEDA DE LA TABLA */
-/*
-.encabezado-tabla {
-    align-items: flex-end;
-}*/
+
 /* ENCABEZADO DE LA TABLA */
-.encabezado-tabla {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
+.pagina-usuarios .encabezado-tabla {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto 280px;
+    grid-template-areas: "titulo botones busqueda";
+    align-items: end;
     gap: 16px;
     width: 100%;
     text-align: left;
 }
 
-/*
-.busqueda-tabla {
-    width: min(100%, 370px);
-}*/
+/* TÍTULO Y CONTADOR DE REGISTROS */
+.pagina-usuarios .titulo-tabla {
+    grid-area: titulo;
+    min-width: 0;
+}
 
-/* BUSCADOR DE USUARIOS */
-.busqueda-tabla {
+/* BOTONES DE ACCIONES */
+.pagina-usuarios .botones-encabezado {
+    grid-area: botones;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-left: 0;
+}
+
+.pagina-usuarios .botones-encabezado .boton-principal,
+.pagina-usuarios .botones-encabezado .boton-secundario {
+    min-height: 42px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+/* BUSCADOR A LA DERECHA */
+.pagina-usuarios .busqueda-tabla {
+    grid-area: busqueda;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    justify-content: flex-end;
+    align-items: stretch;
+    gap: 6px;
     width: 280px;
     max-width: 100%;
+    min-width: 0;
     margin: 0;
     text-align: left;
 }
 
+/* ALTURA DEL CAMPO DE BÚSQUEDA */
+.pagina-usuarios .busqueda-tabla .entrada-busqueda {
+    min-height: 42px;
+    box-sizing: border-box;
+}
 
 /* OCULTAR EL BOTÓN DE FILTROS */
-#boton-filtros[hidden] {
+.pagina-usuarios #boton-filtros[hidden] {
     display: none !important;
 }
 
-/* DISEÑO PARA PANTALLAS PEQUEÑAS */
-@media (max-width: 768px) {
-    .encabezado-tabla {
-        align-items: stretch;
-        flex-direction: column;
-    }
-
-    .botones-encabezado {
-        margin-left: 0;
-    }
-
-    .busqueda-tabla {
-        width: 100%;
-    }
-}
-
-.busqueda-tabla label,
-.buscador-consulta > label {
-    font-size: 13px;
-}
 
 .entrada-busqueda {
     display: flex;
@@ -1132,4 +1064,47 @@ html body #modal-registro-usuario button#aceptar-modal-registro.boton-modal-conf
 .botones-encabezado .boton-principal {
     min-height: 42px;
     box-sizing: border-box;
+}
+
+
+/* RESPONSIVE DEL ENCABEZADO DE LA TABLA */
+@media (max-width: 1000px) {
+    .pagina-usuarios .encabezado-tabla {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "titulo botones"
+            "busqueda busqueda";
+        align-items: center;
+        gap: 16px;
+    }
+
+    .pagina-usuarios .botones-encabezado {
+        justify-self: end;
+    }
+
+    .pagina-usuarios .busqueda-tabla {
+        width: 100%;
+        max-width: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .pagina-usuarios .encabezado-tabla {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "titulo"
+            "botones"
+            "busqueda";
+        gap: 14px;
+    }
+
+    .pagina-usuarios .botones-encabezado {
+        justify-self: stretch;
+        flex-wrap: wrap;
+    }
+
+    .pagina-usuarios .busqueda-tabla {
+        width: 100%;
+        max-width: none;
+    }
 }

@@ -191,43 +191,129 @@
 
 /*  Botones del encabezado de tabla  */
 
-.pagina-grupos .encabezado-tabla {
+/* ENCABEZADO DE LA TABLA DE GRUPOS */
+.pagina-grupos .busqueda-tabla {
+    grid-area: busqueda;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    margin: 0;
+    justify-self: end;
+    text-align: left;
+}
+
+/* TÍTULO Y TOTAL DE GRUPOS */
+.pagina-grupos .titulo-tabla {
+    grid-area: titulo;
+    min-width: 0;
+}
+
+/* BOTÓN FILTROS Y BOTÓN NUEVO GRUPO */
+.pagina-grupos .botones-encabezado {
+    grid-area: botones;
     display: flex;
     flex-direction: row;
-    align-items: flex-end;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 10px;
+    margin: 0;
+}
+
+/* CAMPO BUSCAR GRUPO */
+.pagina-grupos .busqueda-tabla {
+    grid-area: busqueda;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    margin: 0;
+    text-align: left;
+}
+
+.pagina-grupos .busqueda-tabla .entrada-busqueda {
+    width: 100%;
+    min-width: 0;
+}
+
+
+@media (max-width: 1000px) {
+    .pagina-grupos .encabezado-tabla {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "titulo botones"
+            "busqueda busqueda";
+        align-items: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .pagina-grupos .encabezado-tabla {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "titulo"
+            "botones"
+            "busqueda";
+    }
+
+    .pagina-grupos .botones-encabezado {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .pagina-grupos .botones-encabezado button {
+        flex: 1;
+    }
+}
+
+/* ENCABEZADO DE LA TABLA DE GRUPOS */
+.pagina-grupos .encabezado-tabla {
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) auto 280px;
+    grid-template-areas: "titulo botones busqueda";
+    align-items: end;
+    gap: 12px;
     width: 100%;
     text-align: left;
 }
 
-.pagina-grupos .titulo-tabla {
-    min-width: 0;
-}
-
-.pagina-grupos .titulo-tabla h2 {
-    margin: 0;
-}
-
-.pagina-grupos .titulo-tabla p {
-    margin: 6px 0 0;
-}
-
+/* BOTONES FILTROS Y NUEVO GRUPO */
 .pagina-grupos .botones-encabezado {
+    grid-area: botones;
     display: flex;
     flex-direction: row;
-    align-items: flex-end;
-    justify-content: flex-start;
-    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
     gap: 10px;
-    margin-left: auto;
+    margin: 0;
+    justify-self: end;
 }
 
-.pagina-grupos .botones-encabezado .boton-principal,
-.pagina-grupos .botones-encabezado .boton-secundario {
-    min-height: 42px;
-    font-size: 14px;
+/* CAMPO BUSCAR GRUPO */
+.pagina-grupos .busqueda-tabla {
+    grid-area: busqueda;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    margin: 0;
+    justify-self: end;
+    text-align: left;
+}
+
+.pagina-grupos .busqueda-tabla .entrada-busqueda {
+    width: 100%;
+    min-width: 0;
 }
 
 /*  Campos  */
@@ -1603,4 +1689,61 @@
     outline: none;
     border-color: #BDA6D9;
     box-shadow: 0 0 0 3px rgba(112, 71, 163, 0.12);
+}
+
+/* TABLET Y PANTALLAS MEDIANAS */
+@media (max-width: 1000px) {
+    .pagina-grupos .encabezado-tabla {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "titulo botones"
+            "busqueda busqueda";
+        align-items: center;
+    }
+
+    /* La búsqueda baja y ocupa todo el ancho */
+    .pagina-grupos .busqueda-tabla {
+        grid-column: 1 / -1;
+        width: 100%;
+        min-width: 0;
+        justify-self: stretch;
+    }
+
+    .pagina-grupos .busqueda-tabla .entrada-busqueda {
+        width: 100%;
+        min-width: 0;
+    }
+
+    /* Mantiene los dos botones juntos */
+    .pagina-grupos .botones-encabezado {
+        justify-self: end;
+        flex-wrap: wrap;
+    }
+}
+
+/* CELULARES */
+@media (max-width: 600px) {
+    .pagina-grupos .encabezado-tabla {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "titulo"
+            "botones"
+            "busqueda";
+        gap: 14px;
+    }
+
+    .pagina-grupos .botones-encabezado {
+        justify-self: stretch;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .pagina-grupos .botones-encabezado button {
+        flex: 1 1 auto;
+    }
+
+    .pagina-grupos .busqueda-tabla {
+        grid-column: 1;
+        width: 100%;
+    }
 }

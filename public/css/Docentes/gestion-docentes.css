@@ -20,7 +20,7 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-/* ---------- Encabezado ---------- */
+/*  Encabezado  */
 
 .pagina-docentes .encabezado-modulo {
     margin-bottom: 27px;
@@ -61,7 +61,7 @@
     line-height: 1.65;
 }
 
-/* ---------- Alertas ---------- */
+/*  Alertas  */
 
 .pagina-docentes .alerta-docentes {
     display: flex;
@@ -98,7 +98,7 @@
     padding-left: 20px;
 }
 
-/* ---------- Botones principales ---------- */
+/*  Botones principales  */
 
 .pagina-docentes .boton-principal,
 .pagina-docentes .boton-secundario {
@@ -163,64 +163,8 @@
     outline-offset: 2px;
 }
 
-/* ---------- Estadísticas (opcional) ---------- */
 
-.pagina-docentes .estadisticas-docentes {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 18px;
-    margin-bottom: 27px;
-}
-
-.pagina-docentes .tarjeta-estadistica {
-    position: relative;
-    min-width: 0;
-    overflow: hidden;
-    padding: 23px 23px 23px 25px;
-    border: 1px solid #EAE3F1;
-    border-radius: 14px;
-    background: #FFFFFF;
-    box-shadow: 0 4px 17px rgba(45, 30, 60, 0.045);
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.pagina-docentes .tarjeta-estadistica::before {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 4px;
-    background: #7047A3;
-    content: "";
-}
-
-.pagina-docentes .tarjeta-estadistica:nth-child(2)::before { background: #299764; }
-.pagina-docentes .tarjeta-estadistica:nth-child(3)::before { background: #D66A70; }
-.pagina-docentes .tarjeta-estadistica:nth-child(4)::before { background: #D49A35; }
-
-.pagina-docentes .tarjeta-estadistica:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 9px 23px rgba(45, 30, 60, 0.08);
-}
-
-.pagina-docentes .estadistica-etiqueta {
-    display: block;
-    margin-bottom: 12px;
-    color: #777181;
-    font-size: 13px;
-    font-weight: 650;
-}
-
-.pagina-docentes .tarjeta-estadistica strong {
-    display: block;
-    color: #39264F;
-    font-size: 33px;
-    font-weight: 750;
-    line-height: 1.2;
-    letter-spacing: -0.8px;
-}
-
-/* ---------- Paneles ---------- */
+/*  Paneles  */
 
 .pagina-docentes .panel-docentes {
     min-width: 0;
@@ -261,7 +205,7 @@
     line-height: 1.65;
 }
 
-/* ---------- Filtros ---------- */
+/*  Filtros  */
 
 .pagina-docentes .panel-filtros {
     padding: 23px 25px;
@@ -289,7 +233,7 @@
     min-height: 46px;
 }
 
-/* ---------- ESTILO DE BOTONES DE FILTROS ---------- */
+/*  ESTILO DE BOTONES DE FILTROS  */
 
 /* Mantiene el mismo tamaño que los botones del encabezado */
 .pagina-docentes .botones-encabezado #boton-filtros,
@@ -318,7 +262,7 @@
     box-shadow: 0 0 0 3px rgba(112, 71, 163, 0.12);
 }
 
-/* ---------- Campos ---------- */
+/*  Campos  */
 
 .pagina-docentes .campo {
     display: flex;
@@ -371,7 +315,7 @@
     line-height: 1.5;
 }
 
-/* ---------- Encabezado de tabla y buscador ---------- */
+/*  Encabezado de tabla y buscador  */
 
 .pagina-docentes .encabezado-tabla {
     display: flex;
@@ -473,7 +417,112 @@
     color: #A49AAE;
 }
 
-/* ---------- Tabla ---------- */
+/*  Encabezado de tabla y buscador  */
+
+.pagina-docentes .encabezado-tabla {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px auto;
+    grid-template-areas: "titulo botones busqueda";
+    align-items: end;
+    gap: 16px;
+    width: 100%;
+    text-align: left;
+}
+
+.pagina-docentes .titulo-tabla {
+    grid-area: titulo;
+    min-width: 0;
+}
+
+.pagina-docentes .botones-encabezado {
+    grid-area: botones;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-left: 0;
+}
+
+.pagina-docentes .botones-encabezado .boton-principal,
+.pagina-docentes .botones-encabezado .boton-secundario {
+    min-height: 42px;
+    font-size: 14px;
+}
+
+.pagina-docentes .busqueda-tabla {
+    grid-area: busqueda;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: stretch;
+    gap: 6px;
+    width: 280px;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+    text-align: left;
+}
+
+.pagina-docentes .busqueda-tabla label,
+.pagina-docentes .buscador-consulta > label {
+    font-size: 13px;
+}
+
+.pagina-docentes .entrada-busqueda {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 46px;
+    padding: 0 13px;
+    border: 1px solid #DED5E8;
+    border-radius: 9px;
+    background: #FFFFFF;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.pagina-docentes .busqueda-tabla .entrada-busqueda {
+    min-height: 42px;
+}
+
+.pagina-docentes .entrada-busqueda:focus-within {
+    border-color: #8A63B5;
+    box-shadow: 0 0 0 3px rgba(112, 71, 163, 0.11);
+}
+
+.pagina-docentes .entrada-busqueda > span {
+    flex-shrink: 0;
+    color: #8967AD;
+    font-size: 23px;
+    line-height: 1;
+}
+
+.pagina-docentes .entrada-busqueda > i {
+    flex-shrink: 0;
+    color: #8967AD;
+    font-size: 15px;
+}
+
+.pagina-docentes .entrada-busqueda input {
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+    padding: 8px 0;
+    border: 0 !important;
+    outline: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #30263B;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.pagina-docentes .entrada-busqueda input::placeholder {
+    color: #A49AAE;
+}
+
+/*  Tabla  */
 
 .pagina-docentes .tabla-contenedor {
     width: 100%;
@@ -574,7 +623,7 @@
     font-weight: 650;
 }
 
-/* ---------- Estados ---------- */
+/*  Estados  */
 
 .pagina-docentes .estado-usuario {
     display: inline-flex;
@@ -616,7 +665,7 @@
     color: #B94048;
 }
 
-/* ---------- Acciones de la tabla ---------- */
+/*  Acciones de la tabla  */
 
 .pagina-docentes .acciones-tabla {
     display: flex;
@@ -658,7 +707,7 @@
     color: #654984;
 }
 
-/* ---------- Tabla vacía ---------- */
+/*  Tabla vacía  */
 
 .pagina-docentes .tabla-vacia {
     padding: 38px 18px !important;
@@ -684,7 +733,7 @@
     line-height: 1.6;
 }
 
-/* ---------- Paginación (opcional) ---------- */
+/*  Paginación   */
 
 .pagina-docentes .paginacion-docentes {
     display: flex;
@@ -724,7 +773,7 @@
     background: #F3ECFA;
 }
 
-/* ---------- Formulario ---------- */
+/*  Formulario  */
 
 .pagina-docentes .panel-formulario-docente {
     position: relative;
@@ -838,7 +887,7 @@
     font-size: 14px;
 }
 
-/* ---------- Consulta ---------- */
+/*  Consulta  */
 
 .pagina-docentes .panel-consulta-docentes {
     scroll-margin-top: 24px;
@@ -1052,9 +1101,7 @@
     color: #B94048 !important;
 }
 
-/* ==================================================
-   RESPONSIVE
-================================================== */
+/*   RESPONSIVE */
 
 @media (max-width: 1150px) {
     .pagina-docentes .estadisticas-docentes {
@@ -1277,7 +1324,6 @@
     to   { opacity: 1; transform: scale(1); }
 }
 
-/* MODAL DE CONFIRMACIÓN DE BAJA DE DOCENTE */
 #modal-baja-docente {
     position: fixed;
     inset: 0;
@@ -1289,12 +1335,10 @@
     background: rgba(35, 20, 20, 0.25);
 }
 
-/* Oculta el modal cuando está cerrado */
 #modal-baja-docente[hidden] {
     display: none !important;
 }
 
-/* CONTENIDO DEL MODAL */
 #modal-baja-docente .modal-contenido {
     position: relative;
     width: 100%;
@@ -1307,7 +1351,6 @@
     animation: aparecer-modal-baja 0.25s ease;
 }
 
-/* BOTÓN PARA CERRAR EL MODAL */
 #modal-baja-docente .modal-cerrar {
     position: absolute;
     top: 12px;
@@ -1323,7 +1366,6 @@
     color: #dc3545;
 }
 
-/* ICONO DE BAJA */
 #modal-baja-docente .modal-icono {
     display: flex;
     justify-content: center;
@@ -1337,7 +1379,6 @@
     font-size: 32px;
 }
 
-/* TÍTULO DEL MODAL */
 #modal-baja-docente h2 {
     margin-bottom: 15px;
     color: #000000;
@@ -1345,14 +1386,12 @@
     font-weight: 700;
 }
 
-/* MENSAJE PRINCIPAL */
 #modal-baja-docente .modal-mensaje {
     margin-bottom: 8px;
     color: #555555;
     font-size: 15px;
 }
 
-/* NOMBRE DEL DOCENTE */
 #modal-baja-docente .modal-destacado {
     display: block;
     margin-bottom: 18px;
@@ -1361,7 +1400,6 @@
     overflow-wrap: anywhere;
 }
 
-/* NOTA INFORMATIVA */
 #modal-baja-docente .modal-nota {
     margin-bottom: 25px;
     color: #666666;
@@ -1369,7 +1407,6 @@
     line-height: 1.6;
 }
 
-/* BOTONES DE ACCIÓN */
 #modal-baja-docente .modal-acciones {
     display: flex;
     justify-content: center;
@@ -1377,7 +1414,6 @@
     flex-wrap: wrap;
 }
 
-/* BOTÓN CANCELAR */
 #modal-baja-docente .boton-modal-cancelar {
     padding: 11px 20px;
     border: 1px solid #d1d1d1;
@@ -1393,7 +1429,6 @@
     background: #f2f2f2;
 }
 
-/* BOTÓN CONFIRMAR BAJA */
 #modal-baja-docente .boton-modal-confirmar {
     padding: 11px 20px;
     border: 1px solid #dc3545;
@@ -1410,7 +1445,6 @@
     background: #b02a37;
 }
 
-/* ANIMACIÓN DE APARICIÓN */
 @keyframes aparecer-modal-baja {
     from {
         opacity: 0;
@@ -1439,5 +1473,52 @@
 
     #modal-baja-docente .modal-acciones button {
         width: 100%;
+    }
+}
+
+/*  RESPONSIVE DEL ENCABEZADO DE TABLA  */
+
+/* TABLET */
+@media (max-width: 1000px) {
+    .pagina-docentes .encabezado-tabla {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "titulo botones"
+            "busqueda busqueda";
+        align-items: center;
+        gap: 16px;
+    }
+
+    .pagina-docentes .botones-encabezado {
+        justify-self: end;
+        margin-left: 0;
+    }
+
+    .pagina-docentes .busqueda-tabla {
+        width: 100%;
+        max-width: none;
+    }
+}
+
+/* CELULAR */
+@media (max-width: 700px) {
+    .pagina-docentes .encabezado-tabla {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "titulo"
+            "botones"
+            "busqueda";
+        gap: 14px;
+    }
+
+    .pagina-docentes .botones-encabezado {
+        justify-self: stretch;
+        justify-content: flex-start;
+        margin-left: 0;
+    }
+
+    .pagina-docentes .busqueda-tabla {
+        width: 100%;
+        max-width: none;
     }
 }

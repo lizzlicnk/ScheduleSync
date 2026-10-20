@@ -18,7 +18,7 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-/*  Encabezado  */
+/* ENCABEZADO */
 
 .pagina-carreras .encabezado-modulo {
     margin-bottom: 27px;
@@ -59,7 +59,7 @@
     line-height: 1.65;
 }
 
-/*  Botones principales  */
+/* BOTONES PRINCIPALES */
 
 .pagina-carreras .boton-principal,
 .pagina-carreras .boton-secundario {
@@ -104,7 +104,8 @@
     border-color: #BFAAD7;
 }
 
-.pagina-carreras .boton-activo {
+.pagina-carreras .boton-activo,
+.boton-activo {
     border-color: #BDA6D9 !important;
     background: #F1EAF9 !important;
     color: #5A347F !important;
@@ -123,8 +124,7 @@
     outline-offset: 2px;
 }
 
-
-/*  Paneles  */
+/* PANELES */
 
 .panel-carreras {
     min-width: 0;
@@ -165,28 +165,32 @@
     line-height: 1.65;
 }
 
-/*  Botones del encabezado de tabla  */
+/* ENCABEZADO DE TABLA */
 
-.pagina-carreras .encabezado-tabla {
+.pagina-carreras .busqueda-tabla {
     display: flex;
-    flex-direction: row;
-    align-items: flex-end;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
-    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    flex: 0 1 280px;
+    width: 280px;
+    max-width: 280px;
+    min-width: 0;
+    margin: 0;
     text-align: left;
 }
-
 .pagina-carreras .titulo-tabla {
+    grid-area: titulo;
     min-width: 0;
 }
 
 .pagina-carreras .botones-encabezado {
+    grid-area: botones;
     display: flex;
     flex-direction: row;
-    align-items: flex-end;
+    align-items: center;
     justify-content: flex-start;
+    flex-wrap: wrap;
     gap: 10px;
     margin-left: auto;
 }
@@ -197,7 +201,7 @@
     font-size: 14px;
 }
 
-/*  Campos  */
+/* CAMPOS DE FORMULARIO */
 
 .pagina-carreras .campo {
     display: flex;
@@ -243,16 +247,17 @@
     color: #C04464;
 }
 
-/*  Encabezado de tabla y buscador  */
+/* BUSCADOR DE CARRERAS */
 
 .pagina-carreras .busqueda-tabla {
+    grid-area: busqueda;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 6px;
-    width: 280px;
-    max-width: 100%;
+    width: 100%;
+    max-width: 420px;
+    min-width: 0;
     margin: 0;
     text-align: left;
 }
@@ -267,6 +272,7 @@
     align-items: center;
     gap: 10px;
     width: 100%;
+    min-width: 0;
     min-height: 46px;
     padding: 0 13px;
     border: 1px solid #DED5E8;
@@ -277,6 +283,8 @@
 
 .pagina-carreras .busqueda-tabla .entrada-busqueda {
     min-height: 42px;
+    width: 100%;
+    min-width: 0;
 }
 
 .pagina-carreras .entrada-busqueda:focus-within {
@@ -298,6 +306,7 @@
 }
 
 .pagina-carreras .entrada-busqueda input {
+    flex: 1 1 auto;
     width: 100%;
     min-width: 0;
     min-height: 42px;
@@ -315,7 +324,7 @@
     color: #A49AAE;
 }
 
-/*  Tabla  */
+/* TABLA */
 
 .pagina-carreras .tabla-contenedor {
     width: 100%;
@@ -392,7 +401,7 @@
     color: #62447F;
 }
 
-/*  Estados  */
+/* ESTADOS */
 
 .pagina-carreras .estado-usuario {
     display: inline-flex;
@@ -406,13 +415,12 @@
     white-space: nowrap;
 }
 
-/* Muestra el punto de color antes del estado. */
 .pagina-carreras .estado-usuario:not(:has(.punto-estado))::before {
+    content: "";
     width: 7px;
     height: 7px;
     border-radius: 50%;
     background: currentColor;
-    content: "";
 }
 
 .pagina-carreras .punto-estado {
@@ -435,7 +443,7 @@
     color: #B94048;
 }
 
-/*  Acciones de la tabla  */
+/* ACCIONES DE LA TABLA */
 
 .pagina-carreras .acciones-tabla {
     display: flex;
@@ -477,7 +485,7 @@
     color: #654984;
 }
 
-/*  Tabla vacía  */
+/* TABLA VACÍA */
 
 .pagina-carreras .tabla-vacia {
     padding: 38px 18px !important;
@@ -503,7 +511,7 @@
     line-height: 1.6;
 }
 
-/*  Paginación  */
+/* PAGINACIÓN */
 
 .paginacion-carreras {
     display: flex;
@@ -548,7 +556,7 @@
     cursor: not-allowed;
 }
 
-/*  Formulario  */
+/* FORMULARIO DE CARRERAS */
 
 #formulario-carrera {
     position: relative;
@@ -638,13 +646,15 @@
     outline-offset: 2px;
 }
 
-.pagina-carreras .formulario-grid {
+.pagina-carreras .formulario-grid,
+.formulario-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 23px 25px;
 }
 
-.pagina-carreras .campo-completo {
+.pagina-carreras .campo-completo,
+.formulario-grid .campo-nombre-carrera {
     grid-column: 1 / -1;
 }
 
@@ -667,31 +677,7 @@
     font-size: 14px;
 }
 
-/* DISTRIBUCIÓN DEL FORMULARIO DE CARRERAS */
-
-.formulario-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px;
-}
-
-/* El nombre de la carrera ocupa las dos columnas */
-.formulario-grid .campo-nombre-carrera {
-    grid-column: 1 / -1;
-}
-
-/* Adaptación para pantallas pequeñas */
-@media (max-width: 600px) {
-    .formulario-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .formulario-grid .campo-nombre-carrera {
-        grid-column: auto;
-    }
-}
-
-/*  Consulta de carreras  */
+/* CONSULTA DE CARRERAS */
 
 #panel-consulta {
     scroll-margin-top: 24px;
@@ -905,8 +891,7 @@
     color: #B94048 !important;
 }
 
-
-/* MODAL DE CONFIRMACIÓN DE BAJA DE CARRERA */
+/* MODAL DE BAJA DE CARRERA */
 
 #modal-baja-carrera {
     position: fixed;
@@ -1011,18 +996,20 @@
     background: #F2F2F2;
 }
 
-#modal-baja-carrera .boton-modal-confirmar {
+#modal-baja-carrera .boton-modal-confirmar,
+#modal-baja-carrera .boton-modal-error {
     border-color: #DC3545;
     background: #DC3545;
     color: #FFFFFF;
 }
 
-#modal-baja-carrera .boton-modal-confirmar:hover {
+#modal-baja-carrera .boton-modal-confirmar:hover,
+#modal-baja-carrera .boton-modal-error:hover {
     border-color: #B02A37;
     background: #B02A37;
 }
 
-/* MODAL DE REGISTRO EXITOSO DE CARRERA */
+/* MODAL DE REGISTRO EXITOSO */
 
 #modal-registro-carrera {
     position: fixed;
@@ -1097,7 +1084,8 @@
     margin-top: 22px;
 }
 
-#modal-registro-carrera .boton-modal-confirmar {
+#modal-registro-carrera .boton-modal-confirmar,
+#modal-modificar-carrera .boton-modal-confirmar {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1116,14 +1104,14 @@
     transition: background 0.2s ease, transform 0.2s ease;
 }
 
-
-#modal-registro-carrera .boton-modal-confirmar:hover {
+#modal-registro-carrera .boton-modal-confirmar:hover,
+#modal-modificar-carrera .boton-modal-confirmar:hover {
     border-color: #D4A900;
     background: #F5C518;
     transform: translateY(-1px);
 }
 
-/* MODAL DE ERROR AL REGISTRAR UNA CARRERA */
+/* MODAL DE ERROR */
 
 #modal-error-carrera {
     position: fixed;
@@ -1207,8 +1195,10 @@
     min-width: 120px;
     min-height: 42px;
     padding: 11px 22px;
+    border: 1px solid #DC3545;
     border-radius: 8px;
-    color: #ffffff;
+    background: #DC3545;
+    color: #FFFFFF;
     font-family: inherit;
     font-size: 14px;
     font-weight: 700;
@@ -1216,39 +1206,19 @@
     transition: background 0.2s ease, transform 0.2s ease;
 }
 
-#modal-baja-carrera .boton-modal-error {
-    border-color: #DC3545;
-    background: #DC3545;
-    color: #FFFFFF;
-}
-
-#modal-baja-carrera .boton-modal-error:hover {
+#modal-error-carrera .boton-modal-error:hover {
     border-color: #B02A37;
     background: #B02A37;
 }
 
-
-/* MODAL DE MODIFICACIÓN EXITOSA DE CARRERA */
+/* MODAL DE MODIFICACIÓN EXITOSA */
 
 #modal-modificar-carrera .modal-icono-exito {
     background: #FFF3BF;
     color: #9A6700;
 }
 
-#modal-modificar-carrera .boton-modal-confirmar {
-    border-color: #E3B400;
-    background: #FFD43B;
-    color: #30263B;
-}
-
-#modal-modificar-carrera .boton-modal-confirmar:hover {
-    border-color: #D4A900;
-    background: #F5C518;
-    transform: translateY(-1px);
-}
-
-
-/* ---------- Animaciones ---------- */
+/* ANIMACIONES */
 
 @keyframes aparecerModalCarrera {
     from {
@@ -1262,9 +1232,68 @@
     }
 }
 
-/*   RESPONSIVE*/
+/* BOTONES GENERALES DEL ENCABEZADO */
 
-@media (max-width: 800px) {
+.botones-encabezado {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.botones-encabezado .boton-principal,
+.botones-encabezado .boton-secundario {
+    min-height: 45px;
+    font-size: 14px;
+}
+
+/* ESTADO Y FOCO DE LOS FILTROS */
+
+.pagina-carreras #boton-filtros.boton-activo {
+    border-color: #BDA6D9 !important;
+    background: #F1EAF9 !important;
+    color: #5A347F !important;
+    box-shadow: 0 0 0 3px rgba(112, 71, 163, 0.12) !important;
+    font-weight: 600 !important;
+}
+
+.pagina-carreras #boton-filtros:focus,
+.pagina-carreras #limpiar-filtros:focus {
+    outline: none;
+    border-color: #BDA6D9;
+    box-shadow: 0 0 0 3px rgba(112, 71, 163, 0.12);
+}
+
+/* RESPONSIVE: TABLET Y PANTALLAS MEDIANAS */
+
+@media (max-width: 1000px) {
+    .pagina-carreras .encabezado-tabla {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "titulo botones"
+            "busqueda busqueda";
+        align-items: center;
+        gap: 16px;
+    }
+
+    .pagina-carreras .titulo-tabla {
+        min-width: 0;
+    }
+
+    .pagina-carreras .botones-encabezado {
+        justify-self: end;
+        margin-left: 0;
+    }
+
+    .pagina-carreras .busqueda-tabla {
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+    }
+
     .pagina-carreras .contenido-formulario {
         padding: 22px;
     }
@@ -1272,25 +1301,30 @@
     .pagina-carreras .consulta-grid {
         grid-template-columns: 1fr;
     }
+}
 
+/* RESPONSIVE: CELULARES */
+
+@media (max-width: 700px) {
     .pagina-carreras .encabezado-tabla {
-        align-items: stretch;
-        flex-direction: column;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "titulo"
+            "botones"
+            "busqueda";
+        gap: 14px;
     }
 
     .pagina-carreras .botones-encabezado {
+        justify-self: stretch;
+        justify-content: flex-start;
+        flex-wrap: wrap;
         margin-left: 0;
     }
 
-    .pagina-carreras .busqueda-tabla {
-        width: 100%;
-    }
-}
-
-@media (max-width: 700px) {
     .pagina-carreras .botones-encabezado button,
     .pagina-carreras .botones-encabezado a {
-        flex: 1;
+        flex: 1 1 auto;
     }
 
     .panel-carreras {
@@ -1302,11 +1336,13 @@
         align-items: flex-start;
     }
 
-    .pagina-carreras .formulario-grid {
+    .pagina-carreras .formulario-grid,
+    .formulario-grid {
         grid-template-columns: 1fr;
     }
 
-    .pagina-carreras .campo-completo {
+    .pagina-carreras .campo-completo,
+    .formulario-grid .campo-nombre-carrera {
         grid-column: auto;
     }
 
@@ -1357,6 +1393,8 @@
     }
 }
 
+/* RESPONSIVE: CELULARES PEQUEÑOS */
+
 @media (max-width: 380px) {
     .pagina-carreras .botones-encabezado {
         flex-direction: column;
@@ -1378,42 +1416,109 @@
     }
 }
 
-/* BOTONES DE ACCIONES */
-.botones-encabezado {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 10px;
-    margin-left: auto;
+/* RESPONSIVE DE GRUPOS */
+
+@media (max-width: 1000px) {
+    .pagina-grupos .encabezado-tabla {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "titulo botones"
+            "busqueda busqueda";
+        align-items: center;
+    }
+
+    .pagina-grupos .busqueda-tabla {
+        grid-column: 1 / -1;
+        width: 100%;
+        min-width: 0;
+        justify-self: stretch;
+    }
+
+    .pagina-grupos .busqueda-tabla .entrada-busqueda {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .pagina-grupos .botones-encabezado {
+        justify-self: end;
+        flex-wrap: wrap;
+    }
 }
 
-.botones-encabezado .boton-principal,
-.botones-encabezado .boton-secundario {
-    min-height: 45px;
-    font-size: 14px;
+@media (max-width: 600px) {
+    .pagina-grupos .encabezado-tabla {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "titulo"
+            "botones"
+            "busqueda";
+        gap: 14px;
+    }
+
+    .pagina-grupos .botones-encabezado {
+        justify-self: stretch;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .pagina-grupos .botones-encabezado button {
+        flex: 1 1 auto;
+    }
+
+    .pagina-grupos .busqueda-tabla {
+        grid-column: 1;
+        width: 100%;
+    }
 }
 
-.boton-activo {
-    border-color: #BDA6D9 !important;
-    background: #F1EAF9 !important;
-    color: #5A347F !important;
+/* TABLET */
+@media (max-width: 1000px) {
+    .pagina-carreras .encabezado-tabla {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "titulo botones"
+            "busqueda busqueda";
+        align-items: center;
+        gap: 16px;
+    }
+
+    .pagina-carreras .titulo-tabla {
+        grid-area: titulo;
+    }
+
+    .pagina-carreras .botones-encabezado {
+        grid-area: botones;
+        justify-self: end;
+        margin-left: 0;
+    }
+
+    .pagina-carreras .busqueda-tabla {
+        grid-area: busqueda;
+        width: 100%;
+        max-width: none;
+    }
 }
 
+/* CELULAR */
+@media (max-width: 700px) {
+    .pagina-carreras .encabezado-tabla {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "titulo"
+            "botones"
+            "busqueda";
+        gap: 14px;
+    }
 
-/* MANTIENE EL BOTÓN ACTIVO MORADO SIN CAMBIAR EL GROSOR DE LETRA */
-.pagina-carreras #boton-filtros.boton-activo {
-    border-color: #BDA6D9 !important;
-    background: #F1EAF9 !important;
-    color: #5A347F !important;
-    box-shadow: 0 0 0 3px rgba(112, 71, 163, 0.12) !important;
-    font-weight: 600 !important;
-}
+    .pagina-carreras .botones-encabezado {
+        justify-self: stretch;
+        justify-content: flex-start;
+        margin-left: 0;
+    }
 
-/* CONSERVA EL EFECTO DE FOCO AL INTERACTUAR CON EL BOTÓN */
-.pagina-carreras #boton-filtros:focus,
-.pagina-carreras #limpiar-filtros:focus {
-    outline: none;
-    border-color: #BDA6D9;
-    box-shadow: 0 0 0 3px rgba(112, 71, 163, 0.12);
+    .pagina-carreras .busqueda-tabla {
+        width: 100%;
+        max-width: none;
+    }
 }
