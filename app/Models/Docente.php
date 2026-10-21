@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 //relación entre dos modelos.
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+// Permite definir la relaciónes
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Docente extends Model
 {
@@ -23,7 +25,7 @@ class Docente extends Model
     // Indicar que la tabla no utiliza created_at ni updated_at.
     public $timestamps = false;
 
-    // Campos que pueden asignarse de manera masiva.
+    // Atributos     
     protected $fillable = [
         'matricula',
         'especialidad',
@@ -45,6 +47,20 @@ class Docente extends Model
             Usuario::class,
             'id_usuario',
             'id_usuario'
+        );
+    }
+
+    /**
+     * Descripción: Obtiene las asignaturas preferidas (las que va a dar este cuatrimestre) del docente.
+     * Entradas:No recibe parámetros.
+     * Salidas: Retorna las preferencias registradas para el docente.
+     */
+    public function asignaturasPreferidas(): HasMany
+    {
+        return $this->hasMany(
+            AsignaturaPreferida::class,
+            'id_docente',
+            'id_docente'
         );
     }
 }

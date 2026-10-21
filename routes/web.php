@@ -11,6 +11,7 @@ use App\Http\Controllers\DocenteController;
 use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\PeriodoController;
 use App\Http\Controllers\GrupoController;
+use App\Http\Controllers\AsignaturaController;
 
                     /* Rutas de inicio de sesión */
 
@@ -316,6 +317,62 @@ Route::middleware(['auth', \App\Http\Middleware\PrevenirCachePrivada::class, For
         'destroy'
     ])->whereNumber('idGrupo')
     ->name('grupos.destroy');
+
+                        /* Rutas para la gestión de asignaturas */
+
+    // Mostrar el listado de asignaturas.
+    Route::get('/asignaturas', [
+        AsignaturaController::class,
+        'index'
+    ])->name('asignaturas.index');
+
+    // Mostrar el formulario para registrar una asignatura.
+    Route::get('/asignaturas/crear', [
+        AsignaturaController::class,
+        'create'
+    ])->name('asignaturas.create');
+
+    // Guardar una asignatura nueva.
+    Route::post('/asignaturas', [
+        AsignaturaController::class,
+        'store'
+    ])->name('asignaturas.store');
+
+    // Consultar los datos de una asignatura específica.
+    Route::get('/asignaturas/{idAsignatura}', [
+        AsignaturaController::class,
+        'show'
+    ])->whereNumber('idAsignatura')
+    ->name('asignaturas.show');
+
+    // Mostrar el formulario para modificar una asignatura.
+    Route::get('/asignaturas/{idAsignatura}/editar', [
+        AsignaturaController::class,
+        'edit'
+    ])->whereNumber('idAsignatura')
+    ->name('asignaturas.edit');
+
+    // Actualizar la información de una asignatura.
+    Route::put('/asignaturas/{idAsignatura}', [
+        AsignaturaController::class,
+        'update'
+    ])->whereNumber('idAsignatura')
+    ->name('asignaturas.update');
+
+    // Dar de baja una asignatura.
+    Route::delete('/asignaturas/{idAsignatura}', [
+        AsignaturaController::class,
+        'destroy'
+    ])->whereNumber('idAsignatura')
+    ->name('asignaturas.destroy');
+
+    // Reactivar una asignatura inactiva.
+    Route::patch('/asignaturas/{idAsignatura}/activar', [
+        AsignaturaController::class,
+        'activar'
+    ])->whereNumber('idAsignatura')
+    ->name('asignaturas.activar');
+
 });
 
 

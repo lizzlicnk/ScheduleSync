@@ -1,0 +1,236 @@
+/* CONTENEDOR PRINCIPAL */
+.pagina-editar-asignatura {
+    width: min(100% - 32px, 900px);
+    margin: 35px auto;
+    color: #30263B;
+}
+
+.pagina-editar-asignatura * {
+    box-sizing: border-box;
+}
+
+/* PANEL PRINCIPAL DE EDICIÓN */
+.panel-editar-asignatura {
+    position: relative;
+    overflow: hidden;
+    padding: 32px;
+    background: #fff;
+    border: 1px solid #e8e1ef;
+    border-radius: 16px;
+    box-shadow: 0 8px 28px rgba(69, 46, 98, 0.08);
+}
+
+/* FRANJA DECORATIVA SUPERIOR */
+.panel-editar-asignatura::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(
+        90deg,
+        #452E62,
+        #6B4C91,
+        #B9A2D3
+    );
+}
+
+/* ENCABEZADO */
+.encabezado-editar-asignatura {
+    margin-bottom: 28px;
+}
+
+.encabezado-editar-asignatura h1 {
+    margin: 0 0 8px;
+    color: #452E62;
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+}
+
+.encabezado-editar-asignatura p {
+    margin: 0;
+    color: #716879;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* DISTRIBUCIÓN DE LOS CAMPOS */
+.campos-edicion-asignatura {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 20px;
+}
+
+.campo-edicion-asignatura {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.campo-edicion-asignatura-completo {
+    grid-column: 1 / -1;
+}
+
+/* ETIQUETAS */
+.campo-edicion-asignatura label {
+    color: #352642;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.campo-edicion-asignatura label i {
+    margin-right: 5px;
+    color: #5A3E7D;
+}
+
+/* CAMPOS DE TEXTO, NÚMERO Y SELECTOR */
+.campo-edicion-asignatura input,
+.campo-edicion-asignatura select {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 14px;
+    color: #33283d;
+    background: #fff;
+    border: 1px solid #d9d0e3;
+    border-radius: 9px;
+    font: inherit;
+    font-size: 1rem;
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+}
+
+.campo-edicion-asignatura input::placeholder {
+    color: #a29aa9;
+}
+
+/* ESTADO DE ENFOQUE */
+.campo-edicion-asignatura input:focus,
+.campo-edicion-asignatura select:focus {
+    outline: none;
+    border-color: #6B4C91;
+    box-shadow: 0 0 0 3px rgba(107, 76, 145, 0.13);
+}
+
+/* TEXTO DE AYUDA */
+.campo-edicion-asignatura small {
+    color: #716879;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+/* BOTONES DE ACCIÓN */
+.acciones-edicion-asignatura {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 30px;
+    padding-top: 22px;
+    border-top: 1px solid #eee8f3;
+}
+
+/* ESTILOS COMPARTIDOS DE LOS BOTONES */
+.boton-guardar-cambios-asignatura,
+.boton-cancelar-edicion-asignatura {
+    display: inline-flex;
+    min-height: 46px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 22px;
+    border-radius: 9px;
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+        background 0.2s,
+        transform 0.2s;
+}
+
+/* BOTÓN GUARDAR */
+.boton-guardar-cambios-asignatura {
+    color: #fff;
+    background: #5A3E7D;
+    border: 1px solid #5A3E7D;
+}
+
+.boton-guardar-cambios-asignatura:hover {
+    color: #fff;
+    background: #452E62;
+    border-color: #452E62;
+}
+
+/* BOTÓN CANCELAR */
+.boton-cancelar-edicion-asignatura {
+    color: #51445f;
+    background: #f7f5f9;
+    border: 1px solid #d9d0e3;
+}
+
+.boton-cancelar-edicion-asignatura:hover {
+    color: #51445f;
+    background: #ece6f2;
+}
+
+/* EFECTO DE LOS BOTONES */
+.boton-guardar-cambios-asignatura:hover,
+.boton-cancelar-edicion-asignatura:hover {
+    transform: translateY(-1px);
+}
+
+/* MENSAJES DE VALIDACIÓN */
+.alerta-edicion-asignatura {
+    margin-bottom: 22px;
+    padding: 14px 16px;
+    border-radius: 9px;
+    font-size: 0.95rem;
+    overflow-wrap: anywhere;
+}
+
+.alerta-edicion-asignatura ul {
+    margin: 8px 0 0;
+    padding-left: 22px;
+}
+
+.alerta-error-asignatura {
+    color: #842029;
+    background: #f8d7da;
+    border: 1px solid #f1aeb5;
+}
+
+/* ADAPTACIÓN PARA PANTALLAS PEQUEÑAS */
+@media (max-width: 600px) {
+
+    .pagina-editar-asignatura {
+        width: min(100% - 20px, 900px);
+        margin: 20px auto;
+    }
+
+    .panel-editar-asignatura {
+        padding: 25px 18px;
+    }
+
+    .campos-edicion-asignatura {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .campo-edicion-asignatura-completo {
+        grid-column: auto;
+    }
+
+    .acciones-edicion-asignatura {
+        flex-direction: column;
+    }
+
+    .boton-guardar-cambios-asignatura,
+    .boton-cancelar-edicion-asignatura {
+        width: 100%;
+    }
+}

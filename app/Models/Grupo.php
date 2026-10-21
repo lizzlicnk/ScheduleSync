@@ -15,7 +15,7 @@ class Grupo extends Model
 
     public $timestamps = false;
 
-    // Campos 
+    // Atributos 
     protected $fillable = [
         'nombreGrupo',
         'cuatrimestre',

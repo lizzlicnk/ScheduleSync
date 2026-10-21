@@ -25,7 +25,7 @@ class Usuario extends Authenticatable
     // Indicar que la tabla no utiliza created_at ni updated_at.
     public $timestamps = false;
 
-    // Campos que Laravel permite registrar o modificar.
+    // Atributos 
     protected $fillable = [
         'nombreUsuario',
         'apellidoPaterno',

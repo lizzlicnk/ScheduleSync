@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\AsignaturaPreferida;
 
 class Periodo extends Model
 {
@@ -14,7 +16,7 @@ class Periodo extends Model
 
     public $timestamps = false;
 
-    // Campos
+    // Atributos 
     protected $fillable = [
         'estacion',
         'anio',
@@ -42,6 +44,20 @@ class Periodo extends Model
     {
         return $this->hasMany(
             Grupo::class,
+            'id_periodo',
+            'id_periodo'
+        );
+    }
+
+    /**
+     * Descripción: Obtiene las asignaturas preferidas registradas para el periodo.
+     * Entradas: No recibe parámetros.
+     * Salidas: Retorna las preferencias asociadas al periodo académico.
+     */
+    public function asignaturasPreferidas(): HasMany
+    {
+        return $this->hasMany(
+            AsignaturaPreferida::class,
             'id_periodo',
             'id_periodo'
         );

@@ -1,0 +1,1449 @@
+/* CONFIGURACIÓN GENERAL */
+
+.pagina-asignaturas {
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+    color: #30263B;
+}
+
+.pagina-asignaturas * {
+    box-sizing: border-box;
+}
+
+.pagina-asignaturas [hidden] {
+    display: none !important;
+}
+
+.pagina-asignaturas button,
+.pagina-asignaturas a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ENCABEZADO DEL MÓDULO */
+
+.pagina-asignaturas .encabezado-modulo {
+    margin-bottom: 27px;
+}
+
+.pagina-asignaturas .ruta-modulo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 9px;
+    color: #7047A3;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.pagina-asignaturas .ruta-modulo::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #8A63B5;
+}
+
+.pagina-asignaturas .encabezado-modulo h1 {
+    margin: 0;
+    color: #30213F;
+    font-size: clamp(27px, 3vw, 34px);
+    font-weight: 750;
+    letter-spacing: -0.8px;
+    line-height: 1.25;
+}
+
+.pagina-asignaturas .descripcion-modulo {
+    margin: 10px 0 0;
+    color: #797181;
+    font-size: 15px;
+    line-height: 1.65;
+}
+
+/* BOTONES PRINCIPALES */
+
+.pagina-asignaturas .boton-principal,
+.pagina-asignaturas .boton-secundario {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 45px;
+    padding: 10px 18px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s,
+        color 0.2s, box-shadow 0.2s;
+}
+
+.pagina-asignaturas .boton-principal {
+    color: #FFFFFF;
+    background: #5A3E7D;
+    border-color: #5A3E7D;
+}
+
+.pagina-asignaturas .boton-principal:hover {
+    background: #472D68;
+    border-color: #472D68;
+    box-shadow: 0 4px 10px rgba(90, 62, 125, 0.16);
+}
+
+.pagina-asignaturas .boton-secundario {
+    color: #5A3E7D;
+    background: #FFFFFF;
+    border-color: #DDD2E9;
+}
+
+.pagina-asignaturas .boton-secundario:hover {
+    background: #F8F5FC;
+    border-color: #BFAAD7;
+}
+
+.pagina-asignaturas .boton-activo {
+    border-color: #BDA6D9 !important;
+    background: #F1EAF9 !important;
+    color: #5A347F !important;
+}
+
+/* BOTÓN ACTIVO CUANDO LOS FILTROS ESTÁN ABIERTOS */
+.pagina-asignaturas #boton-filtros.boton-activo {
+    border-color: #BDA6D9;
+    background: #F1EAF9;
+    color: #5A347F;
+    box-shadow: 0 0 0 3px rgba(90, 62, 125, 0.12);
+}
+
+/* MANTENER EL ESTILO MORADO AL PASAR EL CURSOR */
+.pagina-asignaturas #boton-filtros.boton-activo:hover {
+    border-color: #A98ACB;
+    background: #E9DDF6;
+    color: #5A347F;
+}
+
+.pagina-asignaturas button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.pagina-asignaturas .boton-principal:focus-visible,
+.pagina-asignaturas .boton-secundario:focus-visible,
+.pagina-asignaturas .boton-accion:focus-visible,
+.pagina-asignaturas .boton-pagina:focus-visible {
+    outline: 3px solid rgba(90, 62, 125, 0.2);
+    outline-offset: 2px;
+}
+
+/* PANELES PRINCIPALES */
+
+.panel-asignaturas {
+    min-width: 0;
+    margin-bottom: 25px;
+    padding: 26px;
+    overflow: hidden;
+    border: 1px solid #EAE3F1;
+    border-radius: 14px;
+    background: #FFFFFF;
+    box-shadow: 0 4px 17px rgba(45, 30, 60, 0.04);
+}
+
+.pagina-asignaturas .encabezado-panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 22px;
+    padding: 0;
+}
+
+.pagina-asignaturas .encabezado-panel h2 {
+    margin: 0;
+    color: #352641;
+    font-size: 20px;
+    font-weight: 750;
+    letter-spacing: -0.3px;
+    line-height: 1.4;
+}
+
+.pagina-asignaturas .encabezado-panel p {
+    margin: 6px 0 0;
+}
+
+.pagina-asignaturas .texto-secundario {
+    color: #797181;
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+/* ENCABEZADO DE LA TABLA */
+.pagina-asignaturas .encabezado-tabla {
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) auto auto;
+    grid-template-areas: "titulo botones busqueda";
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+/* Título de la tabla */
+.pagina-asignaturas .titulo-tabla {
+    grid-area: titulo;
+    min-width: 0;
+}
+
+/* Botones de filtros y nueva asignatura */
+.pagina-asignaturas .botones-encabezado {
+    grid-area: botones;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    gap: 10px;
+    margin-left: 0;
+}
+
+/* Buscador a la derecha de los botones */
+.pagina-asignaturas .busqueda-tabla {
+    grid-area: busqueda;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    width: 100%;
+    max-width: 420px;
+    min-width: 0;
+    margin: 0;
+    text-align: left;
+}
+
+/* El campo de búsqueda ocupa todo el ancho disponible */
+.pagina-asignaturas .busqueda-tabla .entrada-busqueda {
+    width: 100%;
+    min-width: 0;
+}
+
+/* BUSCADOR DE ASIGNATURAS */
+
+.pagina-asignaturas .busqueda-tabla {
+    grid-area: busqueda;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    width: 100%;
+    max-width: 420px;
+    min-width: 0;
+    margin: 0;
+    text-align: left;
+}
+
+.pagina-asignaturas .busqueda-tabla label,
+.pagina-asignaturas .buscador-consulta > label {
+    color: #45364F;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.pagina-asignaturas .entrada-busqueda {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-width: 0;
+    min-height: 46px;
+    padding: 0 13px;
+    border: 1px solid #DED5E8;
+    border-radius: 9px;
+    background: #FFFFFF;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.pagina-asignaturas .busqueda-tabla .entrada-busqueda {
+    min-height: 42px;
+}
+
+.pagina-asignaturas .entrada-busqueda:focus-within {
+    border-color: #8A63B5;
+    box-shadow: 0 0 0 3px rgba(112, 71, 163, 0.11);
+}
+
+.pagina-asignaturas .entrada-busqueda > span {
+    flex-shrink: 0;
+    color: #8967AD;
+    font-size: 23px;
+    line-height: 1;
+}
+
+.pagina-asignaturas .entrada-busqueda > i {
+    flex-shrink: 0;
+    color: #8967AD;
+    font-size: 15px;
+}
+
+.pagina-asignaturas .entrada-busqueda input {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+    padding: 8px 0;
+    border: 0 !important;
+    outline: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #30263B;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.pagina-asignaturas .entrada-busqueda input::placeholder {
+    color: #A49AAE;
+}
+
+/* FILTROS */
+/* FILTROS DE ASIGNATURAS */
+
+/* Contenedor general de los filtros */
+/* Contenedor blanco del panel de filtros */
+.pagina-asignaturas .panel-filtros {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 18px;
+    margin-bottom: 22px;
+    padding: 24px;
+    border: 1px solid #E8E0EF;
+    border-radius: 14px;
+    background: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(50, 30, 70, 0.05);
+}
+
+/* Ocultar el panel cuando los filtros estén cerrados */
+.pagina-asignaturas .panel-filtros[hidden] {
+    display: none !important;
+}
+
+/* Botón Limpiar filtros en la parte superior */
+.pagina-asignaturas .acciones-filtros {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    margin: 0;
+}
+
+/* Estilo del botón Limpiar filtros */
+.pagina-asignaturas #limpiar-filtros {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 10px 18px;
+    border: 1px solid #DDD2E9;
+    border-radius: 9px;
+    background: #FFFFFF;
+    color: #5A3E7D;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+/* Efecto al pasar el cursor sobre Limpiar filtros */
+.pagina-asignaturas #limpiar-filtros:hover {
+    border-color: #BFAAD7;
+    background: #F8F5FC;
+}
+
+/* Distribuir las tres categorías en una fila */
+.pagina-asignaturas .campos-filtros {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: end;
+    gap: 20px;
+    width: 100%;
+}
+
+/* Organizar cada campo */
+.pagina-asignaturas .campos-filtros .campo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+/* Etiquetas de los filtros */
+.pagina-asignaturas .campos-filtros .campo label {
+    color: #45364F;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* Listas desplegables */
+.pagina-asignaturas .campos-filtros .campo select {
+    width: 100%;
+    min-width: 0;
+    min-height: 46px;
+    padding: 11px 13px;
+    border: 1px solid #DED5E8;
+    border-radius: 9px;
+    outline: none;
+    background: #FFFFFF;
+    color: #30263B;
+    font-family: inherit;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Resaltar la categoría seleccionada */
+.pagina-asignaturas .campos-filtros .campo select:focus {
+    border-color: #8A63B5;
+    box-shadow: 0 0 0 3px rgba(112, 71, 163, 0.12);
+}
+
+/* Adaptar los filtros a tabletas */
+@media (max-width: 1000px) {
+    .pagina-asignaturas .campos-filtros {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+}
+
+/* Adaptar los filtros a celulares */
+@media (max-width: 700px) {
+    .pagina-asignaturas .panel-filtros {
+        gap: 14px;
+    }
+
+    .pagina-asignaturas .campos-filtros {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .pagina-asignaturas #limpiar-filtros {
+        width: 100%;
+    }
+}
+
+/* TABLA DE ASIGNATURAS */
+
+.pagina-asignaturas .tabla-contenedor {
+    width: 100%;
+    margin-top: 22px;
+    overflow-x: auto;
+    border: 1px solid #EAE3F1;
+    border-radius: 11px;
+}
+
+.tabla-asignaturas {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #FFFFFF;
+    text-align: left;
+}
+
+.tabla-asignaturas thead th {
+    padding: 16px 17px;
+    border-bottom: 1px solid #EAE3F1;
+    background: #F8F5FC;
+    color: #6B5A7B;
+    font-size: 12px;
+    font-weight: 750;
+    letter-spacing: 0.35px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.tabla-asignaturas tbody td {
+    padding: 17px;
+    border-bottom: 1px solid #F0ECF4;
+    color: #494052;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.tabla-asignaturas tbody tr {
+    transition: background-color 0.18s;
+}
+
+.tabla-asignaturas tbody tr:hover {
+    background: #FCFAFE;
+}
+
+.tabla-asignaturas tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.tabla-asignaturas td:first-child,
+.clave-asignatura {
+    color: #82768F;
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.asignatura-tabla {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 190px;
+}
+
+.asignatura-tabla strong {
+    color: #352941;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.clave-asignatura {
+    display: inline-block;
+    color: #62447F;
+}
+
+.pagina-asignaturas .texto-tabla-secundario {
+    display: block;
+    margin-top: 4px;
+    color: #847890;
+    font-size: 12px;
+}
+
+/* ESTADOS DE LAS ASIGNATURAS */
+
+
+.pagina-asignaturas .estado-usuario {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 11px;
+    border: 1px solid transparent;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.pagina-asignaturas .estado-usuario:not(:has(.punto-estado))::before {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    content: "";
+}
+
+.pagina-asignaturas .punto-estado {
+    width: 7px;
+    height: 7px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+
+.pagina-asignaturas .estado-activo {
+    border-color: #D5EFDF;
+    background: #ECF8F0;
+    color: #218452;
+}
+
+.pagina-asignaturas .estado-inactivo {
+    border-color: #F5D9D9;
+    background: #FFF0F0;
+    color: #B94048;
+}
+
+/* ACCIONES DE LA TABLA */
+
+.pagina-asignaturas .acciones-tabla {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 7px;
+}
+
+.pagina-asignaturas .boton-accion,
+.pagina-asignaturas .boton-consultar,
+.pagina-asignaturas .boton-modificar,
+.pagina-asignaturas .boton-agregar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 35px;
+    padding: 8px 11px;
+    border: 1px solid #E1D5ED;
+    border-radius: 8px;
+    background: #FFFFFF;
+    color: #654984;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s,
+        transform 0.2s;
+}
+
+.pagina-asignaturas .boton-accion:hover,
+.pagina-asignaturas .boton-consultar:hover,
+.pagina-asignaturas .boton-modificar:hover,
+.pagina-asignaturas .boton-agregar:hover {
+    transform: translateY(-1px);
+    border-color: #C8B3DF;
+    background: #F4EFF9;
+    color: #654984;
+}
+
+/* TABLA VACÍA */
+
+.pagina-asignaturas .tabla-vacia {
+    padding: 38px 18px !important;
+    color: #766A82 !important;
+    font-size: 14px !important;
+    text-align: center;
+}
+
+.pagina-asignaturas .tabla-vacia > i {
+    display: block;
+    margin-bottom: 12px;
+    color: #A48BBC;
+    font-size: 27px;
+}
+
+.pagina-asignaturas .tabla-vacia strong {
+    display: block;
+    margin-bottom: 6px;
+    color: #51405F;
+    font-size: 14px;
+}
+
+.pagina-asignaturas .tabla-vacia span {
+    display: block;
+    max-width: 420px;
+    margin: 0 auto;
+    color: #8A8094;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* PAGINACIÓN */
+
+.paginacion-asignaturas {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 20px;
+    color: #756982;
+    font-size: 13px;
+}
+
+.pagina-asignaturas .controles-paginacion {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pagina-asignaturas .boton-pagina {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 37px;
+    height: 37px;
+    border: 1px solid #E1D5ED;
+    border-radius: 9px;
+    background: #FFFFFF;
+    color: #634581;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.pagina-asignaturas .boton-pagina:hover:not(:disabled) {
+    border-color: #C8B3DF;
+    background: #F3ECFA;
+}
+
+.pagina-asignaturas .boton-pagina:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* FORMULARIO DE ASIGNATURAS */
+
+#formulario-asignatura {
+    position: relative;
+    padding: 0;
+    overflow: hidden;
+    scroll-margin-top: 24px;
+}
+
+.pagina-asignaturas .franja-institucional {
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(
+        90deg,
+        #4C1D95 0%,
+        #7E22CE 42%,
+        #A78BFA 72%,
+        #E9D5FF 100%
+    );
+}
+
+.pagina-asignaturas .contenido-formulario {
+    padding: 27px;
+}
+
+.pagina-asignaturas .encabezado-formulario {
+    justify-content: flex-start;
+    margin-bottom: 27px;
+}
+
+.pagina-asignaturas .encabezado-formulario > div:nth-child(2) {
+    flex: 1;
+    min-width: 0;
+}
+
+.pagina-asignaturas .icono-formulario,
+.pagina-asignaturas .icono-detalle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 49px;
+    height: 49px;
+    flex-shrink: 0;
+    border: 1px solid #E9D5FF;
+    border-radius: 13px;
+    background: #F4EBFF;
+    color: #6B21A8;
+    font-size: 27px;
+    font-weight: 500;
+}
+
+.pagina-asignaturas .icono-formulario > i,
+.pagina-asignaturas .icono-detalle > i {
+    font-size: 20px;
+}
+
+#formulario-asignatura .encabezado-panel h2 {
+    font-size: 23px;
+}
+
+#formulario-asignatura .encabezado-panel p {
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+.pagina-asignaturas .boton-cerrar-panel {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 1px solid #E1D5ED;
+    border-radius: 9px;
+    background: #FFFFFF;
+    color: #7A6A8C;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.pagina-asignaturas .boton-cerrar-panel:hover {
+    background: #F8F5FC;
+    color: #5A3E7D;
+}
+
+.pagina-asignaturas .boton-cerrar-panel:focus-visible {
+    outline: 3px solid rgba(90, 62, 125, 0.2);
+    outline-offset: 2px;
+}
+
+.pagina-asignaturas .formulario-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 23px 25px;
+}
+
+.pagina-asignaturas .campo-completo {
+    grid-column: 1 / -1;
+}
+
+.pagina-asignaturas .acciones-formulario {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 11px;
+    margin-top: 29px;
+    padding-top: 22px;
+    border-top: 1px solid #F0EAF5;
+}
+
+.pagina-asignaturas .acciones-formulario .boton-principal,
+.pagina-asignaturas .acciones-formulario .boton-secundario {
+    min-height: 44px;
+    padding-right: 21px;
+    padding-left: 21px;
+    font-size: 14px;
+}
+
+/* CONSULTA DE ASIGNATURAS */
+
+#panel-consulta {
+    scroll-margin-top: 24px;
+}
+
+.pagina-asignaturas .consulta-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: start;
+    gap: 23px;
+    padding: 0;
+}
+
+.pagina-asignaturas .buscador-consulta {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    min-width: 0;
+}
+
+.pagina-asignaturas .resultados-consulta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 0;
+}
+
+.pagina-asignaturas .resultados-consulta h3 {
+    margin: 6px 0 4px;
+    color: #51405F;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.pagina-asignaturas .resultados-consulta > p,
+.pagina-asignaturas .mensaje-sin-resultados {
+    margin: 7px 0;
+    padding: 0;
+}
+
+.pagina-asignaturas #resultados-consulta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 340px;
+    overflow-y: auto;
+}
+
+.pagina-asignaturas #resultados-consulta [hidden] {
+    display: none !important;
+}
+
+.pagina-asignaturas .resultado-consulta-item {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 5px;
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid #ECE4F3;
+    border-radius: 9px;
+    background: #FFFFFF;
+    color: inherit;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.pagina-asignaturas .resultado-consulta-item:hover,
+.pagina-asignaturas .resultado-consulta-item.seleccionado {
+    border-color: #C9B2E0;
+    background: #FAF6FE;
+}
+
+.pagina-asignaturas .resultado-consulta-item > i {
+    display: none;
+}
+
+.pagina-asignaturas .texto-resultado {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+
+.pagina-asignaturas .resultado-consulta-item strong,
+.pagina-asignaturas .texto-resultado strong {
+    color: #3C2B4B;
+    font-size: 14px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.pagina-asignaturas .resultado-consulta-item span,
+.pagina-asignaturas .texto-resultado small {
+    color: #847890;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
+/* TARJETA DE DETALLE */
+
+.pagina-asignaturas .tarjeta-detalle {
+    min-width: 0;
+    min-height: 235px;
+    padding: 22px;
+    border: 1px solid #E6D9F2;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #FCFAFE, #F7F1FC);
+}
+
+.pagina-asignaturas .detalle-vacio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 185px;
+    padding: 0;
+    text-align: center;
+}
+
+.pagina-asignaturas .detalle-vacio .icono-detalle {
+    margin-bottom: 13px;
+}
+
+.pagina-asignaturas .detalle-vacio h3 {
+    margin: 0;
+    color: #49345F;
+    font-size: 17px;
+}
+
+.pagina-asignaturas .detalle-vacio p {
+    max-width: 320px;
+    margin: 7px 0 0;
+    color: #797181;
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+.pagina-asignaturas .encabezado-detalle {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #E8DDF1;
+}
+
+.pagina-asignaturas .encabezado-detalle h3 {
+    margin: 0;
+    color: #39264F;
+    font-size: 18px;
+    font-weight: 750;
+    overflow-wrap: anywhere;
+}
+
+.pagina-asignaturas .encabezado-detalle .icono-detalle {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+}
+
+.pagina-asignaturas .encabezado-detalle p {
+    margin: 5px 0 0;
+    color: #7C6D89;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.pagina-asignaturas .lista-detalle {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 7px;
+    padding-top: 0;
+}
+
+.pagina-asignaturas .fila-detalle {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 13px 0;
+    border-bottom: 1px solid #EDE5F3;
+}
+
+.pagina-asignaturas .fila-detalle:last-child {
+    border-bottom: 0;
+}
+
+.pagina-asignaturas .fila-detalle > span {
+    flex-shrink: 0;
+    color: #796D85;
+    font-size: 13px;
+}
+
+.pagina-asignaturas .fila-detalle > strong {
+    color: #453452;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+.pagina-asignaturas .texto-estado-activo {
+    color: #218452 !important;
+}
+
+.pagina-asignaturas .texto-estado-inactivo {
+    color: #B94048 !important;
+}
+
+/* MODALES GENERALES */
+
+.pagina-asignaturas .modal-asignatura {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(24, 20, 35, 0.60);
+    backdrop-filter: blur(5px);
+}
+
+.pagina-asignaturas .modal-asignatura[hidden] {
+    display: none !important;
+}
+
+.pagina-asignaturas .modal-contenido {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    padding: 35px 30px 30px;
+    border-radius: 16px;
+    background: #FFFFFF;
+    color: #30263B;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(48, 38, 59, 0.20);
+    animation: aparecerModalAsignatura 0.25s ease;
+}
+
+.pagina-asignaturas .modal-contenido h2 {
+    margin: 0 0 15px;
+    color: #30213F;
+    font-size: 23px;
+    font-weight: 700;
+}
+
+.pagina-asignaturas .modal-mensaje,
+.pagina-asignaturas .modal-nota {
+    color: #5B5166;
+    font-size: 14px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.pagina-asignaturas .modal-icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 75px;
+    height: 75px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: #FDE8E8;
+    color: #DC3545;
+    font-size: 32px;
+}
+
+.pagina-asignaturas .modal-destacado {
+    display: block;
+    margin-bottom: 18px;
+    color: #5A3E7D;
+    font-size: 17px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.pagina-asignaturas .modal-nota {
+    margin-bottom: 25px;
+}
+
+.pagina-asignaturas .modal-acciones {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.pagina-asignaturas .modal-acciones button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 42px;
+    padding: 11px 20px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+/* BOTONES DE LOS MODALES */
+
+.pagina-asignaturas .boton-modal-cancelar {
+    border-color: #D1D1D1 !important;
+    background: #FFFFFF !important;
+    color: #444444 !important;
+}
+
+.pagina-asignaturas .boton-modal-cancelar:hover {
+    background: #F2F2F2 !important;
+}
+
+.pagina-asignaturas .boton-modal-confirmar {
+    border-color: #E3B400 !important;
+    background: #FFD43B !important;
+    color: #30263B !important;
+}
+
+.pagina-asignaturas .boton-modal-confirmar:hover {
+    border-color: #D4A900 !important;
+    background: #F5C518 !important;
+    transform: translateY(-1px);
+}
+
+.pagina-asignaturas .boton-modal-error {
+    border-color: #DC3545 !important;
+    background: #DC3545 !important;
+    color: #FFFFFF !important;
+}
+
+.pagina-asignaturas .boton-modal-error:hover {
+    border-color: #B02A37 !important;
+    background: #B02A37 !important;
+}
+
+/* MODAL DE REGISTRO EXITOSO */
+
+#modal-registro-asignatura .modal-icono-exito {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: #E6F7EC;
+    color: #23964B;
+    font-size: 30px;
+}
+
+#modal-registro-asignatura .modal-mensaje {
+    margin: 0 0 22px;
+}
+
+/* MODAL DE ERROR */
+
+#modal-error-asignatura .modal-icono-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: #FDE8E8;
+    color: #DC3545;
+    font-size: 30px;
+}
+
+#modal-error-asignatura .boton-modal-error {
+    min-width: 120px;
+}
+
+/* MODAL DE MODIFICACIÓN EXITOSA */
+
+#modal-modificar-asignatura .modal-icono-exito {
+    background: #FFF3BF;
+    color: #9A6700;
+}
+
+/* ANIMACIONES */
+
+@keyframes aparecerModalAsignatura {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* RESPONSIVE: TABLET Y PANTALLAS MEDIANAS */
+
+@media (max-width: 1000px) {
+    .pagina-asignaturas .panel-filtros {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .pagina-asignaturas .busqueda-tabla {
+        width: 100%;
+        max-width: none;
+    }
+
+    .pagina-asignaturas .contenido-formulario {
+        padding: 22px;
+    }
+
+    .pagina-asignaturas .consulta-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* RESPONSIVE: CELULARES */
+
+@media (max-width: 700px) {
+    .pagina-asignaturas .encabezado-tabla {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "titulo"
+            "botones"
+            "busqueda";
+        gap: 14px;
+    }
+
+    .pagina-asignaturas .botones-encabezado {
+        justify-self: stretch;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        margin-left: 0;
+    }
+
+    .pagina-asignaturas .botones-encabezado button,
+    .pagina-asignaturas .botones-encabezado a {
+        flex: 1 1 auto;
+    }
+
+    .pagina-asignaturas .panel-filtros {
+        grid-template-columns: 1fr;
+        padding: 16px;
+    }
+
+    .panel-asignaturas {
+        padding: 18px;
+        border-radius: 11px;
+    }
+
+    .pagina-asignaturas .encabezado-panel {
+        align-items: flex-start;
+    }
+
+    .pagina-asignaturas .formulario-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pagina-asignaturas .campo-completo {
+        grid-column: auto;
+    }
+
+    .pagina-asignaturas .contenido-formulario {
+        padding: 20px 17px;
+    }
+
+    .pagina-asignaturas .encabezado-formulario {
+        align-items: center;
+    }
+
+    .pagina-asignaturas .icono-formulario {
+        width: 43px;
+        height: 43px;
+    }
+
+    #formulario-asignatura .encabezado-panel h2 {
+        font-size: 21px;
+    }
+
+    .pagina-asignaturas .acciones-formulario {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .pagina-asignaturas .acciones-formulario button {
+        width: 100%;
+    }
+
+    .pagina-asignaturas .tarjeta-detalle {
+        padding: 17px;
+    }
+
+    .pagina-asignaturas .modal-contenido {
+        padding: 30px 20px;
+    }
+
+    .pagina-asignaturas .modal-contenido h2 {
+        font-size: 20px;
+    }
+
+    .pagina-asignaturas .modal-acciones {
+        flex-direction: column;
+    }
+
+    .pagina-asignaturas .modal-acciones button {
+        width: 100%;
+    }
+
+    .paginacion-asignaturas {
+        align-items: flex-start;
+    }
+}
+
+/* RESPONSIVE: CELULARES PEQUEÑOS */
+
+@media (max-width: 380px) {
+    .pagina-asignaturas .botones-encabezado {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .pagina-asignaturas .botones-encabezado button,
+    .pagina-asignaturas .botones-encabezado a {
+        width: 100%;
+    }
+
+    .pagina-asignaturas .fila-detalle {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .pagina-asignaturas .fila-detalle > strong {
+        text-align: left;
+    }
+
+    .pagina-asignaturas .modal-contenido {
+        padding: 28px 17px;
+    }
+}
+/* TABLET */
+@media (max-width: 1000px) {
+    .pagina-asignaturas .encabezado-tabla {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "titulo botones"
+            "busqueda busqueda";
+    }
+
+    .pagina-asignaturas .busqueda-tabla {
+        width: 100%;
+        max-width: none;
+    }
+}
+
+/* CELULAR */
+@media (max-width: 700px) {
+    .pagina-asignaturas .encabezado-tabla {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "titulo"
+            "botones"
+            "busqueda";
+    }
+
+    .pagina-asignaturas .botones-encabezado {
+        margin-left: 0;
+    }
+}
+
+/* TABLET */
+@media (max-width: 1000px) {
+    .pagina-asignaturas .encabezado-tabla {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "titulo botones"
+            "busqueda busqueda";
+    }
+
+    .pagina-asignaturas .botones-encabezado {
+        flex-wrap: wrap;
+    }
+
+    .pagina-asignaturas .busqueda-tabla {
+        max-width: 420px;
+    }
+}
+
+/* CELULAR */
+@media (max-width: 700px) {
+    .pagina-asignaturas .encabezado-tabla {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "titulo"
+            "botones"
+            "busqueda";
+    }
+
+    .pagina-asignaturas .botones-encabezado {
+        justify-content: flex-start;
+    }
+
+    .pagina-asignaturas .busqueda-tabla {
+        max-width: none;
+    }
+}
+
+/* MOSTRAR EL MODAL DE ELIMINACIÓN CUANDO SE ABRA */
+.pagina-asignaturas .modal-asignatura:not([hidden]) {
+    display: flex;
+}
+
+/* Fondo del modal */
+.modal-asignatura {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+/* Necesario para que el atributo hidden funcione con display:flex */
+.modal-asignatura[hidden] {
+    display: none !important;
+}
+
+/* BOTÓN AMARILLO PARA ACEPTAR LA OPERACIÓN EXITOSA */
+#modal-registro-asignatura .boton-modal-confirmar {
+    background-color: #F2C94C;
+    color: #30263B;
+    border: 1px solid #F2C94C;
+}
+
+/* EFECTO AL PASAR EL CURSOR */
+#modal-registro-asignatura .boton-modal-confirmar:hover {
+    background-color: #E5B936;
+    border-color: #E5B936;
+}

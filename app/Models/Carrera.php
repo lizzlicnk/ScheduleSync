@@ -23,7 +23,7 @@ class Carrera extends Model
 
     public $timestamps = false;
 
-    // Campos 
+    // Atributos 
     protected $fillable = [
         'nombreCarrera',
         'claveCarrera',
