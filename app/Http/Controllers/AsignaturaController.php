@@ -270,34 +270,20 @@ class AsignaturaController extends Controller
                 'in:0,1',
             ],
         ], [
-            'claveAsignatura.required' =>
-                'La clave de la asignatura es obligatoria.',
-            'claveAsignatura.unique' =>
-                'Esta clave ya está registrada en la carrera seleccionada, independientemente del cuatrimestre.',
-            'claveAsignatura.max' =>
-                'La clave no puede tener más de 20 caracteres.',
-            'nombreAsignatura.required' =>
-                'El nombre de la asignatura es obligatorio.',
-            'nombreAsignatura.max' =>
-                'El nombre no puede tener más de 100 caracteres.',
-            'cuatrimestre.required' =>
-                'Selecciona el cuatrimestre.',
-            'cuatrimestre.min' =>
-                'El cuatrimestre debe ser como mínimo 1.',
-            'cuatrimestre.max' =>
-                'El cuatrimestre no puede ser mayor que 12.',
-            'horas.required' =>
-                'Ingresa las horas de la asignatura.',
-            'horas.integer' =>
-                'Las horas deben ser un número entero.',
-            'horas.min' =>
-                'Las horas deben ser como mínimo 1.',
-            'horas.max' =>
-                'Las horas no pueden superar 65535.',
-            'id_carrera.required' =>
-                'Selecciona una carrera.',
-            'id_carrera.exists' =>
-                'La carrera seleccionada no existe.',
+            'claveAsignatura.required' => 'La clave de la asignatura es obligatoria.',
+            'claveAsignatura.unique' => 'Esta clave ya está registrada en la carrera seleccionada, independientemente del cuatrimestre.',
+            'claveAsignatura.max' => 'La clave no puede tener más de 20 caracteres.',
+            'nombreAsignatura.required' => 'El nombre de la asignatura es obligatorio.',
+            'nombreAsignatura.max' => 'El nombre no puede tener más de 100 caracteres.',
+            'cuatrimestre.required' => 'Selecciona el cuatrimestre.',
+            'cuatrimestre.min' => 'El cuatrimestre debe ser como mínimo 1.',
+            'cuatrimestre.max' =>'El cuatrimestre no puede ser mayor que 12.',
+            'horas.required' => 'Ingresa las horas de la asignatura.',
+            'horas.integer' => 'Las horas deben ser un número entero.',
+            'horas.min' =>'Las horas deben ser como mínimo 1.',
+            'horas.max' => 'Las horas no pueden superar 65535.',
+            'id_carrera.required' =>'Selecciona una carrera.',
+            'id_carrera.exists' =>'La carrera seleccionada no existe.',
         ]);
 
         // Mostrar el error en el modal personalizado si la validación falla.

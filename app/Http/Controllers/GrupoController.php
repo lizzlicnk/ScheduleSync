@@ -8,6 +8,7 @@ use App\Models\Periodo;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Validator;
 
 class GrupoController extends Controller
 {
@@ -26,6 +27,11 @@ class GrupoController extends Controller
 
         // Consultar los grupos con su carrera y periodo.
         $consultaGrupos = Grupo::with(['carrera', 'periodo']);
+
+        // Filtrar por estado del grupo, si se seleccionó uno.
+        if ($solicitud->filled('estado')) {
+            $consultaGrupos->where('estado', $solicitud->input('estado'));
+        }
 
         // Filtrar por nombre del grupo.
         if ($solicitud->filled('buscar')) {
@@ -179,6 +185,7 @@ class GrupoController extends Controller
             Grupo::create([
                 'nombreGrupo' => $nombreGrupo,
                 'cuatrimestre' => $datosValidados['cuatrimestre'],
+                'estado' => 1,
                 'id_periodo' => $datosValidados['id_periodo'],
                 'id_carrera' => $datosValidados['id_carrera'],
             ]);
@@ -257,14 +264,17 @@ class GrupoController extends Controller
      */
     public function update(Request $solicitud, $idGrupo)
     {
-        // Roles permitidos
+        // Verificar que el usuario pueda editar grupos.
         $this->verificarRol([1, 2]);
 
-        // Buscar el grupo que se desea actualizar.
+        // Buscar el grupo que se actualizará.
         $grupoEncontrado = Grupo::findOrFail($idGrupo);
 
+        // Identificar si el usuario es administrador.
+        $esAdministrador = (int) $solicitud->user()->rol === 1;
+
         // Validar los datos recibidos.
-        $datosValidados = $solicitud->validate([
+        $validador = Validator::make($solicitud->all(), [
             'id_carrera' => [
                 'required',
                 'integer',
@@ -286,6 +296,12 @@ class GrupoController extends Controller
                 'integer',
                 Rule::exists('periodo', 'id_periodo'),
             ],
+            'estado' => [
+                'sometimes',
+                'required',
+                'integer',
+                'in:0,1',
+            ],
         ], [
             'id_carrera.required' => 'Debes seleccionar una carrera.',
             'id_carrera.exists' => 'La carrera seleccionada no existe.',
@@ -297,27 +313,52 @@ class GrupoController extends Controller
             'letraGrupo.regex' => 'La letra del grupo debe ser una sola letra.',
             'id_periodo.required' => 'Debes seleccionar un periodo.',
             'id_periodo.exists' => 'El periodo seleccionado no existe.',
+            'estado.required' => 'Debes seleccionar el estado del grupo.',
+            'estado.in' => 'El estado seleccionado no es válido.',
         ]);
 
-        // Buscar la carrera seleccionada.
-        $carreraEncontrada = Carrera::findOrFail($datosValidados['id_carrera']);
+        // Mostrar el error en el modal personalizado si la validación falla.
+        if ($validador->fails()) {
+            return redirect()->route('grupos.index')
+                ->withInput()
+                ->with('tipo_modal_grupo', 'error')
+                ->with('mensaje_modal_grupo', $validador->errors()->first());
+        }
 
-        // Comprobar que la carrera esté activa.
-        if ((int) $carreraEncontrada->estado !== 1) {
-            return redirect()->back()->withInput()
+        // Obtener los datos que pasaron la validación.
+        $datosValidados = $validador->validated();
+
+        // Impedir que el personal administrativo modifique el estado.
+        if (!$esAdministrador) {
+            unset($datosValidados['estado']);
+        }
+
+        // Buscar la carrera seleccionada.
+        $carreraEncontrada = Carrera::find($datosValidados['id_carrera']);
+
+        // Impedir cambiar a una carrera inactiva, pero permitir conservar la actual.
+        if (
+            (!$carreraEncontrada || (int) $carreraEncontrada->estado !== 1)
+            && (int) $datosValidados['id_carrera'] !== (int) $grupoEncontrado->id_carrera
+        ) {
+            return redirect()->route('grupos.index')
+                ->withInput()
                 ->with('tipo_modal_grupo', 'error')
                 ->with(
                     'mensaje_modal_grupo',
-                    'No se puede modificar el grupo porque la carrera está inactiva.'
+                    'No puedes cambiar el grupo a una carrera inactiva.'
                 );
         }
 
         // Generar el nombre actualizado del grupo.
-        $nombreGrupo = strtoupper(trim($carreraEncontrada->claveCarrera)) . '-' . $datosValidados['cuatrimestre'] . strtoupper($datosValidados['letraGrupo']);
+        $nombreGrupo = strtoupper(trim($carreraEncontrada->claveCarrera))
+            . '-' . $datosValidados['cuatrimestre']
+            . strtoupper($datosValidados['letraGrupo']);
 
         // Comprobar la longitud permitida.
         if (strlen($nombreGrupo) > 10) {
-            return redirect()->back()->withInput()
+            return redirect()->route('grupos.index')
+                ->withInput()
                 ->with('tipo_modal_grupo', 'error')
                 ->with(
                     'mensaje_modal_grupo',
@@ -332,7 +373,8 @@ class GrupoController extends Controller
             ->exists();
 
         if ($grupoDuplicado) {
-            return redirect()->back()->withInput()
+            return redirect()->route('grupos.index')
+                ->withInput()
                 ->with('tipo_modal_grupo', 'error')
                 ->with(
                     'mensaje_modal_grupo',
@@ -340,17 +382,26 @@ class GrupoController extends Controller
                 );
         }
 
+        // Preparar los datos que se actualizarán.
+        $datosActualizar = [
+            'nombreGrupo' => $nombreGrupo,
+            'cuatrimestre' => $datosValidados['cuatrimestre'],
+            'id_periodo' => $datosValidados['id_periodo'],
+            'id_carrera' => $datosValidados['id_carrera'],
+        ];
+
+        // Agregar el estado únicamente si el usuario es administrador.
+        if ($esAdministrador && array_key_exists('estado', $datosValidados)) {
+            $datosActualizar['estado'] = (int) $datosValidados['estado'];
+        }
+
         try {
-            // Actualizar los datos del grupo.
-            $grupoEncontrado->update([
-                'nombreGrupo' => $nombreGrupo,
-                'cuatrimestre' => $datosValidados['cuatrimestre'],
-                'id_periodo' => $datosValidados['id_periodo'],
-                'id_carrera' => $datosValidados['id_carrera'],
-            ]);
+            // Actualizar la información del grupo.
+            $grupoEncontrado->update($datosActualizar);
         } catch (QueryException $error) {
             // Informar si ocurre un problema al actualizar.
-            return redirect()->back()->withInput()
+            return redirect()->route('grupos.index')
+                ->withInput()
                 ->with('tipo_modal_grupo', 'error')
                 ->with(
                     'mensaje_modal_grupo',
@@ -358,7 +409,7 @@ class GrupoController extends Controller
                 );
         }
 
-        // Regresar al listado con el modal de modificación exitosa.
+        // Regresar a la gestión con un mensaje de éxito.
         return redirect()->route('grupos.index')
             ->with('tipo_modal_grupo', 'modificacion')
             ->with(
@@ -368,41 +419,37 @@ class GrupoController extends Controller
     }
 
     /**
-     * Descripción: Elimina un grupo académico.
+     * Descripción: Da de baja lógica un grupo académico.
      *
      * Entradas:
-     * $idGrupo: identificador del grupo que se desea eliminar.
+     * $idGrupo: Identificador del grupo que se desea dar de baja.
      *
-     * Salidas: Redirección al listado con un mensaje de confirmación.
+     * Salidas: Redirección a la gestión de grupos con un modal de confirmación o de error.
      */
     public function destroy($idGrupo)
     {
-        // Roles permitidos
+        // Verificar que el usuario tenga el rol de administrador.
         $this->verificarRol([1]);
 
-        // Buscar el grupo que se desea eliminar.
+        // Buscar el grupo que se desea dar de baja.
         $grupoEncontrado = Grupo::findOrFail($idGrupo);
 
         try {
-            // Eliminar el grupo de la base de datos.
-            $grupoEncontrado->delete();
+            // Cambiar el estado del grupo a inactivo.
+            $grupoEncontrado->estado = 0;
+            $grupoEncontrado->save();
+
         } catch (QueryException $error) {
-            // Evitar eliminar el grupo si existen restricciones relacionadas.
+            // Evitar la baja si existen restricciones relacionadas.
             return redirect()->route('grupos.index')
                 ->with('tipo_modal_grupo', 'error')
-                ->with(
-                    'mensaje_modal_grupo',
-                    'No se puede eliminar el grupo porque está relacionado con otros registros.'
-                );
+                ->with( 'mensaje_modal_grupo', 'No se puede dar de baja el grupo porque está relacionado con otros registros.' );
         }
 
-        // Regresar al listado con el modal de eliminación exitosa.
+        // Regresar al listado con el modal de baja exitosa.
         return redirect()->route('grupos.index')
             ->with('tipo_modal_grupo', 'baja')
-            ->with(
-                'mensaje_modal_grupo',
-                'El grupo ' . $grupoEncontrado->nombreGrupo . ' se eliminó correctamente.'
-            );
+            ->with( 'mensaje_modal_grupo', 'El grupo ' . $grupoEncontrado->nombreGrupo . ' se dio de baja correctamente.' );
     }
 
     /**

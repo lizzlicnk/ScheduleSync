@@ -125,6 +125,7 @@
                         <th scope="col">Carrera</th>
                         <th scope="col">Cuatrimestre</th>
                         <th scope="col">Periodo</th>
+                        <th scope="col">Estado</th>
                         <th scope="col">Acciones</th>
                     </tr>
                 </thead>
@@ -141,6 +142,7 @@
                             data-id-periodo="{{ $grupo->id_periodo }}"
                             data-estacion="{{ mb_strtolower($grupo->periodo->estacion ?? '') }}"
                             data-anio="{{ $grupo->periodo->anio ?? '' }}"
+                            data-estado="{{ $grupo->estado }}"
                         >
                             <td>{{ $grupo->id_grupo }}</td>
 
@@ -167,6 +169,15 @@
                                 </span>
                             </td>
 
+                            <!-- Estado del grupo -->
+                            <td>
+                                @if ((int) $grupo->estado === 1)
+                                    <span class="estado-grupo estado-activo">Activo</span>
+                                @else
+                                    <span class="estado-grupo estado-inactivo">Inactivo</span>
+                                @endif
+                            </td>
+
                             <td>
                                 <div class="acciones-tabla">
                                     <button type="button" class="boton-accion boton-consultar" data-consultar-grupo="{{ $grupo->id_grupo }}"
@@ -176,30 +187,32 @@
 
                                     @if (in_array((int) auth()->user()->rol, [1, 2], true))
                                         <a href="{{ route('grupos.edit', ['idGrupo' => $grupo->id_grupo]) }}" class="boton-accion boton-modificar"
-                                            aria-label="Modificar {{ $grupo->nombreGrupo }}">
+                                            aria-label="Modificar {{ $grupo->nombreGrupo }}" >
                                             Modificar
                                         </a>
                                     @endif
 
-                                    @if ((int) auth()->user()->rol === 1)
-                                        <button type="button" class="boton-accion boton-eliminar" data-baja-grupo="{{ $grupo->id_grupo }}"
-                                            data-nombre-grupo="{{ $grupo->nombreGrupo }}" >
-                                            Eliminar
-                                        </button>
+                                    @if ((int) $grupo->estado === 1)
+                                        @if ((int) auth()->user()->rol === 1)
+                                            <button type="button" class="boton-accion boton-eliminar" data-baja-grupo="{{ $grupo->id_grupo }}"
+                                                data-nombre-grupo="{{ $grupo->nombreGrupo }}" >
+                                                Eliminar
+                                            </button>
+                                        @endif
                                     @endif
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr id="fila-sin-grupos">
-                            <td colspan="6" class="tabla-vacia">
+                            <td colspan="7" class="tabla-vacia">
                                 No hay grupos registrados.
                             </td>
                         </tr>
                     @endforelse
 
                     <tr id="fila-sin-resultados" hidden>
-                        <td colspan="6" class="tabla-vacia">
+                        <td colspan="7" class="tabla-vacia">
                             No hay grupos que coincidan con la búsqueda.
                         </td>
                     </tr>

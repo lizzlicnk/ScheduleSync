@@ -316,6 +316,43 @@
     min-width: 0;
 }
 
+/* Estados de los grupos */
+.pagina-grupos .estado-grupo {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 11px;
+    border: 1px solid transparent;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* Puntito indicador del estado */
+.pagina-grupos .estado-grupo::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+/* Grupo activo */
+.pagina-grupos .estado-activo {
+    border-color: #D5EFDF;
+    background: #ECF8F0;
+    color: #218452;
+}
+
+/* Grupo inactivo */
+.pagina-grupos .estado-inactivo {
+    border-color: #F5D9D9;
+    background: #FFF0F0;
+    color: #B94048;
+}
+
 /*  Campos  */
 
 .pagina-grupos .campo {

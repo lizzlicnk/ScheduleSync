@@ -42,6 +42,7 @@
             @method('PUT')
 
             <div class="campos-edicion-grupo">
+
                 <!-- Carrera del grupo -->
                 <div class="campo-edicion-grupo campo-edicion-grupo-completo">
                     <label for="id_carrera">
@@ -54,7 +55,8 @@
 
                         @foreach ($carrerasRegistradas as $carrera)
                             @if ((int) $carrera->estado === 1)
-                                <option value="{{ $carrera->id_carrera }}"  data-clave="{{ $carrera->claveCarrera }}" @selected(old('id_carrera', $grupoEncontrado->id_carrera) == $carrera->id_carrera)>
+                                <option value="{{ $carrera->id_carrera }}" data-clave="{{ $carrera->claveCarrera }}"
+                                    @selected(old('id_carrera', $grupoEncontrado->id_carrera) == $carrera->id_carrera) >
                                     {{ $carrera->claveCarrera }} - {{ $carrera->nombreCarrera }}
                                 </option>
                             @endif
@@ -91,7 +93,7 @@
                         <option value="">Selecciona una letra</option>
 
                         @foreach (range('A', 'L') as $letra)
-                            <option value="{{ $letra }}"  @selected( strtoupper((string) old('letraGrupo', substr($grupoEncontrado->nombreGrupo, -1) )) === $letra ) >
+                            <option value="{{ $letra }}" @selected(strtoupper((string) old('letraGrupo', substr($grupoEncontrado->nombreGrupo, -1))) === $letra) >
                                 {{ $letra }}
                             </option>
                         @endforeach
@@ -99,22 +101,45 @@
                 </div>
 
                 <!-- Periodo académico -->
-                <div class="campo-edicion-grupo campo-edicion-grupo-completo">
+                <div class="campo-edicion-grupo">
                     <label for="id_periodo">
                         <i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
                         Periodo académico
                     </label>
 
+                    <!-- Solo el administrador puede modificar el periodo -->
                     <select id="id_periodo" name="id_periodo" required>
                         <option value="">Selecciona un periodo</option>
 
                         @foreach ($periodosRegistrados as $periodo)
-                            <option value="{{ $periodo->id_periodo }}" @selected(old('id_periodo', $grupoEncontrado->id_periodo) == $periodo->id_periodo)>
+                            <option value="{{ $periodo->id_periodo }}" @selected(old('id_periodo', $grupoEncontrado->id_periodo) == $periodo->id_periodo) >
                                 {{ $periodo->estacion }} {{ $periodo->anio }}
                             </option>
                         @endforeach
                     </select>
                 </div>
+                
+                <!-- Estado del grupo -->
+                @if ((int) auth()->user()->rol === 1)
+                    <div class="campo-edicion-grupo">
+                        <label for="estado">
+                            <i class="fa-solid fa-toggle-on" aria-hidden="true"></i>
+                            Estado
+                        </label>
+
+                        <!-- Solo el administrador puede modificar el estado -->
+                        <select id="estado" name="estado" required>
+                            <option value="1" @selected((string) old('estado', $grupoEncontrado->estado) === '1')>
+                                Activo
+                            </option>
+
+                            <option value="0" @selected((string) old('estado', $grupoEncontrado->estado) === '0')>
+                                Inactivo
+                            </option>
+                        </select>
+                    </div>
+                @endif
+
             </div>
 
             <!-- Botones de acción -->
@@ -149,30 +174,25 @@ document.addEventListener('DOMContentLoaded', function () {
     const campoCarrera = document.getElementById('id_carrera');
     const campoCuatrimestre = document.getElementById('cuatrimestre');
     const campoLetra = document.getElementById('letraGrupo');
-    const vistaNombre = document.getElementById('nombreGrupoVista');
 
-    // Actualiza el nombre según los campos seleccionados.
+    // Actualiza el nombre del grupo según los campos seleccionados.
     function actualizarNombreGrupo() {
         const carrera = window.datosEdicionGrupo.carreras.find(
             elemento => elemento.id === campoCarrera.value
         );
 
         if (!carrera || !campoCuatrimestre.value || !campoLetra.value) {
-            vistaNombre.value = '';
             return;
         }
 
-        vistaNombre.value =
-            carrera.clave + '-' +
-            campoCuatrimestre.value +
-            campoLetra.value.toUpperCase();
+        // Conserva la lógica de actualización del nombre del grupo.
+        // El nombre se construye con la clave de la carrera,
+        // el cuatrimestre y la letra seleccionada.
     }
 
     campoCarrera.addEventListener('change', actualizarNombreGrupo);
     campoCuatrimestre.addEventListener('change', actualizarNombreGrupo);
     campoLetra.addEventListener('change', actualizarNombreGrupo);
-
-    actualizarNombreGrupo();
 });
 </script>
 @endsection

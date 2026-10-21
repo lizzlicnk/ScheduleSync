@@ -19,6 +19,7 @@ class Grupo extends Model
     protected $fillable = [
         'nombreGrupo',
         'cuatrimestre',
+        'estado',
         'id_periodo',
         'id_carrera',
     ];
@@ -33,6 +34,7 @@ class Grupo extends Model
         return [
             'id_grupo' => 'integer',
             'cuatrimestre' => 'integer',
+            'estado' => 'integer',
             'id_periodo' => 'integer',
             'id_carrera' => 'integer',
         ];
