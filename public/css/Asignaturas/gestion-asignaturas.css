@@ -548,7 +548,6 @@
     background: currentColor;
 }
 
-
 .pagina-asignaturas .estado-activo {
     border-color: #D5EFDF;
     background: #ECF8F0;
@@ -1446,4 +1445,66 @@
 #modal-registro-asignatura .boton-modal-confirmar:hover {
     background-color: #E5B936;
     border-color: #E5B936;
+}
+
+/* MODAL DE ERROR: MISMO DISEÑO QUE EL MODAL DE ELIMINACIÓN */
+#modal-error-asignatura .modal-contenido {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    padding: 35px 30px 30px;
+    border-radius: 16px;
+    background: #FFFFFF;
+    color: #30263B;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(48, 38, 59, 0.20);
+    animation: aparecerModalAsignatura 0.25s ease;
+}
+
+#modal-error-asignatura .modal-contenido h2 {
+    margin: 0 0 15px;
+    color: #30213F;
+    font-size: 23px;
+    font-weight: 700;
+}
+
+#modal-error-asignatura .modal-mensaje {
+    margin: 0 0 22px;
+    color: #5B5166;
+    font-size: 14px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+#modal-error-asignatura .modal-acciones {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+#modal-error-asignatura .boton-modal-error {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-width: 120px;
+    min-height: 42px;
+    padding: 11px 20px;
+    border: 1px solid #DC3545 !important;
+    border-radius: 8px;
+    background: #DC3545 !important;
+    color: #FFFFFF !important;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+#modal-error-asignatura .boton-modal-error:hover {
+    border-color: #B02A37 !important;
+    background: #B02A37 !important;
+    transform: translateY(-1px);
 }

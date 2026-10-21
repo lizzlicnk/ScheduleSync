@@ -571,9 +571,6 @@
 @if ( session('tipo_modal_asignatura') === 'error' && session('mensaje_modal_asignatura') )
     <div class="modal-asignatura" id="modal-error-asignatura" >
         <div class="modal-contenido" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-error-asignatura" >
-            <button type="button" class="boton-cerrar-panel" id="cerrar-modal-error-asignatura" aria-label="Cerrar modal" >
-                &times;
-            </button>
 
             <div class="modal-icono modal-icono-error">
                 <i class="fa-solid fa-circle-exclamation" aria-hidden="true" ></i>
@@ -588,6 +585,7 @@
                     <i class="fa-solid fa-check" aria-hidden="true" ></i>
                     Aceptar
                 </button>
+                
             </div>
         </div>
     </div>

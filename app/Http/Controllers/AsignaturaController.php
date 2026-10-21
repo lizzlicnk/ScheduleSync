@@ -6,6 +6,7 @@ use App\Models\Asignatura;
 use App\Models\Carrera;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 
 class AsignaturaController extends Controller
 {
@@ -71,12 +72,20 @@ class AsignaturaController extends Controller
         $this->verificarRol([1, 2]);
 
         // Validar los datos del formulario.
-        $datosValidados = $solicitud->validate([
+
+        // Validar los datos del formulario.
+        $validador = Validator::make($solicitud->all(), [
             'claveAsignatura' => [
                 'required',
                 'string',
                 'max:20',
-                'unique:asignatura,clave',
+                Rule::unique('asignatura', 'clave')
+                    ->where(function ($consulta) use ($solicitud) {
+                        return $consulta->where(
+                            'id_carrera',
+                            $solicitud->input('id_carrera')
+                        );
+                    }),
             ],
             'nombreAsignatura' => [
                 'required',
@@ -101,7 +110,7 @@ class AsignaturaController extends Controller
             ],
         ], [
             'claveAsignatura.required' => 'La clave de la asignatura es obligatoria.',
-            'claveAsignatura.unique' => 'La clave ingresada ya se encuentra registrada.',
+            'claveAsignatura.unique' => 'Esta clave ya está registrada en la carrera seleccionada, independientemente del cuatrimestre.',
             'claveAsignatura.max' => 'La clave no puede tener más de 20 caracteres.',
             'nombreAsignatura.required' => 'El nombre de la asignatura es obligatorio.',
             'nombreAsignatura.max' => 'El nombre no puede tener más de 100 caracteres.',
@@ -115,6 +124,22 @@ class AsignaturaController extends Controller
             'id_carrera.required' => 'Selecciona una carrera.',
             'id_carrera.exists' => 'La carrera seleccionada no existe.',
         ]);
+
+        // Mostrar el error en el modal personalizado si la validación falla.
+        if ($validador->fails()) {
+            return redirect()
+                ->route('asignaturas.index')
+                ->withInput()
+                ->with('tipo_modal_asignatura', 'error')
+                ->with(
+                    'mensaje_modal_asignatura',
+                    $validador->errors()->first()
+                );
+        }
+
+        // Obtener los datos que pasaron la validación.
+        $datosValidados = $validador->validated();
+
 
         // Verificar que la carrera seleccionada esté activa.
         $carrera = Carrera::find($datosValidados['id_carrera']);
@@ -198,13 +223,24 @@ class AsignaturaController extends Controller
         $asignatura = Asignatura::findOrFail($idAsignatura);
 
         // Validar los datos recibidos.
-        $datosValidados = $solicitud->validate([
+        
+        // Validar los datos recibidos.
+        $validador = Validator::make($solicitud->all(), [
             'claveAsignatura' => [
                 'required',
                 'string',
                 'max:20',
                 Rule::unique('asignatura', 'clave')
-                    ->ignore($asignatura->id_asignatura, 'id_asignatura'),
+                    ->where(function ($consulta) use ($solicitud) {
+                        return $consulta->where(
+                            'id_carrera',
+                            $solicitud->input('id_carrera')
+                        );
+                    })
+                    ->ignore(
+                        $asignatura->id_asignatura,
+                        'id_asignatura'
+                    ),
             ],
             'nombreAsignatura' => [
                 'required',
@@ -234,21 +270,44 @@ class AsignaturaController extends Controller
                 'in:0,1',
             ],
         ], [
-            'claveAsignatura.required' => 'La clave de la asignatura es obligatoria.',
-            'claveAsignatura.unique' => 'La clave ingresada ya está registrada en otra asignatura.',
-            'claveAsignatura.max' => 'La clave no puede tener más de 20 caracteres.',
-            'nombreAsignatura.required' => 'El nombre de la asignatura es obligatorio.',
-            'nombreAsignatura.max' => 'El nombre no puede tener más de 100 caracteres.',
-            'cuatrimestre.required' => 'Selecciona el cuatrimestre.',
-            'cuatrimestre.min' => 'El cuatrimestre debe ser como mínimo 1.',
-            'cuatrimestre.max' => 'El cuatrimestre no puede ser mayor que 12.',
-            'horas.required' => 'Ingresa las horas de la asignatura.',
-            'horas.integer' => 'Las horas deben ser un número entero.',
-            'horas.min' => 'Las horas deben ser como mínimo 1.',
-            'horas.max' => 'Las horas no pueden superar 65535.',
-            'id_carrera.required' => 'Selecciona una carrera.',
-            'id_carrera.exists' => 'La carrera seleccionada no existe.',
+            'claveAsignatura.required' =>
+                'La clave de la asignatura es obligatoria.',
+            'claveAsignatura.unique' =>
+                'Esta clave ya está registrada en la carrera seleccionada, independientemente del cuatrimestre.',
+            'claveAsignatura.max' =>
+                'La clave no puede tener más de 20 caracteres.',
+            'nombreAsignatura.required' =>
+                'El nombre de la asignatura es obligatorio.',
+            'nombreAsignatura.max' =>
+                'El nombre no puede tener más de 100 caracteres.',
+            'cuatrimestre.required' =>
+                'Selecciona el cuatrimestre.',
+            'cuatrimestre.min' =>
+                'El cuatrimestre debe ser como mínimo 1.',
+            'cuatrimestre.max' =>
+                'El cuatrimestre no puede ser mayor que 12.',
+            'horas.required' =>
+                'Ingresa las horas de la asignatura.',
+            'horas.integer' =>
+                'Las horas deben ser un número entero.',
+            'horas.min' =>
+                'Las horas deben ser como mínimo 1.',
+            'horas.max' =>
+                'Las horas no pueden superar 65535.',
+            'id_carrera.required' =>
+                'Selecciona una carrera.',
+            'id_carrera.exists' =>
+                'La carrera seleccionada no existe.',
         ]);
+
+        // Mostrar el error en el modal personalizado si la validación falla.
+        if ($validador->fails()) {
+            return redirect()->route('asignaturas.index')->withInput()->with('tipo_modal_asignatura', 'error')
+                ->with( 'mensaje_modal_asignatura', $validador->errors()->first());
+        }
+
+        // Obtener los datos que pasaron la validación.
+        $datosValidados = $validador->validated();
 
         // Adaptar los nombres de los campos a las columnas de la base de datos.
         $datosValidados['clave'] = $datosValidados['claveAsignatura'];
