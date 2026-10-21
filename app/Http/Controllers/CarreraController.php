@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Carrera;
+use App\Models\Grupo;
+use App\Models\Asignatura;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -228,6 +230,7 @@ class CarreraController extends Controller
      *
      * Salidas: Redirección al listado con un mensaje de confirmación.
      */
+    /*
     public function destroy($idCarrera)
     {
         // Solo el administrador puede desactivar carreras.
@@ -245,6 +248,40 @@ class CarreraController extends Controller
             ->route('carreras.index')
             ->with('tipo_modal_carrera', 'baja')
             ->with('mensaje_modal_carrera','La carrera se desactivó correctamente.' );
+    } */
+
+    /**
+     * Descripción: Desactiva una carrera mediante borrado lógico y desactiva
+     * los grupos y asignaturas asociados a ella.
+     *
+     * Entradas:
+     * $idCarrera: identificador de la carrera que se desea desactivar.
+     *
+     * Salidas:
+     * Redirección al listado con un mensaje de confirmación.
+     */
+    public function destroy($idCarrera)
+    {
+        // Solo el administrador puede desactivar carreras.
+        $this->verificarRol([1]);
+
+        // Buscar la carrera que se desea desactivar.
+        $carreraEncontrada = Carrera::findOrFail($idCarrera);
+
+        // Cambiar el estado de la carrera a inactiva.
+        $carreraEncontrada->update([ 'estado' => 0, ]);
+
+        // Desactivar todos los grupos pertenecientes a la carrera.
+        Grupo::where('id_carrera', $idCarrera)->update([ 'estado' => 0, ]);
+
+        // Desactivar todas las asignaturas pertenecientes a la carrera.
+        Asignatura::where('id_carrera', $idCarrera)->update([ 'estado' => 0, ]);
+
+        return redirect()->route('carreras.index')->with('tipo_modal_carrera', 'baja')
+            ->with(
+                'mensaje_modal_carrera',
+                'La carrera, sus grupos y sus asignaturas se desactivaron correctamente.'
+            );
     }
 
     /**
@@ -272,7 +309,7 @@ class CarreraController extends Controller
             ->route('carreras.index')
             ->with('tipo_modal_carrera', 'activacion')
             ->with( 'mensaje_modal_carrera', 'La carrera se activó correctamente.' );
-    }
+    } 
 
     /**
      * Descripción: Comprueba que el usuario autenticado tenga uno de los roles permitidos.
