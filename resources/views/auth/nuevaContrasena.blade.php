@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -110,23 +109,10 @@
                             <div class="entrada-con-icono">
                                 <i class="fa-solid fa-lock"></i>
 
-                                <input
-                                    type="password"
-                                    id="password"
-                                    name="password"
-                                    placeholder="Escribe tu contraseña"
-                                    autocomplete="new-password"
-                                    minlength="8"
-                                    required
-                                >
+                                <input type="password" id="password" name="password" placeholder="Escribe tu contraseña" autocomplete="new-password" minlength="8" required >
 
                                 <!-- Botón para mostrar u ocultar la contraseña -->
-                                <button
-                                    type="button"
-                                    class="boton-ver-contrasena"
-                                    data-campo="password"
-                                    aria-label="Mostrar contraseña"
-                                >
+                                <button type="button" class="boton-ver-contrasena" data-campo="password" aria-label="Mostrar contraseña" >
                                     <i class="fa-regular fa-eye"></i>
                                 </button>
                             </div>
@@ -144,23 +130,11 @@
                             <div class="entrada-con-icono">
                                 <i class="fa-solid fa-lock"></i>
 
-                                <input
-                                    type="password"
-                                    id="password_confirmation"
-                                    name="password_confirmation"
-                                    placeholder="Repite tu contraseña"
-                                    autocomplete="new-password"
-                                    minlength="8"
-                                    required
-                                >
+                                <input type="password" id="password_confirmation" name="password_confirmation"
+                                    placeholder="Repite tu contraseña" autocomplete="new-password" minlength="8" required >
 
                                 <!-- Botón para mostrar u ocultar la confirmación -->
-                                <button
-                                    type="button"
-                                    class="boton-ver-contrasena"
-                                    data-campo="password_confirmation"
-                                    aria-label="Mostrar confirmación de contraseña"
-                                >
+                                <button type="button" class="boton-ver-contrasena" data-campo="password_confirmation" aria-label="Mostrar confirmación de contraseña" >
                                     <i class="fa-regular fa-eye"></i>
                                 </button>
                             </div>

@@ -138,31 +138,17 @@
 
                             <td>
                                 <div class="acciones-tabla">
-                                    <button
-                                        type="button"
-                                        class="boton-accion boton-consultar"
-                                        data-consultar-carrera="{{ $carrera->id_carrera }}"
-                                        aria-label="Consultar {{ $carrera->nombreCarrera }}"
-                                    >
+                                    <button type="button" class="boton-accion boton-consultar" data-consultar-carrera="{{ $carrera->id_carrera }}" aria-label="Consultar {{ $carrera->nombreCarrera }}" >
                                         Consultar
                                     </button>
 
-                                    <a
-                                        href="{{ route('carreras.edit', ['idCarrera' => $carrera->id_carrera]) }}"
-                                        class="boton-accion boton-modificar"
-                                        aria-label="Modificar {{ $carrera->nombreCarrera }}"
-                                    >
+                                    <a href="{{ route('carreras.edit', ['idCarrera' => $carrera->id_carrera]) }}" class="boton-accion boton-modificar" aria-label="Modificar {{ $carrera->nombreCarrera }}" >
                                         Modificar
                                     </a>
 
                                     @if ((int) $carrera->estado === 1)
                                         @if ((int) auth()->user()->rol === 1)
-                                            <button
-                                                type="button"
-                                                class="boton-accion boton-eliminar"
-                                                data-baja-carrera="{{ $carrera->id_carrera }}"
-                                                data-nombre-carrera="{{ $carrera->nombreCarrera }}"
-                                            >
+                                            <button type="button" class="boton-accion boton-eliminar" data-baja-carrera="{{ $carrera->id_carrera }}" data-nombre-carrera="{{ $carrera->nombreCarrera }}" >
                                                 Eliminar
                                             </button>
                                         @endif
@@ -193,23 +179,11 @@
             <span id="informacion-pagina">Página 1 de 1</span>
 
             <div class="controles-paginacion">
-                <button
-                    type="button"
-                    class="boton-pagina"
-                    id="pagina-anterior"
-                    aria-label="Página anterior"
-                    disabled
-                >
+                <button type="button" class="boton-pagina" id="pagina-anterior" aria-label="Página anterior" disabled >
                     ‹
                 </button>
 
-                <button
-                    type="button"
-                    class="boton-pagina"
-                    id="pagina-siguiente"
-                    aria-label="Página siguiente"
-                    disabled
-                >
+                <button type="button" class="boton-pagina" id="pagina-siguiente" aria-label="Página siguiente" disabled >
                     ›
                 </button>
             </div>
@@ -246,15 +220,8 @@
                         <span class="campo-requerido">*</span>
                     </label>
 
-                    <input
-                        type="text"
-                        id="nombreCarrera"
-                        name="nombreCarrera"
-                        value="{{ old('nombreCarrera') }}"
-                        placeholder="Ej. Ingeniería en Tecnologías de la Información"
-                        maxlength="100"
-                        required
-                    >
+                    <input type="text" id="nombreCarrera" name="nombreCarrera" value="{{ old('nombreCarrera') }}"
+                        placeholder="Ej. Ingeniería en Tecnologías de la Información" maxlength="100" required >
                 </div>
 
                 <!-- Clave de carrera -->
@@ -265,15 +232,7 @@
                         <span class="campo-requerido">*</span>
                     </label>
 
-                    <input
-                        type="text"
-                        id="claveCarrera"
-                        name="claveCarrera"
-                        value="{{ old('claveCarrera') }}"
-                        placeholder="Ej. ITI"
-                        maxlength="45"
-                        required
-                    >
+                    <input type="text" id="claveCarrera" name="claveCarrera" value="{{ old('claveCarrera') }}" placeholder="Ej. ITI" maxlength="45" required >
                 </div>
 
                 <!-- Estado de la carrera -->
@@ -341,6 +300,7 @@
 
                     <div id="resultados-consulta-carrera" aria-live="polite">
                         @forelse ($carrerasRegistradas as $carrera)
+                            <!--Letras minusculas mb_strtolower-->
                             <button
                                 type="button"
                                 class="resultado-consulta-item"

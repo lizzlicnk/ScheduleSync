@@ -52,15 +52,7 @@
                         Nombre de la carrera
                     </label>
 
-                    <input
-                        type="text"
-                        id="nombreCarrera"
-                        name="nombreCarrera"
-                        value="{{ old('nombreCarrera', $carreraEncontrada->nombreCarrera) }}"
-                        maxlength="100"
-                        placeholder="Ingresa el nombre de la carrera"
-                        required
-                    >
+                    <input type="text" id="nombreCarrera" name="nombreCarrera" value="{{ old('nombreCarrera', $carreraEncontrada->nombreCarrera) }}" maxlength="100" placeholder="Ingresa el nombre de la carrera" required >
                 </div>
 
                 <!-- Clave de la carrera -->
@@ -70,15 +62,7 @@
                         Clave de la carrera
                     </label>
 
-                    <input
-                        type="text"
-                        id="claveCarrera"
-                        name="claveCarrera"
-                        value="{{ old('claveCarrera', $carreraEncontrada->claveCarrera) }}"
-                        maxlength="45"
-                        placeholder="Ingresa la clave de la carrera"
-                        required
-                    >
+                    <input type="text" id="claveCarrera" name="claveCarrera" value="{{ old('claveCarrera', $carreraEncontrada->claveCarrera) }}" maxlength="45" placeholder="Ingresa la clave de la carrera" required >
                 </div>
 
                 <!-- Estado de la carrera -->

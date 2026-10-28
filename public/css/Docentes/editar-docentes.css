@@ -327,5 +327,15 @@
 #modal-modificar-docente .boton-modal-confirmar:hover {
     background: #d4ac0d !important;
     color: #333333 !important;
-    border-color: #d4ac0d !important;
+    border-color: 
+    #d4ac0d !important;
+}
+
+/* Campo de solo lectura */
+.pagina-docentes .campo input.campo-no-modificable,
+.pagina-docentes .campo input.campo-no-modificable:focus {
+    background-color: #F0F0F0 !important;
+    color: #6C757D;
+    cursor: not-allowed;
+    box-shadow: none;
 }

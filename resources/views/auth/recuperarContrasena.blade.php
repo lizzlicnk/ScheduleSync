@@ -92,17 +92,8 @@
                             <span class="campo-requerido">*</span>
                         </label>
 
-                        <input
-                            type="email"
-                            class="form-control"
-                            id="correo"
-                            name="correo"
-                            value="{{ old('correo') }}"
-                            placeholder="usuario@upemor.edu.mx"
-                            autocomplete="email"
-                            required
-                            autofocus
-                        >
+                        <input type="email" class="form-control" id="correo" name="correo" value="{{ old('correo') }}"
+                            placeholder="usuario@upemor.edu.mx" autocomplete="email" required autofocus >
                     </div>
 
                     <!-- Enviar el formulario para validar el correo y continuar. -->
@@ -134,13 +125,9 @@
 <!--                     MODALES                    -->
 
 <!-- Modal de resultado -->
-<div class="modal fade" id="modalResultadoCorreo"
-     tabindex="-1" aria-labelledby="tituloModalCorreo"
-     aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-
+<div class="modal fade" id="modalResultadoCorreo" tabindex="-1" aria-labelledby="tituloModalCorreo" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-correo">
         <div class="modal-content">
-
             <div class="modal-body text-center">
 
                 <!-- Mostrar el contenido correspondiente cuando el correo es válido. -->
@@ -159,10 +146,7 @@
 
                     <div class="aviso-spam">
                         <i class="fa-solid fa-circle-info"></i>
-                        <span>
-                            Revisa también tu carpeta de spam si no encuentras
-                            el correo.
-                        </span>
+                        <span> Revisa también tu carpeta de spam si no encuentras el correo. </span>
                     </div>
 
                      <!-- Dirigir al usuario al formulario para ingresar el código. -->

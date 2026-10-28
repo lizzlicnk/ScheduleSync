@@ -58,17 +58,8 @@
                                 Correo electrónico <span class="campo-requerido">*</span>
                             </label>
 
-                            <input
-                                type="email"
-                                class="form-control"
-                                id="correo"
-                                name="correo"
-                                value="{{ old('correo') }}"
-                                placeholder="usuario@upemor.edu.mx"
-                                autocomplete="username"
-                                required
-                                autofocus
-                            >
+                            <input type="email" class="form-control" id="correo" name="correo" value="{{ old('correo') }}"
+                                placeholder="usuario@upemor.edu.mx" autocomplete="username" required autofocus >
                         </div>
 
                         <div class="mb-3">
@@ -77,23 +68,12 @@
                                 Contraseña <span class="campo-requerido">*</span>
                             </label>
 
-                            <input
-                                type="password"
-                                class="form-control"
-                                id="password"
-                                name="password"
-                                placeholder="Contraseña"
-                                autocomplete="current-password"
-                                required
-                            >
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" autocomplete="current-password" required >
                         </div>
 
                         <!-- Enlace para la recuperacion la contraseña. -->
                         <div class="text-end mb-4">
-                            <a
-                                href="{{ url('/recuperar-contrasena') }}"
-                                class="enlace-recuperacion"
-                            >
+                            <a href="{{ url('/recuperar-contrasena') }}" class="enlace-recuperacion" >
                                 ¿Olvidaste tu contraseña?
                             </a>
                         </div>
@@ -173,12 +153,7 @@
     <!--                     MODALES                    -->
 
     <!-- Modal de confirmación del cambio de contraseña -->
-    <div class="modal fade"
-        id="modalContrasenaActualizada"
-        tabindex="-1"
-        aria-labelledby="tituloModalContrasena"
-        aria-hidden="true">
-
+    <div class="modal fade" id="modalContrasenaActualizada" tabindex="-1" aria-labelledby="tituloModalContrasena" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
 
@@ -196,10 +171,7 @@
 
                     <p>¡Tu contraseña se cambió correctamente!</p>
 
-                    <p>
-                        Ya puedes iniciar sesión en Schedule-Sync
-                        con tu nueva contraseña.
-                    </p>
+                    <p> Ya puedes iniciar sesión en Schedule-Sync con tu nueva contraseña. </p>
 
                     <div class="progreso-contrasena">
                         <span></span>
@@ -248,21 +220,12 @@
 
     
     <!-- Modal de sesión caducada -->
-    <div
-        id="modalSesionCaducada"
-        class="modal fade"
-        tabindex="-1"
-        aria-labelledby="tituloModalSesionCaducada"
-        aria-hidden="true"
-    >
+    <div id="modalSesionCaducada" class="modal fade" tabindex="-1" aria-labelledby="tituloModalSesionCaducada" aria-hidden="true" >
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h5
-                        class="modal-title"
-                        id="tituloModalSesionCaducada"
-                    >
+                    <h5 class="modal-title" id="tituloModalSesionCaducada" >
                         Sesión caducada
                     </h5>
                 </div>
@@ -277,16 +240,9 @@
                         Tu sesión ha caducado por inactividad.
                     </p>
 
-                    <p>
-                        Han transcurrido 20 minutos sin actividad.
-                        Inicia sesión nuevamente para continuar.
-                    </p>
+                    <p> Han transcurrido 20 minutos sin actividad. Inicia sesión nuevamente para continuar. </p>
 
-                    <button
-                        type="button"
-                        id="botonEntendidoSesionCaducada"
-                        class="btn boton-iniciar w-100"
-                    >
+                    <button type="button" id="botonEntendidoSesionCaducada" class="btn boton-iniciar w-100" >
                         Entendido
                     </button>
 
@@ -294,7 +250,6 @@
             </div>
         </div>
     </div>
-
-    
+  
 </body>
 </html>

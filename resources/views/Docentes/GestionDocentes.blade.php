@@ -8,15 +8,22 @@
 
 @section('contenido')
 <main class="pagina-docentes">
-
     <!-- ENCABEZADO DEL MÓDULO -->
     <header class="encabezado-modulo">
         <div>
-            <p class="ruta-modulo">Inicio / Administración / Docentes</p>
-            <h1>Gestión de docentes</h1>
-            <p class="descripcion-modulo">
-                Administra la información académica de los docentes registrados en Schedule-Sync.
-            </p>
+            @if (Auth::user()->rol == 3)
+                <p class="ruta-modulo">Inicio / Información personal</p>
+                <h1>Gestión de información personal</h1>
+                <p class="descripcion-modulo">
+                    Administra tu información académica.
+                </p>
+            @else
+                <p class="ruta-modulo">Inicio / Administración / Docentes</p>
+                <h1>Gestión de docentes</h1>
+                <p class="descripcion-modulo">
+                    Administra la información académica de los docentes registrados en Schedule-Sync.
+                </p>
+            @endif
         </div>
     </header>
 
@@ -197,55 +204,33 @@
 
                             <td>
                                 <div class="acciones-tabla">
-                                    <button type="button"
-                                        class="boton-accion boton-consultar"
-                                        data-consultar-usuario="{{ $usuario->id_usuario }}"
-                                        title="Consultar información"
-                                        aria-label="Consultar a {{ $nombreCompleto }}"
-                                    >
+                                    <button type="button" class="boton-accion boton-consultar" data-consultar-usuario="{{ $usuario->id_usuario }}"
+                                        title="Consultar información" aria-label="Consultar a {{ $nombreCompleto }}" >
                                         Consultar
                                     </button>
 
                                     @if ($docente)
                                         @if (in_array((int) auth()->user()->rol, [1, 2, 3], true))
-                                            <a
-                                                href="{{ route('docentes.edit', ['idDocente' => $docente->id_docente]) }}"
-                                                class="boton-accion boton-modificar"
-                                                title="Modificar información académica"
-                                                aria-label="Modificar a {{ $nombreCompleto }}"
-                                            >
+                                            <a href="{{ route('docentes.edit', ['idDocente' => $docente->id_docente]) }}" class="boton-accion boton-modificar"
+                                                title="Modificar información académica" aria-label="Modificar a {{ $nombreCompleto }}" >
                                                 Modificar
                                             </a>
                                         @endif
                                     @elseif ((int) auth()->user()->rol === 1 && $cuentaActiva)
-                                        <button
-                                            type="button"
-                                            class="boton-accion boton-agregar"
-                                            data-agregar-docente="{{ $usuario->id_usuario }}"
-                                            title="Agregar información académica"
-                                            aria-label="Agregar información académica de {{ $nombreCompleto }}"
-                                        >
+                                        <button type="button" class="boton-accion boton-agregar" data-agregar-docente="{{ $usuario->id_usuario }}"
+                                            title="Agregar información académica" aria-label="Agregar información académica de {{ $nombreCompleto }}" >
                                             Agregar
                                         </button>
                                     @endif
 
                                     <!-- Permite solicitar la baja de una cuenta docente activa. -->
                                     @if ( in_array((int) auth()->user()->rol, [1, 2], true) && (int) $usuario->rol === 3 && $cuentaActiva)
-                                        <form
-                                            action="{{ route('docentes.baja', ['idUsuario' => $usuario->id_usuario]) }}"
-                                            method="POST"
-                                            class="formulario-baja-docente"
-                                            data-nombre-docente="{{ $nombreCompleto }}"
-                                        >
+                                        <form action="{{ route('docentes.baja', ['idUsuario' => $usuario->id_usuario]) }}" method="POST" class="formulario-baja-docente" data-nombre-docente="{{ $nombreCompleto }}" >
                                             @csrf
                                             @method('DELETE')
 
-                                            <button type="button"
-                                                class="boton-accion boton-eliminar"
-                                                data-baja-docente
-                                                title="Dar de baja al docente"
-                                                aria-label="Dar de baja a {{ $nombreCompleto }}"
-                                            >
+                                            <button type="button" class="boton-accion boton-eliminar" data-baja-docente title="Dar de baja al docente"
+                                                aria-label="Dar de baja a {{ $nombreCompleto }}" >
                                                 Eliminar
                                             </button>
                                         </form>
@@ -287,21 +272,12 @@
                         </p>
                     </div>
 
-                    <button
-                        type="button"
-                        class="boton-cerrar-panel"
-                        data-cerrar-formulario
-                        aria-label="Cerrar formulario"
-                    >
+                    <button type="button" class="boton-cerrar-panel" data-cerrar-formulario aria-label="Cerrar formulario" >
                         &times;
                     </button>
                 </div>
 
-                <form
-                    action="{{ route('docentes.store') }}"
-                    method="POST"
-                    id="formAgregarDocente"
-                >
+                <form action="{{ route('docentes.store') }}" method="POST" id="formAgregarDocente" >
                     @csrf
 
                     <div class="formulario-grid">
@@ -323,10 +299,7 @@
                                         );
                                     @endphp
 
-                                    <option
-                                        value="{{ $usuarioDisponible->id_usuario }}"
-                                        @selected((string) old('id_usuario') === (string) $usuarioDisponible->id_usuario)
-                                    >
+                                    <option value="{{ $usuarioDisponible->id_usuario }}" @selected((string) old('id_usuario') === (string) $usuarioDisponible->id_usuario) >
                                         {{ $nombreDisponible }} — {{ $usuarioDisponible->correo }}
                                     </option>
                                 @endforeach
@@ -342,15 +315,7 @@
                                 <i class="fa-solid fa-id-card"></i> Matrícula <span class="campo-obligatorio">*</span>
                             </label>
 
-                            <input
-                                type="text"
-                                id="matricula"
-                                name="matricula"
-                                value="{{ old('matricula') }}"
-                                maxlength="20"
-                                placeholder="Ej. DOC2026001"
-                                required
-                            >
+                            <input type="text" id="matricula" name="matricula" value="{{ old('matricula') }}" maxlength="20" placeholder="Ej. DOC2026001" required >
                         </div>
 
                         <div class="campo">
@@ -358,15 +323,7 @@
                                 <i class="fa-solid fa-graduation-cap"></i> Especialidad <span class="campo-obligatorio">*</span>
                             </label>
 
-                            <input
-                                type="text"
-                                id="especialidad"
-                                name="especialidad"
-                                value="{{ old('especialidad') }}"
-                                maxlength="100"
-                                placeholder="Ej. Programador"
-                                required
-                            >
+                            <input type="text" id="especialidad" name="especialidad" value="{{ old('especialidad') }}" maxlength="100" placeholder="Ej. Programador" required >
                         </div>
 
                         <div class="campo">
@@ -387,33 +344,14 @@
 
                         <div class="campo">
                             <label for="cargaAcademica">
-                                <i class="fa-solid fa-clock"></i> Carga académica <span class="campo-obligatorio">*</span>
+                                <i class="fa-solid fa-clock"></i> Carga académica
                             </label>
-
-                            <input
-                                type="number"
-                                id="cargaAcademica"
-                                name="cargaAcademica"
-                                value="20"
-                                min="20"
-                                max="20"
-                                step="1"
-                                readonly
-                                required
-                            >
-
-                            <small class="ayuda-campo">
-                                Ingresa un valor entero entre 0 y 20 horas.
-                            </small>
+                            <input type="number" id="cargaAcademica" name="cargaAcademica" value="20" min="20" max="20" step="1" class="campo-no-modificable" readonly required>
                         </div>
                     </div>
 
                     <div class="acciones-formulario">
-                        <button
-                            type="button"
-                            class="boton-secundario"
-                            data-cerrar-formulario
-                        >
+                        <button type="button" class="boton-secundario" data-cerrar-formulario >
                             Cancelar
                         </button>
 
@@ -457,12 +395,7 @@
 
                     <div class="entrada-busqueda">
                         <span aria-hidden="true"><i class="fa-solid fa-magnifying-glass"></i></span>
-                        <input
-                            type="search"
-                            id="buscar-consulta"
-                            placeholder="Escribe un nombre para encontrar al docente..."
-                            autocomplete="off"
-                        >
+                        <input type="search" id="buscar-consulta" placeholder="Escribe un nombre para encontrar al docente..." autocomplete="off" >
                     </div>
                 </div>
 
@@ -480,12 +413,7 @@
                                 );
                             @endphp
 
-                            <button
-                                type="button"
-                                class="resultado-consulta-item"
-                                data-resultado-usuario="{{ $usuario->id_usuario }}"
-                                data-nombre-consulta="{{ mb_strtolower($nombreConsulta) }}"
-                            >
+                            <button type="button" class="resultado-consulta-item" data-resultado-usuario="{{ $usuario->id_usuario }}" data-nombre-consulta="{{ mb_strtolower($nombreConsulta) }}" >
                                 <span class="texto-resultado">
                                     <strong>{{ $nombreConsulta }}</strong>
                                     <small>{{ $usuario->correo }}</small>
@@ -537,11 +465,7 @@
                         $estadoDetalle = (int) $usuario->estado === 1 && !$usuario->trashed();
                     @endphp
 
-                    <div
-                        class="contenido-detalle-docente"
-                        data-detalle-usuario="{{ $usuario->id_usuario }}"
-                        hidden
-                    >
+                    <div class="contenido-detalle-docente" data-detalle-usuario="{{ $usuario->id_usuario }}" hidden >
                         <div class="encabezado-detalle">
                             <div class="icono-detalle" aria-hidden="true">
                                 <i class="fa-solid fa-user"></i>

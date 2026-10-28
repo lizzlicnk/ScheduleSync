@@ -1101,6 +1101,15 @@
     color: #B94048 !important;
 }
 
+/* Campo de solo lectura */
+.pagina-docentes .campo input.campo-no-modificable,
+.pagina-docentes .campo input.campo-no-modificable:focus {
+    background-color: #F0F0F0 !important;
+    color: #6C757D;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
 /*   RESPONSIVE */
 
 @media (max-width: 1150px) {

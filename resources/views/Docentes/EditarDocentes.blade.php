@@ -57,18 +57,10 @@
                         Cuenta del docente
                     </label>
 
-                    <input
-                        type="text"
-                        id="nombre_docente"
-                        value="{{ $docenteEncontrado->usuario->nombreUsuario }} {{ $docenteEncontrado->usuario->apellidoPaterno }} {{ $docenteEncontrado->usuario->apellidoMaterno }}"
-                        readonly
-                    >
+                    <input type="text" id="nombre_docente"
+                        value="{{ $docenteEncontrado->usuario->nombreUsuario }} {{ $docenteEncontrado->usuario->apellidoPaterno }} {{ $docenteEncontrado->usuario->apellidoMaterno }}" readonly >
 
-                    <input
-                        type="hidden"
-                        name="id_usuario"
-                        value="{{ $docenteEncontrado->id_usuario }}"
-                    >
+                    <input type="hidden" name="id_usuario" value="{{ $docenteEncontrado->id_usuario }}" >
 
                     <small>
                         La cuenta de usuario asociada no se puede cambiar desde esta pantalla.
@@ -82,15 +74,8 @@
                         Matrícula
                     </label>
 
-                    <input
-                        type="text"
-                        id="matricula"
-                        name="matricula"
-                        value="{{ old('matricula', $docenteEncontrado->matricula) }}"
-                        maxlength="20"
-                        placeholder="Ingresa la matrícula"
-                        required
-                    >
+                    <input type="text" id="matricula" name="matricula" value="{{ old('matricula', $docenteEncontrado->matricula) }}"
+                        maxlength="20" placeholder="Ingresa la matrícula" required >
                 </div>
 
                 <!-- Especialidad -->
@@ -100,15 +85,8 @@
                         Especialidad
                     </label>
 
-                    <input
-                        type="text"
-                        id="especialidad"
-                        name="especialidad"
-                        value="{{ old('especialidad', $docenteEncontrado->especialidad) }}"
-                        maxlength="100"
-                        placeholder="Ingresa la especialidad"
-                        required
-                    >
+                    <input type="text" id="especialidad" name="especialidad" value="{{ old('especialidad', $docenteEncontrado->especialidad) }}"
+                        maxlength="100" placeholder="Ingresa la especialidad" required >
                 </div>
 
                 <!-- Tipo de docente -->
@@ -119,17 +97,11 @@
                     </label>
 
                     <select id="tipoDocente" name="tipoDocente" required>
-                        <option
-                            value="1"
-                            {{ (string) old('tipoDocente', $docenteEncontrado->tipoDocente) === '1' ? 'selected' : '' }}
-                        >
+                        <option value="1" {{ (string) old('tipoDocente', $docenteEncontrado->tipoDocente) === '1' ? 'selected' : '' }} >
                             PTC — Tiempo completo
                         </option>
 
-                        <option
-                            value="2"
-                            {{ (string) old('tipoDocente', $docenteEncontrado->tipoDocente) === '2' ? 'selected' : '' }}
-                        >
+                        <option value="2" {{ (string) old('tipoDocente', $docenteEncontrado->tipoDocente) === '2' ? 'selected' : '' }} >
                             PA — Asignatura
                         </option>
                     </select>
@@ -142,12 +114,7 @@
                         Carga académica
                     </label>
 
-                    <input
-                        type="number"
-                        id="cargaAcademica"
-                        value="{{ $docenteEncontrado->cargaAcademica }}"
-                        readonly
-                    >
+                    <input type="number" id="cargaAcademica" value="{{ $docenteEncontrado->cargaAcademica }}" readonly >
 
                     <small>
                         La carga académica no se puede modificar desde este formulario.
@@ -158,10 +125,7 @@
 
             <!-- Botones para cancelar o guardar los cambios -->
             <div class="acciones-edicion">
-                <a
-                    href="{{ route('docentes.index') }}"
-                    class="boton-cancelar-edicion"
-                >
+                <a href="{{ route('docentes.index') }}" class="boton-cancelar-edicion" >
                     Cancelar
                 </a>
 
@@ -169,21 +133,14 @@
                     Guardar cambios
                 </button>
             </div>
-
         </form>
     </section>
-
 </div>
 
 <!-- Modal que confirma la modificación exitosa -->
 @if (session('tipo_modal_docente') === 'modificacion' && session('mensaje_modal_docente'))
     <div class="modal-confirmacion" id="modal-modificar-docente">
-        <div
-            class="modal-contenido"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="titulo-modal-modificacion"
-        >
+        <div class="modal-contenido" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-modificacion" >
             <div class="modal-icono modal-icono-exito">
                 <i class="fa-solid fa-check"></i>
             </div>
@@ -192,12 +149,7 @@
 
             <p>{{ session('mensaje_modal_docente') }}</p>
 
-            <button
-                type="button"
-                class="boton-modal-confirmar boton-modal-exito"
-                id="aceptar-modal-modificacion"
-                onclick="window.location.href='{{ route('docentes.index') }}';"
-            >
+            <button type="button" class="boton-modal-confirmar boton-modal-exito" id="aceptar-modal-modificacion" onclick="window.location.href='{{ route('docentes.index') }}';" >
                 <i class="fa-solid fa-check"></i>
                 Aceptar
             </button>
@@ -217,12 +169,7 @@
 
             <p>{{ session('mensaje_modal_docente') }}</p>
 
-            <button
-                type="button"
-                class="boton-modal-confirmar"
-                id="aceptar-modal-modificacion-docente"
-                onclick="window.location.href='{{ route('docentes.index') }}';"
-            >
+            <button type="button" class="boton-modal-confirmar" id="aceptar-modal-modificacion-docente" onclick="window.location.href='{{ route('docentes.index') }}';" >
                 <i class="fa-solid fa-check"></i>
                 Aceptar
             </button>

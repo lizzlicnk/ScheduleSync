@@ -51,8 +51,7 @@
                         Clave de la asignatura
                     </label>
 
-                    <input type="text" id="claveAsignatura" name="claveAsignatura"
-                        value="{{ old('claveAsignatura', $asignaturaEncontrada->clave) }}"
+                    <input type="text" id="claveAsignatura" name="claveAsignatura" value="{{ old('claveAsignatura', $asignaturaEncontrada->clave) }}"
                         maxlength="20" placeholder="Ingresa la clave de la asignatura" required >
                 </div>
 
@@ -83,8 +82,7 @@
                         Horas semanales
                     </label>
 
-                    <input type="number" id="horas" name="horas"
-                        value="{{ old('horas', $asignaturaEncontrada->cantidadHoras) }}"
+                    <input type="number" id="horas" name="horas" value="{{ old('horas', $asignaturaEncontrada->cantidadHoras) }}"
                         min="1" max="15" placeholder="Ingresa la cantidad de horas" required >
                 </div>
 
@@ -97,13 +95,11 @@
                     </label>
 
                     <select id="estado" name="estado" required>
-                        <option value="1"
-                            {{ (int) $asignaturaEncontrada->estado === 1 ? 'selected' : '' }}>
+                        <option value="1" {{ (int) $asignaturaEncontrada->estado === 1 ? 'selected' : '' }}>
                             Activa
                         </option>
 
-                        <option value="0"
-                            {{ (int) $asignaturaEncontrada->estado === 0 ? 'selected' : '' }}>
+                        <option value="0" {{ (int) $asignaturaEncontrada->estado === 0 ? 'selected' : '' }}>
                             Inactiva
                         </option>
                     </select>

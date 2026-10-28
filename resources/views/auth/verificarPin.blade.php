@@ -113,53 +113,25 @@
                     @endif
 
                     <!-- Formulario para verificar el PIN -->
-                    <form
-                        action="{{ route('contrasena.verificar-pin') }}"
-                        method="POST"
-                        id="formulario-pin"
-                    >
+                    <form action="{{ route('contrasena.verificar-pin') }}" method="POST" id="formulario-pin" >
                         @csrf
-
                         <div class="mb-4">
-
                             <!-- Etiqueta del PIN -->
-                            <label
-                                class="form-label fw-semibold d-flex align-items-center gap-2"
-                                for="pin-1"
-                            >
+                            <label class="form-label fw-semibold d-flex align-items-center gap-2" for="pin-1" >
                                 <i class="fa-solid fa-key" style="color: #654282;"></i>
                                 PIN de verificación
                             </label>
 
                             <!-- Seis cuadros individuales para el PIN -->
-                            <div
-                                id="contenedor-pin"
-                                class="d-flex justify-content-between gap-2"
-                                role="group"
-                                aria-label="PIN de verificación de seis dígitos"
-                            >
+                            <div id="contenedor-pin" class="d-flex justify-content-between gap-2" role="group" aria-label="PIN de verificación de seis dígitos" >
                                 @for ($numeroCuadro = 1; $numeroCuadro <= 6; $numeroCuadro++)
-                                    <input
-                                        type="text"
-                                        id="pin-{{ $numeroCuadro }}"
-                                        class="form-control pin-cuadro text-center fw-bold"
-                                        inputmode="numeric"
-                                        pattern="[0-9]*"
-                                        maxlength="1"
-                                        autocomplete="{{ $numeroCuadro === 1 ? 'one-time-code' : 'off' }}"
-                                        aria-label="Dígito {{ $numeroCuadro }}"
-                                        required
-                                    >
+                                    <input type="text" id="pin-{{ $numeroCuadro }}" class="form-control pin-cuadro text-center fw-bold" inputmode="numeric" pattern="[0-9]*"
+                                        maxlength="1" autocomplete="{{ $numeroCuadro === 1 ? 'one-time-code' : 'off' }}" aria-label="Dígito {{ $numeroCuadro }}" required >
                                 @endfor
                             </div>
 
                             <!-- Campo oculto que enviará los seis dígitos al controlador -->
-                            <input
-                                type="hidden"
-                                id="pin"
-                                name="pin"
-                                value="{{ old('pin') }}"
-                            >
+                            <input type="hidden" id="pin" name="pin" value="{{ old('pin') }}" >
 
                             <!-- Instrucciones para ingresar el PIN -->
                             <div id="ayuda-pin" class="form-text mt-2">

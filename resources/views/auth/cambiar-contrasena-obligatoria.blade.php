@@ -76,22 +76,10 @@
                             <div class="entrada-con-icono">
                                 <i class="fa-solid fa-lock"></i>
 
-                                <input
-                                    type="password"
-                                    class="form-control"
-                                    id="password_actual"
-                                    name="password_actual"
-                                    autocomplete="current-password"
-                                    placeholder="Ingresa tu contraseña actual"
-                                    required
-                                >
+                                <input type="password" class="form-control" id="password_actual" name="password_actual"
+                                    autocomplete="current-password" placeholder="Ingresa tu contraseña actual" required >
 
-                                <button
-                                    type="button"
-                                    class="boton-ver-contrasena"
-                                    data-campo="password_actual"
-                                    aria-label="Mostrar contraseña"
-                                >
+                                <button type="button" class="boton-ver-contrasena" data-campo="password_actual" aria-label="Mostrar contraseña" >
                                     <i class="fa-solid fa-eye"></i>
                                 </button>
                             </div>
@@ -107,23 +95,10 @@
                             <div class="entrada-con-icono">
                                 <i class="fa-solid fa-key"></i>
 
-                                <input
-                                    type="password"
-                                    class="form-control"
-                                    id="password"
-                                    name="password"
-                                    minlength="8"
-                                    autocomplete="new-password"
-                                    placeholder="Crea una contraseña nueva"
-                                    required
-                                >
+                                <input type="password" class="form-control" id="password" name="password" minlength="8"
+                                    autocomplete="new-password" placeholder="Crea una contraseña nueva" required >
 
-                                <button
-                                    type="button"
-                                    class="boton-ver-contrasena"
-                                    data-campo="password"
-                                    aria-label="Mostrar contraseña"
-                                >
+                                <button type="button" class="boton-ver-contrasena" data-campo="password" aria-label="Mostrar contraseña" >
                                     <i class="fa-solid fa-eye"></i>
                                 </button>
                             </div>
@@ -144,23 +119,10 @@
                             <div class="entrada-con-icono">
                                 <i class="fa-solid fa-shield-halved"></i>
 
-                                <input
-                                    type="password"
-                                    class="form-control"
-                                    id="password_confirmation"
-                                    name="password_confirmation"
-                                    minlength="8"
-                                    autocomplete="new-password"
-                                    placeholder="Repite la contraseña nueva"
-                                    required
-                                >
+                                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" minlength="8"
+                                    autocomplete="new-password" placeholder="Repite la contraseña nueva" required >
 
-                                <button
-                                    type="button"
-                                    class="boton-ver-contrasena"
-                                    data-campo="password_confirmation"
-                                    aria-label="Mostrar contraseña"
-                                >
+                                <button type="button" class="boton-ver-contrasena" data-campo="password_confirmation" aria-label="Mostrar contraseña" >
                                     <i class="fa-solid fa-eye"></i>
                                 </button>
                             </div>
@@ -191,9 +153,7 @@
 
     <!-- Mostrar el modal de confirmación de contraseña. -->
     @if (session('mensaje_contrasena'))
-        <div class="modal fade" id="modalContrasenaActualizada"
-            tabindex="-1" aria-hidden="true"
-            data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal fade" id="modalContrasenaActualizada" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
 
             <!-- Centrar el modal de confirmación en la pantalla. -->
             <div class="modal-dialog modal-dialog-centered">
