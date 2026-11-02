@@ -13,12 +13,8 @@ class DocenteController extends Controller
     /**
      * Descripción: Muestra todas las cuentas con rol docente y la información académica
      * que tengan registrada, incluyendo las cuentas sin registro docente.
-     *
-     * Entradas:
-     * $solicitud: solicitud HTTP del usuario autenticado.
-     *
-     * Salidas:
-     * Vista de gestión de docentes con todas las cuentas correspondientes.
+     * Entradas:$solicitud: solicitud HTTP del usuario autenticado.
+     * Salidas: Vista de gestión de docentes con todas las cuentas correspondientes.
      */
     public function index(Request $solicitud)
     {

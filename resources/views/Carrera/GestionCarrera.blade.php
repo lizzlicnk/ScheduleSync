@@ -139,6 +139,7 @@
                             <td>
                                 <div class="acciones-tabla">
                                     <button type="button" class="boton-accion boton-consultar" data-consultar-carrera="{{ $carrera->id_carrera }}" aria-label="Consultar {{ $carrera->nombreCarrera }}" >
+                                        <i class="fa-solid fa-eye"></i>    
                                         Consultar
                                     </button>
 
@@ -149,6 +150,7 @@
                                     @if ((int) $carrera->estado === 1)
                                         @if ((int) auth()->user()->rol === 1)
                                             <button type="button" class="boton-accion boton-eliminar" data-baja-carrera="{{ $carrera->id_carrera }}" data-nombre-carrera="{{ $carrera->nombreCarrera }}" >
+                                                <i class="fa-solid fa-trash"></i>    
                                                 Eliminar
                                             </button>
                                         @endif

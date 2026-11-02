@@ -182,10 +182,12 @@
                                         data-correo="{{ $usuario->correo }}"
                                         data-rol="{{ $usuario->rol }}"
                                         data-estado="{{ $usuario->estado }}">
+                                        <i class="fa-solid fa-eye"></i>
                                         Consultar
                                     </button>
 
                                     <a href="{{ route('usuarios.edit', ['usuario' => $usuario->id_usuario]) }}" class="boton-accion boton-editar" >
+                                        <i class="fa-solid fa-edit"></i>
                                         Modificar
                                     </a>
 
@@ -195,7 +197,8 @@
                                                 {{ $usuario->id_usuario }},
                                                 @js($nombreCompleto)
                                             )">
-                                            Eliminar
+                                            <i class="fa-solid fa-trash"></i>
+                                             Eliminar
                                         </button>
                                     @endif
                                 </div>

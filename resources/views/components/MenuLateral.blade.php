@@ -80,8 +80,8 @@
         @endif
 
         <!-- Disponibilidad docente -->
-        <a href="{{ url('/disponibilidad') }}"
-            class="menu-item {{ request()->is('disponibilidad*') ? 'activo' : '' }}">
+        <a href="{{ url('/disponibilidad-academica') }}"
+            class="menu-item {{ request()->is('disponibilidad-academica*') ? 'activo' : '' }}">
             <i class="fa-solid fa-clock"></i>
             <span>Disponibilidad docente</span>
         </a>

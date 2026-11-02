@@ -48,9 +48,7 @@ class AsignaturaPreferida extends Model
 
     /**
      * Descripción: Obtiene el docente que registró la preferencia.
-     *
      * Entradas: No recibe parámetros.
-     *
      * Salidas: Retorna la relación con el modelo Docente.
      */
     public function docente(): BelongsTo

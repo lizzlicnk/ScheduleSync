@@ -206,6 +206,7 @@
                                 <div class="acciones-tabla">
                                     <button type="button" class="boton-accion boton-consultar" data-consultar-usuario="{{ $usuario->id_usuario }}"
                                         title="Consultar información" aria-label="Consultar a {{ $nombreCompleto }}" >
+                                        <i class="fa-solid fa-eye"></i>
                                         Consultar
                                     </button>
 
@@ -213,12 +214,14 @@
                                         @if (in_array((int) auth()->user()->rol, [1, 2, 3], true))
                                             <a href="{{ route('docentes.edit', ['idDocente' => $docente->id_docente]) }}" class="boton-accion boton-modificar"
                                                 title="Modificar información académica" aria-label="Modificar a {{ $nombreCompleto }}" >
+                                                <i class="fa-solid fa-edit"></i>
                                                 Modificar
                                             </a>
                                         @endif
                                     @elseif ((int) auth()->user()->rol === 1 && $cuentaActiva)
                                         <button type="button" class="boton-accion boton-agregar" data-agregar-docente="{{ $usuario->id_usuario }}"
                                             title="Agregar información académica" aria-label="Agregar información académica de {{ $nombreCompleto }}" >
+                                            <i class="fa-solid fa-plus"></i>
                                             Agregar
                                         </button>
                                     @endif
@@ -231,6 +234,7 @@
 
                                             <button type="button" class="boton-accion boton-eliminar" data-baja-docente title="Dar de baja al docente"
                                                 aria-label="Dar de baja a {{ $nombreCompleto }}" >
+                                                <i class="fa-solid fa-trash"></i>
                                                 Eliminar
                                             </button>
                                         </form>

@@ -182,12 +182,14 @@
                                 <div class="acciones-tabla">
                                     <button type="button" class="boton-accion boton-consultar" data-consultar-grupo="{{ $grupo->id_grupo }}"
                                         aria-label="Consultar {{ $grupo->nombreGrupo }}" >
+                                        <i class="fa-solid fa-eye"></i>
                                         Consultar
                                     </button>
 
                                     @if (in_array((int) auth()->user()->rol, [1, 2], true))
                                         <a href="{{ route('grupos.edit', ['idGrupo' => $grupo->id_grupo]) }}" class="boton-accion boton-modificar"
                                             aria-label="Modificar {{ $grupo->nombreGrupo }}" >
+                                            <i class="fa-solid fa-edit"></i>
                                             Modificar
                                         </a>
                                     @endif
@@ -196,6 +198,7 @@
                                         @if ((int) auth()->user()->rol === 1)
                                             <button type="button" class="boton-accion boton-eliminar" data-baja-grupo="{{ $grupo->id_grupo }}"
                                                 data-nombre-grupo="{{ $grupo->nombreGrupo }}" >
+                                                <i class="fa-solid fa-trash"></i>
                                                 Eliminar
                                             </button>
                                         @endif

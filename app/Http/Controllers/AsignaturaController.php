@@ -338,7 +338,6 @@ class AsignaturaController extends Controller
 
     /**
      * Descripción: Realiza la baja lógica de una asignatura.
-     *
      * Entradas: Identificador de la asignatura.
      * Salidas: Redirección a la gestión con un mensaje de éxito o error.
      */

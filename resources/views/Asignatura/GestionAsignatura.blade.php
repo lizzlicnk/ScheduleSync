@@ -195,6 +195,7 @@
                                     <!-- CONSULTAR ASIGNATURA -->
                                     <button type="button" class="boton-accion boton-consultar" data-consultar-asignatura="{{ $asignatura->id_asignatura }}"
                                         aria-label="Consultar {{ $asignatura->nombreAsignatura }}" >
+                                        <i class="fa-solid fa-eye"></i>
                                         Consultar
                                     </button>
 
@@ -202,6 +203,7 @@
                                         <!-- MODIFICAR ASIGNATURA -->
                                         <a href="{{ route('asignaturas.edit', ['idAsignatura' => $asignatura->id_asignatura]) }}"
                                             class="boton-accion boton-modificar" aria-label="Modificar {{ $asignatura->nombreAsignatura }}" >
+                                            <i class="fa-solid fa-edit"></i>
                                             Modificar
                                         </a>
 
@@ -209,6 +211,7 @@
                                         @if ((int) auth()->user()->rol === 1 && (int) $asignatura->estado === 1)
                                             <button type="button" class="boton-accion boton-eliminar" data-baja-asignatura="{{ $asignatura->id_asignatura }}"
                                                 data-nombre-asignatura="{{ $asignatura->nombreAsignatura }}" >
+                                                <i class="fa-solid fa-trash"></i>
                                                 Eliminar
                                             </button>
                                         @endif

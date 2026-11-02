@@ -1,0 +1,1005 @@
+
+/* =========================================================
+   PÁGINA PRINCIPAL
+========================================================= */
+
+.pagina-disponibilidad-academica {
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+    color: #30263B;
+}
+
+.pagina-disponibilidad-academica * {
+    box-sizing: border-box;
+}
+
+.pagina-disponibilidad-academica [hidden] {
+    display: none !important;
+}
+
+.pagina-disponibilidad-academica button,
+.pagina-disponibilidad-academica a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ENCABEZADO */
+
+.pagina-disponibilidad-academica .encabezado-modulo {
+    margin-bottom: 27px;
+}
+
+.pagina-disponibilidad-academica .ruta-modulo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 9px;
+    color: #7047A3;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.pagina-disponibilidad-academica .ruta-modulo::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #8A63B5;
+}
+
+.pagina-disponibilidad-academica .encabezado-modulo h1 {
+    margin: 0;
+    color: #30213F;
+    font-size: clamp(27px, 3vw, 34px);
+    font-weight: 750;
+    letter-spacing: -0.8px;
+    line-height: 1.25;
+}
+
+.pagina-disponibilidad-academica .descripcion-modulo {
+    margin: 10px 0 0;
+    color: #797181;
+    font-size: 15px;
+    line-height: 1.65;
+}
+
+/* BOTONES PRINCIPALES */
+
+.pagina-disponibilidad-academica .boton-principal,
+.pagina-disponibilidad-academica .boton-secundario {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 45px;
+    padding: 10px 18px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.pagina-disponibilidad-academica .boton-principal {
+    color: #FFFFFF;
+    background: #5A3E7D;
+    border-color: #5A3E7D;
+}
+
+.pagina-disponibilidad-academica .boton-principal:hover {
+    background: #472D68;
+    border-color: #472D68;
+    box-shadow: 0 4px 10px rgba(90, 62, 125, 0.16);
+}
+
+.pagina-disponibilidad-academica .boton-secundario {
+    color: #5A3E7D;
+    background: #FFFFFF;
+    border-color: #DDD2E9;
+}
+
+.pagina-disponibilidad-academica .boton-secundario:hover {
+    background: #F8F5FC;
+    border-color: #BFAAD7;
+}
+
+.pagina-disponibilidad-academica .boton-activo,
+.boton-activo {
+    border-color: #BDA6D9 !important;
+    background: #F1EAF9 !important;
+    color: #5A347F !important;
+}
+
+.pagina-disponibilidad-academica button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.pagina-disponibilidad-academica .boton-principal:focus-visible,
+.pagina-disponibilidad-academica .boton-secundario:focus-visible,
+.pagina-disponibilidad-academica .boton-accion:focus-visible,
+.pagina-disponibilidad-academica .boton-pagina:focus-visible {
+    outline: 3px solid rgba(90, 62, 125, 0.2);
+    outline-offset: 2px;
+}
+
+/* =========================================================
+   PANELES
+========================================================= */
+
+.panel-disponibilidad-academica {
+    min-width: 0;
+    margin-bottom: 25px;
+    padding: 26px;
+    overflow: hidden;
+    border: 1px solid #EAE3F1;
+    border-radius: 14px;
+    background: #FFFFFF;
+    box-shadow: 0 4px 17px rgba(45, 30, 60, 0.04);
+}
+
+.pagina-disponibilidad-academica .encabezado-panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 22px;
+    padding: 0;
+}
+
+.pagina-disponibilidad-academica .encabezado-panel h2 {
+    margin: 0;
+    color: #352641;
+    font-size: 20px;
+    font-weight: 750;
+    letter-spacing: -0.3px;
+    line-height: 1.4;
+}
+
+.pagina-disponibilidad-academica .encabezado-panel p {
+    margin: 6px 0 0;
+}
+
+.pagina-disponibilidad-academica .texto-secundario {
+    color: #797181;
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+/* ENCABEZADO DE TABLA */
+
+.pagina-disponibilidad-academica .titulo-tabla {
+    grid-area: titulo;
+    min-width: 0;
+}
+
+.pagina-disponibilidad-academica .botones-encabezado {
+    grid-area: botones;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.pagina-disponibilidad-academica .botones-encabezado .boton-principal,
+.pagina-disponibilidad-academica .botones-encabezado .boton-secundario {
+    min-height: 42px;
+    font-size: 14px;
+}
+
+/* =========================================================
+   CAMPOS Y FILTROS
+========================================================= */
+
+.pagina-disponibilidad-academica .campo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.pagina-disponibilidad-academica .campo label {
+    color: #45364F;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.pagina-disponibilidad-academica .campo input,
+.pagina-disponibilidad-academica .campo select {
+    width: 100%;
+    min-width: 0;
+    min-height: 46px;
+    padding: 11px 13px;
+    border: 1px solid #DED5E8;
+    border-radius: 9px;
+    outline: none;
+    background: #FFFFFF;
+    color: #30263B;
+    font-family: inherit;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.pagina-disponibilidad-academica .campo input::placeholder {
+    color: #A49AAE;
+}
+
+.pagina-disponibilidad-academica .campo input:focus,
+.pagina-disponibilidad-academica .campo select:focus {
+    border-color: #8A63B5;
+    background: #FEFCFF;
+    box-shadow: 0 0 0 3px rgba(112, 71, 163, 0.12);
+}
+
+.pagina-disponibilidad-academica .filtros-disponibilidad-academica {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 18px;
+}
+
+.pagina-disponibilidad-academica .filtros-disponibilidad-academica .campo {
+    flex: 1 1 220px;
+    max-width: 350px;
+}
+
+/* BUSCADOR */
+
+.pagina-disponibilidad-academica .busqueda-tabla {
+    grid-area: busqueda;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    width: 100%;
+    max-width: 420px;
+    min-width: 0;
+    margin: 0;
+    text-align: left;
+}
+
+.pagina-disponibilidad-academica .busqueda-tabla label,
+.pagina-disponibilidad-academica .buscador-consulta > label {
+    font-size: 13px;
+}
+
+.pagina-disponibilidad-academica .entrada-busqueda {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-width: 0;
+    min-height: 46px;
+    padding: 0 13px;
+    border: 1px solid #DED5E8;
+    border-radius: 9px;
+    background: #FFFFFF;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.pagina-disponibilidad-academica .busqueda-tabla .entrada-busqueda {
+    min-height: 42px;
+    width: 100%;
+    min-width: 0;
+}
+
+.pagina-disponibilidad-academica .entrada-busqueda:focus-within {
+    border-color: #8A63B5;
+    box-shadow: 0 0 0 3px rgba(112, 71, 163, 0.11);
+}
+
+.pagina-disponibilidad-academica .entrada-busqueda > span {
+    flex-shrink: 0;
+    color: #8967AD;
+    font-size: 23px;
+    line-height: 1;
+}
+
+.pagina-disponibilidad-academica .entrada-busqueda > i {
+    flex-shrink: 0;
+    color: #8967AD;
+    font-size: 15px;
+}
+
+.pagina-disponibilidad-academica .entrada-busqueda input {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+    padding: 8px 0;
+    border: 0 !important;
+    outline: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #30263B;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.pagina-disponibilidad-academica .entrada-busqueda input::placeholder {
+    color: #A49AAE;
+}
+
+/* =========================================================
+   TABLA DE DISPONIBILIDAD ACADÉMICA
+========================================================= */
+
+.pagina-disponibilidad-academica .tabla-contenedor {
+    width: 100%;
+    margin-top: 22px;
+    overflow-x: auto;
+    border: 1px solid #EAE3F1;
+    border-radius: 11px;
+}
+
+.tabla-disponibilidad-academica {
+    width: 100%;
+    min-width: 720px;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #FFFFFF;
+    text-align: left;
+}
+
+.tabla-disponibilidad-academica thead th {
+    padding: 16px 17px;
+    border-bottom: 1px solid #EAE3F1;
+    background: #F8F5FC;
+    color: #6B5A7B;
+    font-size: 12px;
+    font-weight: 750;
+    letter-spacing: 0.35px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.tabla-disponibilidad-academica tbody td {
+    padding: 17px;
+    border-bottom: 1px solid #F0ECF4;
+    color: #494052;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.tabla-disponibilidad-academica tbody tr {
+    transition: background-color 0.18s;
+}
+
+.tabla-disponibilidad-academica tbody tr:not(:has(.tabla-vacia)):hover {
+    background: #FCFAFE;
+}
+
+.tabla-disponibilidad-academica tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.tabla-disponibilidad-academica td:first-child,
+.matricula-docente {
+    color: #82768F;
+    font-size: 13px;
+    font-weight: 650;
+}
+
+/* INFORMACIÓN DEL DOCENTE */
+
+.informacion-docente {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 190px;
+}
+
+.informacion-docente strong {
+    color: #352941;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.matricula-docente {
+    display: inline-block;
+    color: #62447F;
+}
+
+/* TIPO DE DOCENTE */
+
+.tipo-docente {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 11px;
+    border: 1px solid #E6D9F2;
+    border-radius: 30px;
+    background: #F7F1FC;
+    color: #654984;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* CARGA ACADÉMICA */
+
+.carga-academica {
+    color: #453452;
+    font-size: 14px;
+    font-weight: 750;
+    white-space: nowrap;
+}
+
+/* =========================================================
+   ACCIONES DE LA TABLA
+========================================================= */
+
+.pagina-disponibilidad-academica .acciones-tabla {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 7px;
+}
+
+.pagina-disponibilidad-academica .boton-accion,
+.pagina-disponibilidad-academica .boton-consultar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 35px;
+    padding: 8px 11px;
+    border: 1px solid #E1D5ED;
+    border-radius: 8px;
+    background: #FFFFFF;
+    color: #654984;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.pagina-disponibilidad-academica .boton-accion:hover,
+.pagina-disponibilidad-academica .boton-consultar:hover {
+    transform: translateY(-1px);
+    border-color: #C8B3DF;
+    background: #F4EFF9;
+    color: #654984;
+}
+
+/* TABLA VACÍA */
+
+.pagina-disponibilidad-academica .tabla-vacia {
+    padding: 38px 18px !important;
+    color: #766A82 !important;
+    font-size: 14px !important;
+    text-align: center;
+}
+
+.pagina-disponibilidad-academica .tabla-vacia > i {
+    color: #A48BBC;
+    font-size: 27px;
+}
+
+.pagina-disponibilidad-academica .tabla-vacia strong {
+    color: #51405F;
+    font-size: 14px;
+}
+
+.pagina-disponibilidad-academica .tabla-vacia span {
+    max-width: 420px;
+    color: #8A8094;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* =========================================================
+   PAGINACIÓN
+========================================================= */
+
+.paginacion-disponibilidad-academica {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 20px;
+    color: #756982;
+    font-size: 13px;
+}
+
+.pagina-disponibilidad-academica .controles-paginacion {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pagina-disponibilidad-academica .boton-pagina {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 37px;
+    height: 37px;
+    border: 1px solid #E1D5ED;
+    border-radius: 9px;
+    background: #FFFFFF;
+    color: #634581;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.pagina-disponibilidad-academica .boton-pagina:hover:not(:disabled) {
+    border-color: #C8B3DF;
+    background: #F3ECFA;
+}
+
+.pagina-disponibilidad-academica .boton-pagina:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* =========================================================
+   CONSULTA DE DISPONIBILIDAD ACADÉMICA
+========================================================= */
+
+#panel-consulta {
+    scroll-margin-top: 24px;
+}
+
+.pagina-disponibilidad-academica .consulta-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: start;
+    gap: 23px;
+    padding: 0;
+}
+
+.pagina-disponibilidad-academica .buscador-consulta {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    min-width: 0;
+}
+
+.pagina-disponibilidad-academica .resultados-consulta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 0;
+}
+
+.pagina-disponibilidad-academica .resultados-consulta h3 {
+    margin: 6px 0 4px;
+    color: #51405F;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.pagina-disponibilidad-academica .resultados-consulta > p,
+.pagina-disponibilidad-academica .mensaje-sin-resultados {
+    margin: 7px 0;
+    padding: 0;
+}
+
+.pagina-disponibilidad-academica #resultados-consulta-disponibilidad {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 340px;
+    overflow-y: auto;
+}
+
+.pagina-disponibilidad-academica #resultados-consulta-disponibilidad [hidden] {
+    display: none !important;
+}
+
+
+/* =========================================================
+   CONSULTA DE DISPONIBILIDAD ACADÉMICA
+========================================================= */
+
+.pagina-disponibilidad-academica #panel-consulta {
+    scroll-margin-top: 24px;
+}
+
+/* DISTRIBUCIÓN */
+
+.pagina-disponibilidad-academica .consulta-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: start;
+    gap: 23px;
+}
+
+/* BUSCADOR */
+
+.pagina-disponibilidad-academica .buscador-consulta {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    min-width: 0;
+}
+
+.pagina-disponibilidad-academica .buscador-consulta > label {
+    color: #45364F;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.pagina-disponibilidad-academica .buscador-consulta .entrada-busqueda {
+    min-height: 46px;
+}
+
+/* RESULTADOS */
+
+.pagina-disponibilidad-academica #resultados-consulta-disponibilidad {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 340px;
+    overflow-y: auto;
+}
+
+.pagina-disponibilidad-academica #resultados-consulta-disponibilidad > p {
+    margin: 7px 0;
+}
+
+.pagina-disponibilidad-academica .resultado-consulta-item {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 5px;
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid #ECE4F3;
+    border-radius: 9px;
+    background: #FFFFFF;
+    color: inherit;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.pagina-disponibilidad-academica .resultado-consulta-item:hover,
+.pagina-disponibilidad-academica .resultado-consulta-item.seleccionado {
+    border-color: #C9B2E0;
+    background: #FAF6FE;
+}
+
+.pagina-disponibilidad-academica .resultado-consulta-item strong {
+    color: #3C2B4B;
+    font-size: 14px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.pagina-disponibilidad-academica .resultado-consulta-item .informacion-resultado-consulta {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+
+.pagina-disponibilidad-academica .resultado-consulta-item small {
+    color: #847890;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
+.pagina-disponibilidad-academica .resultado-consulta-item > i {
+    display: none;
+}
+
+/* TARJETA DE DETALLES */
+
+.pagina-disponibilidad-academica .tarjeta-detalle-disponibilidad {
+    min-width: 0;
+    min-height: 235px;
+    padding: 22px;
+    border: 1px solid #E6D9F2;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #FCFAFE, #F7F1FC);
+}
+
+/* MENSAJE INICIAL */
+
+.pagina-disponibilidad-academica .detalle-vacio-disponibilidad {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 185px;
+    text-align: center;
+}
+
+.pagina-disponibilidad-academica .detalle-vacio-disponibilidad .icono-detalle {
+    margin-bottom: 13px;
+}
+
+.pagina-disponibilidad-academica .detalle-vacio-disponibilidad h3 {
+    margin: 0;
+    color: #49345F;
+    font-size: 17px;
+}
+
+.pagina-disponibilidad-academica .detalle-vacio-disponibilidad p {
+    max-width: 320px;
+    margin: 7px 0 0;
+}
+
+/* ENCABEZADO DEL DOCENTE */
+
+.pagina-disponibilidad-academica [data-detalle-disponibilidad]:not([hidden]) > .icono-detalle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 13px;
+    border: 1px solid #E9D5FF;
+    border-radius: 13px;
+    background: #F4EBFF;
+    color: #6B21A8;
+    font-size: 22px;
+}
+
+.pagina-disponibilidad-academica [data-detalle-disponibilidad] h3 {
+    margin: 0;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #E8DDF1;
+    color: #39264F;
+    font-size: 18px;
+    font-weight: 750;
+    overflow-wrap: anywhere;
+}
+
+/* INFORMACIÓN DEL DOCENTE */
+
+.pagina-disponibilidad-academica .datos-detalle-disponibilidad {
+    display: flex;
+    flex-direction: column;
+    margin-top: 7px;
+}
+
+.pagina-disponibilidad-academica .datos-detalle-disponibilidad > div {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 13px 0;
+    border-bottom: 1px solid #EDE5F3;
+}
+
+.pagina-disponibilidad-academica .datos-detalle-disponibilidad > div:last-child {
+    border-bottom: 0;
+}
+
+.pagina-disponibilidad-academica .datos-detalle-disponibilidad span {
+    color: #796D85;
+    font-size: 13px;
+}
+
+.pagina-disponibilidad-academica .datos-detalle-disponibilidad strong {
+    color: #453452;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 800px) {
+    .pagina-disponibilidad-academica .consulta-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 380px) {
+    .pagina-disponibilidad-academica .datos-detalle-disponibilidad > div {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .pagina-disponibilidad-academica .datos-detalle-disponibilidad strong {
+        text-align: left;
+    }
+}
+
+
+/* =========================================================
+   BOTONES GENERALES DEL ENCABEZADO
+========================================================= */
+
+.botones-encabezado {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.botones-encabezado .boton-principal,
+.botones-encabezado .boton-secundario {
+    min-height: 45px;
+    font-size: 14px;
+}
+
+/* ESTADO Y FOCO DE LOS FILTROS */
+
+.pagina-disponibilidad-academica #boton-filtros.boton-activo {
+    border-color: #BDA6D9 !important;
+    background: #F1EAF9 !important;
+    color: #5A347F !important;
+    box-shadow: 0 0 0 3px rgba(112, 71, 163, 0.12) !important;
+    font-weight: 600 !important;
+}
+
+.pagina-disponibilidad-academica #boton-filtros:focus,
+.pagina-disponibilidad-academica #limpiar-filtros:focus {
+    outline: none;
+    border-color: #BDA6D9;
+    box-shadow: 0 0 0 3px rgba(112, 71, 163, 0.12);
+}
+
+/* =========================================================
+   RESPONSIVE: CELULARES PEQUEÑOS
+========================================================= */
+
+@media (max-width: 380px) {
+    .pagina-disponibilidad-academica .botones-encabezado {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .pagina-disponibilidad-academica .botones-encabezado button,
+    .pagina-disponibilidad-academica .botones-encabezado a {
+        width: 100%;
+    }
+
+    .pagina-disponibilidad-academica .fila-detalle {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .pagina-disponibilidad-academica .fila-detalle > strong {
+        text-align: left;
+    }
+}
+
+/* =========================================================
+   RESPONSIVE: TABLET Y PANTALLAS MEDIANAS
+========================================================= */
+
+@media (max-width: 1000px) {
+    .pagina-disponibilidad-academica .encabezado-tabla {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "titulo botones"
+            "busqueda busqueda";
+        align-items: center;
+        gap: 16px;
+    }
+
+    .pagina-disponibilidad-academica .titulo-tabla {
+        min-width: 0;
+    }
+
+    .pagina-disponibilidad-academica .botones-encabezado {
+        justify-self: end;
+        margin-left: 0;
+    }
+
+    .pagina-disponibilidad-academica .busqueda-tabla {
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+    }
+
+    .pagina-disponibilidad-academica .consulta-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================================
+   RESPONSIVE: CELULARES
+========================================================= */
+
+@media (max-width: 700px) {
+    .pagina-disponibilidad-academica .encabezado-tabla {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "titulo"
+            "botones"
+            "busqueda";
+        gap: 14px;
+    }
+
+    .pagina-disponibilidad-academica .botones-encabezado {
+        justify-self: stretch;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        margin-left: 0;
+    }
+
+    .pagina-disponibilidad-academica .botones-encabezado button,
+    .pagina-disponibilidad-academica .botones-encabezado a {
+        flex: 1 1 auto;
+    }
+
+    .panel-disponibilidad-academica {
+        padding: 18px;
+        border-radius: 11px;
+    }
+
+    .pagina-disponibilidad-academica .encabezado-panel {
+        align-items: flex-start;
+    }
+
+    .pagina-disponibilidad-academica .tarjeta-detalle-disponibilidad {
+        padding: 17px;
+    }
+}
+
+/* ENCABEZADO DEL DETALLE DEL DOCENTE */
+.pagina-disponibilidad-academica .encabezado-detalle-disponibilidad {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #EDE5F3;
+}
+
+.pagina-disponibilidad-academica .encabezado-detalle-disponibilidad .icono-detalle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    margin: 0;
+    border: 1px solid #E9D5FF;
+    border-radius: 13px;
+    background: #F4EBFF;
+    color: #6B21A8;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.pagina-disponibilidad-academica .encabezado-detalle-disponibilidad h3 {
+    margin: 0;
+    padding: 0;
+    border: none;
+    color: #39264F;
+    font-size: 18px;
+    font-weight: 750;
+    overflow-wrap: anywhere;
+}
+
+/* ICONO DEL MENSAJE INICIAL */
+.pagina-disponibilidad-academica .detalle-vacio-disponibilidad .icono-detalle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 13px;
+    border: 1px solid #E9D5FF;
+    border-radius: 13px;
+    background: #F4EBFF;
+    color: #6B21A8;
+    font-size: 22px;
+}

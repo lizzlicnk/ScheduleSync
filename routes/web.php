@@ -12,6 +12,9 @@ use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\PeriodoController;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\AsignaturaController;
+use App\Http\Controllers\CargaAcademicaController;
+use App\Http\Controllers\DisponibilidadProfesorController;
+
 
                     /* Rutas de inicio de sesión */
 
@@ -373,6 +376,40 @@ Route::middleware(['auth', \App\Http\Middleware\PrevenirCachePrivada::class, For
     ])->whereNumber('idAsignatura')
     ->name('asignaturas.activar');
 
+                        /* Rutas para la gestión de la carga académica */
+
+    Route::get(
+        '/carga-academica',
+        [CargaAcademicaController::class, 'index']
+    )->name('cargaAcademica.index');
+
+                        /* Rutas para la gestión de la disponibilidad académica */
+    // Mostrar la página de disponibilidad académica.
+    Route::get('/disponibilidad-academica', [
+        DisponibilidadProfesorController::class,
+        'index'
+    ])->name('disponibilidad-academica.index');
+
+    // Mostrar el formulario para modificar la carga académica.
+    Route::get('/disponibilidad-academica/{idDocente}/editar', [
+        DisponibilidadProfesorController::class,
+        'edit'
+    ])->whereNumber('idDocente')
+    ->name('disponibilidad-academica.edit');
+
+    // Actualizar la carga académica del docente.
+    Route::put('/disponibilidad-academica/{idDocente}', [
+        DisponibilidadProfesorController::class,
+        'update'
+    ])->whereNumber('idDocente')
+    ->name('disponibilidad-academica.update');
+
+    // Eliminar la carga académica de un docente.
+    Route::delete('/disponibilidad-academica/{idDocente}', [
+        DisponibilidadProfesorController::class,
+        'destroy'
+    ])->whereNumber('idDocente')
+    ->name('disponibilidad-academica.destroy');
 });
 
 
