@@ -12,10 +12,10 @@ class DisponibilidadProfesor extends Model
     // Funcionalidades para crear registros.
     use HasFactory;
 
-    // Nombre de la tabla utilizada en MySQL.
+    // Nombre de la tabla utilizada.
     protected $table = 'disponibilidadProfesor';
 
-    // Nombre de la llave primaria de la tabla.
+    // Nombre de la llave primaria.
     protected $primaryKey = 'id_disponibilidad';
 
     public $timestamps = false;

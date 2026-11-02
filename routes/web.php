@@ -377,39 +377,35 @@ Route::middleware(['auth', \App\Http\Middleware\PrevenirCachePrivada::class, For
     ->name('asignaturas.activar');
 
                         /* Rutas para la gestión de la carga académica */
-
-    Route::get(
-        '/carga-academica',
-        [CargaAcademicaController::class, 'index']
-    )->name('cargaAcademica.index');
-
-                        /* Rutas para la gestión de la disponibilidad académica */
-    // Mostrar la página de disponibilidad académica.
-    Route::get('/disponibilidad-academica', [
-        DisponibilidadProfesorController::class,
+    // Mostrar la página de gestión de carga académica.
+    Route::get('/carga-academica', [
+        CargaAcademicaController::class,
         'index'
-    ])->name('disponibilidad-academica.index');
+    ])->name('carga-academica.index');
 
-    // Mostrar el formulario para modificar la carga académica.
-    Route::get('/disponibilidad-academica/{idDocente}/editar', [
-        DisponibilidadProfesorController::class,
+    // Mostrar el formulario para modificar la carga académica de un docente.
+    Route::get('/carga-academica/{idDocente}/editar', [
+        CargaAcademicaController::class,
         'edit'
     ])->whereNumber('idDocente')
-    ->name('disponibilidad-academica.edit');
+    ->name('carga-academica.edit');
 
     // Actualizar la carga académica del docente.
-    Route::put('/disponibilidad-academica/{idDocente}', [
-        DisponibilidadProfesorController::class,
+    Route::put('/carga-academica/{idDocente}', [
+        CargaAcademicaController::class,
         'update'
     ])->whereNumber('idDocente')
-    ->name('disponibilidad-academica.update');
+    ->name('carga-academica.update');
 
     // Eliminar la carga académica de un docente.
-    Route::delete('/disponibilidad-academica/{idDocente}', [
-        DisponibilidadProfesorController::class,
+    Route::delete('/carga-academica/{idDocente}', [
+        CargaAcademicaController::class,
         'destroy'
     ])->whereNumber('idDocente')
-    ->name('disponibilidad-academica.destroy');
+    ->name('carga-academica.destroy');
+
+    /* Rutas para la gestión de la disponibilidad de los docentes */                   
+ 
 });
 
 

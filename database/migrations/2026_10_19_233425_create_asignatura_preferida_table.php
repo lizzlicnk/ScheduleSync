@@ -1,4 +1,3 @@
-
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -8,14 +7,9 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Descripción:
-     * Crea la tabla asignatura_preferida para relacionar  docentes, asignaturas y periodos académicos.
-     *
-     * Entradas:
-     * No recibe parámetros.
-     *
-     * Salidas:
-     * Crea la tabla asignatura_preferida en la base de datos.
+     * Descripción: Crea la tabla asignatura_preferida para relacionar  docentes, asignaturas y periodos académicos.
+     * Entradas:No recibe parámetros.
+     * Salidas: Crea la tabla asignatura_preferida en la base de datos.
      */
     public function up(): void
     {
@@ -60,14 +54,9 @@ return new class extends Migration
     }
 
     /**
-     * Descripción:
-     * Elimina la tabla asignatura_preferida.
-     *
-     * Entradas:
-     * No recibe parámetros.
-     *
-     * Salidas:
-     * Elimina la tabla asignatura_preferida de la base de datos.
+     * Descripción:Elimina la tabla asignatura_preferida.
+     *Entradas:No recibe parámetros.
+     * Salidas: Elimina la tabla asignatura_preferida de la base de datos.
      */
     public function down(): void
     {
