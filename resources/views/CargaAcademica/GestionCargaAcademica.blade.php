@@ -12,11 +12,19 @@
     <!-- ENCABEZADO DEL MÓDULO -->
     <header class="encabezado-modulo">
         <div>
-            <p class="ruta-modulo">Inicio / Administración / Carga académica</p>
-            <h1>Gestión de carga académica</h1>
-            <p class="descripcion-modulo">
-                Consulta y administra la carga académica registrada de los docentes de la universidad.
-            </p>
+            @if (auth()->user()->rol == 3)
+                <p class="ruta-modulo">Inicio / Carga académica</p>
+                <h1>Mi carga académica</h1>
+                <p class="descripcion-modulo">
+                    Consulta la carga académica que tienes asignada como docente de la universidad.
+                </p>
+            @else
+                <p class="ruta-modulo">Inicio / Administración / Carga académica</p>
+                <h1>Gestión de carga académica</h1>
+                <p class="descripcion-modulo">
+                    Consulta y administra la carga académica registrada de los docentes de la universidad.
+                </p>
+            @endif
         </div>
     </header>
 
@@ -89,12 +97,7 @@
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </span>
 
-                        <input
-                            type="search"
-                            id="buscar-carga-academica"
-                            placeholder="Nombre o matrícula del docente..."
-                            autocomplete="off"
-                        >
+                        <input type="search" id="buscar-carga-academica" placeholder="Nombre o matrícula del docente..." autocomplete="off" >
                     </div>
                 @endif
             </div>
@@ -113,6 +116,7 @@
                     </tr>
                 </thead>
 
+                <!-- CUERPO DE LA TABLA -->
                 <tbody id="cuerpo-tabla-carga-academica">
                     @forelse ($docentesRegistrados as $usuario)
                         @php
@@ -122,11 +126,11 @@
                             // Construye el nombre completo del docente.
                             $nombreCompleto = trim(
                                 $usuario->nombreUsuario . ' ' .
-                                $usuario->apellidoPaterno . ' ' .
+                                ($usuario->apellidoPaterno ?? '') . ' ' .
                                 ($usuario->apellidoMaterno ?? '')
                             );
 
-                            // Convierte el tipo de docente en una etiqueta legible.
+                            // Obtiene el tipo de docente.
                             $tipoDocente = $docente
                                 ? (int) $docente->tipoDocente
                                 : null;
@@ -136,97 +140,90 @@
                                 : ($tipoDocente === 2 ? 'PA' : '-');
                         @endphp
 
-                        @if ($docente)
-                            <tr
-                                data-id-docente="{{ $docente->id_docente }}"
-                                data-id-usuario="{{ $usuario->id_usuario }}"
-                                data-nombre="{{ mb_strtolower($nombreCompleto) }}"
-                                data-matricula="{{ mb_strtolower($docente->matricula) }}"
-                                data-tipo="{{ $tipoDocente }}"
-                                data-carga="{{ $docente->cargaAcademica }}"
-                            >
-                                <td>{{ $docente->id_docente }}</td>
+                        <tr
+                            data-id-usuario="{{ $usuario->id_usuario }}"
+                            data-nombre="{{ mb_strtolower($nombreCompleto) }}"
+                            data-matricula="{{ mb_strtolower($docente->matricula ?? '') }}"
+                            data-tipo="{{ $tipoDocente ?? '' }}"
+                            data-carga="{{ $docente->cargaAcademica ?? '' }}"
+                        >
+                            <td>{{ $docente->id_docente ?? '-' }}</td>
 
-                                <td>
+                            <td>
+                                @if ($docente)
                                     <span class="matricula-docente">
                                         {{ $docente->matricula }}
                                     </span>
-                                </td>
+                                @else
+                                    -
+                                @endif
+                            </td>
 
-                                <td>
-                                    <div class="informacion-docente">
-                                        <strong>{{ $nombreCompleto }}</strong>
-                                    </div>
-                                </td>
+                            <td>
+                                <div class="informacion-docente">
+                                    <strong>{{ $nombreCompleto }}</strong>
+                                </div>
+                            </td>
 
-                                <td>
-                                    <span class="rol-usuario tipo-docente">
-                                        {{ $nombreTipo }}
-                                    </span>
-                                </td>
+                            <td>
+                                <span class="rol-usuario tipo-docente">
+                                    {{ $nombreTipo }}
+                                </span>
+                            </td>
 
-                                <td>
+                            <td>
+                                @if ($docente)
                                     <span class="carga-academica">
                                         {{ $docente->cargaAcademica }} horas
                                     </span>
-                                </td>
+                                @else
+                                    -
+                                @endif
+                            </td>
 
-                                <td>
-                                    <div class="acciones-tabla">
+                            <td>
+                                <div class="acciones-tabla">
+                                    @if ($docente)
 
                                         {{-- Consultar carga académica --}}
-                                        <button
-                                            type="button"
-                                            class="boton-accion boton-consultar"
-                                            data-consultar-carga="{{ $docente->id_docente }}"
-                                            aria-label="Consultar carga académica de {{ $nombreCompleto }}"
-                                        >
+                                        <button type="button" class="boton-accion boton-consultar" data-consultar-carga="{{ $docente->id_docente }}" aria-label="Consultar carga académica de {{ $nombreCompleto }}" >
                                             <i class="fa-solid fa-eye"></i>
                                             Consultar
                                         </button>
 
                                         @if ((int) auth()->user()->rol === 1)
-                                            <a href="{{ route('carga-academica.edit', [
-                                                'idDocente' => $docente->id_docente
-                                            ]) }}"
-                                                class="boton-accion boton-modificar"
-                                                aria-label="Modificar carga académica de {{ $nombreCompleto }}">
-
+                                            <a href="{{ route('carga-academica.edit', [ 'idDocente' => $docente->id_docente ]) }}" class="boton-accion boton-modificar">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                                 Modificar
                                             </a>
-                                        @endif
 
-                                        {{-- Eliminar carga académica --}}
-                                        @if ((int) auth()->user()->rol === 1)
-                                            <form
-                                                action="{{ route('carga-academica.destroy', $docente->id_docente) }}"
-                                                method="POST"
-                                                class="formulario-eliminar-carga"
-                                                data-nombre-docente="{{ $nombreCompleto }}"
-                                            >
+                                            {{-- Eliminar carga académica --}}
+                                            <form action="{{ route('carga-academica.destroy', $docente->id_docente) }}"
+                                                method="POST" class="formulario-eliminar-carga" data-nombre-docente="{{ $nombreCompleto }}" >
                                                 @csrf
                                                 @method('DELETE')
 
-                                                <button
-                                                    type="submit"
-                                                    class="boton-accion boton-eliminar"
-                                                    aria-label="Eliminar carga académica de {{ $nombreCompleto }}"
-                                                >
+                                                <button type="submit" class="boton-accion boton-eliminar" >
                                                     <i class="fa-solid fa-trash"></i>
                                                     Eliminar
                                                 </button>
                                             </form>
                                         @endif
 
-                                    </div>
-                                </td>
-                            </tr>
-                        @endif
+                                    @else
+                                        <span class="estado-sin-informacion">
+                                            <i class="fa-solid fa-circle-info"></i>
+                                            Sin información académica
+                                        </span>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+
                     @empty
                         <tr id="fila-sin-carga-academica">
                             <td colspan="6" class="tabla-vacia">
-                                No hay docentes registrados.
+                                No hay usuarios registrados.
                             </td>
                         </tr>
                     @endforelse
@@ -245,13 +242,11 @@
             <span id="informacion-pagina">Página 1 de 1</span>
 
             <div class="controles-paginacion">
-                <button type="button" class="boton-pagina" id="pagina-anterior"
-                    aria-label="Página anterior" disabled>
+                <button type="button" class="boton-pagina" id="pagina-anterior" aria-label="Página anterior" disabled>
                     ‹
                 </button>
 
-                <button type="button" class="boton-pagina" id="pagina-siguiente"
-                    aria-label="Página siguiente" disabled>
+                <button type="button" class="boton-pagina" id="pagina-siguiente" aria-label="Página siguiente" disabled>
                     ›
                 </button>
             </div>
@@ -275,28 +270,17 @@
         <div class="consulta-grid">
 
             <div class="buscador-consulta">
-                <label for="buscar-consulta-carga">
-                    Nombre del docente
-                </label>
+                <label for="buscar-consulta-carga"> Nombre del docente </label>
 
                 <div class="entrada-busqueda">
                     <span aria-hidden="true">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </span>
 
-                    <input
-                        type="search"
-                        id="buscar-consulta-carga"
-                        placeholder="Escribe un nombre o matrícula..."
-                        autocomplete="off"
-                    >
+                    <input type="search" id="buscar-consulta-carga" placeholder="Escribe un nombre o matrícula..." autocomplete="off" >
                 </div>
 
-                <div
-                    class="resultados-consulta"
-                    id="resultados-consulta-carga"
-                    aria-live="polite"
-                >
+                <div class="resultados-consulta" id="resultados-consulta-carga" aria-live="polite" >
                     @forelse ($docentesRegistrados as $usuario)
                         @php
                             $docente = $usuario->docente;
@@ -309,14 +293,10 @@
                         @endphp
 
                         @if ($docente)
-                            <button
-                                type="button"
-                                class="resultado-consulta-item"
-                                data-resultado-carga="{{ $docente->id_docente }}"
+                            <button type="button" class="resultado-consulta-item" data-resultado-carga="{{ $docente->id_docente }}"
                                 data-nombre-consulta="{{ mb_strtolower($nombreCompleto) }}"
                                 data-matricula-consulta="{{ mb_strtolower($docente->matricula) }}"
-                                aria-pressed="false"
-                            >
+                                aria-pressed="false" >
                                 <span class="informacion-resultado-consulta">
                                     <strong>{{ $nombreCompleto }}</strong>
                                     <small>Matrícula: {{ $docente->matricula }}</small>
@@ -331,26 +311,15 @@
                         </p>
                     @endforelse
 
-                    <p
-                        class="texto-secundario"
-                        id="sin-resultados-consulta-carga"
-                        hidden
-                    >
+                    <p class="texto-secundario" id="sin-resultados-consulta-carga" hidden >
                         No se encontraron docentes con esa búsqueda.
                     </p>
                 </div>
             </div>
 
             <!-- Tarjeta con los detalles del docente seleccionado -->
-            <div
-                class="tarjeta-detalle-carga"
-                id="tarjeta-detalle-carga"
-            >
-
-                <div
-                    class="detalle-vacio-carga"
-                    id="detalle-vacio-carga"
-                >
+            <div class="tarjeta-detalle-carga" id="tarjeta-detalle-carga" >
+                <div class="detalle-vacio-carga" id="detalle-vacio-carga" >
                     <div class="icono-detalle" aria-hidden="true">
                         <i class="fa-solid fa-user-tie"></i>
                     </div>
@@ -374,10 +343,7 @@
                     @endphp
 
                     @if ($docente)
-                        <div
-                            data-detalle-carga="{{ $docente->id_docente }}"
-                            hidden
-                        >
+                        <div data-detalle-carga="{{ $docente->id_docente }}" hidden >
                             <div class="encabezado-detalle-carga">
                                 <div class="icono-detalle">
                                     <i class="fa-solid fa-user-tie"></i>

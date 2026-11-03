@@ -1,3 +1,592 @@
+
+/* PÁGINA DE DISPONIBILIDAD */
+
+.pagina-disponibilidad {
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+    color: #30263B;
+}
+
+.pagina-disponibilidad * {
+    box-sizing: border-box;
+}
+
+.pagina-disponibilidad [hidden] {
+    display: none !important;
+}
+
+/* PANELES */
+
+.panel-disponibilidad {
+    min-width: 0;
+    margin-bottom: 25px;
+    padding: 26px;
+    overflow: hidden;
+    border: 1px solid #EAE3F1;
+    border-radius: 14px;
+    background: #FFFFFF;
+    box-shadow: 0 4px 17px rgba(45, 30, 60, 0.04);
+}
+
+.pagina-disponibilidad .encabezado-panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.pagina-disponibilidad .encabezado-panel h2 {
+    margin: 0;
+    color: #352641;
+    font-size: 20px;
+    font-weight: 750;
+}
+
+.pagina-disponibilidad .texto-secundario {
+    color: #797181;
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+/* FILTROS */
+
+.pagina-disponibilidad .filtros-disponibilidad {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+    gap: 18px;
+}
+
+.pagina-disponibilidad .campo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.pagina-disponibilidad .campo label {
+    color: #45364F;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.pagina-disponibilidad .campo select {
+    width: 100%;
+    min-height: 46px;
+    padding: 11px 13px;
+    border: 1px solid #DED5E8;
+    border-radius: 9px;
+    background: #FFFFFF;
+    color: #30263B;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+/* ENCABEZADO DE TABLA */
+
+.pagina-disponibilidad .titulo-tabla {
+    min-width: 0;
+}
+
+.pagina-disponibilidad .botones-encabezado {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.pagina-disponibilidad .boton-principal,
+.pagina-disponibilidad .boton-secundario {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 10px 18px;
+    border: 1px solid #DDD2E9;
+    border-radius: 9px;
+    background: #FFFFFF;
+    color: #5A3E7D;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.pagina-disponibilidad .boton-secundario:hover {
+    background: #F8F5FC;
+    border-color: #BFAAD7;
+}
+
+/* BUSCADOR */
+
+.pagina-disponibilidad .busqueda-tabla {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    max-width: 420px;
+    min-width: 0;
+    margin: 0;
+}
+
+.pagina-disponibilidad .busqueda-tabla label {
+    color: #45364F;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.pagina-disponibilidad .entrada-busqueda {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 42px;
+    padding: 0 13px;
+    border: 1px solid #DED5E8;
+    border-radius: 9px;
+    background: #FFFFFF;
+}
+
+.pagina-disponibilidad .entrada-busqueda > span {
+    color: #8967AD;
+}
+
+.pagina-disponibilidad .entrada-busqueda input {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    min-height: 40px;
+    padding: 8px 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #30263B;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+/* TABLA */
+
+.pagina-disponibilidad .tabla-contenedor {
+    width: 100%;
+    margin-top: 22px;
+    overflow-x: auto;
+    border: 1px solid #EAE3F1;
+    border-radius: 11px;
+}
+
+.tabla-disponibilidad {
+    width: 100%;
+    min-width: 1000px;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #FFFFFF;
+    text-align: left;
+}
+
+.tabla-disponibilidad thead th {
+    padding: 16px 17px;
+    border-bottom: 1px solid #EAE3F1;
+    background: #F8F5FC;
+    color: #6B5A7B;
+    font-size: 12px;
+    font-weight: 750;
+    letter-spacing: 0.35px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.tabla-disponibilidad tbody td {
+    padding: 17px;
+    border-bottom: 1px solid #F0ECF4;
+    color: #494052;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.tabla-disponibilidad tbody tr:hover {
+    background: #FCFAFE;
+}
+
+.tabla-disponibilidad tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.tabla-disponibilidad td:first-child,
+.matricula-docente {
+    color: #82768F;
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.informacion-docente {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 190px;
+}
+
+.informacion-docente strong {
+    color: #352941;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* ACCIONES */
+
+.pagina-disponibilidad .acciones-tabla {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 7px;
+}
+
+.pagina-disponibilidad .boton-accion {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 35px;
+    padding: 8px 11px;
+    border: 1px solid #E1D5ED;
+    border-radius: 8px;
+    background: #FFFFFF;
+    color: #654984;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.pagina-disponibilidad .boton-accion:hover {
+    border-color: #C8B3DF;
+    background: #F4EFF9;
+    color: #654984;
+}
+
+/* TABLA VACÍA */
+
+.pagina-disponibilidad .tabla-vacia {
+    padding: 38px 18px !important;
+    color: #766A82 !important;
+    font-size: 14px !important;
+    text-align: center;
+}
+
+/* PAGINACIÓN */
+
+.paginacion-disponibilidad {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 20px;
+    color: #756982;
+    font-size: 13px;
+}
+
+.pagina-disponibilidad .controles-paginacion {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pagina-disponibilidad .boton-pagina {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 37px;
+    height: 37px;
+    border: 1px solid #E1D5ED;
+    border-radius: 9px;
+    background: #FFFFFF;
+    color: #634581;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.pagina-disponibilidad .boton-pagina:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* CONSULTA DE ASIGNATURAS SELECCIONADAS */
+
+#panel-consulta {
+    scroll-margin-top: 24px;
+}
+
+.pagina-disponibilidad .total-asignaturas {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 18px 0 23px;
+    padding: 16px 18px;
+    border: 1px solid #E6D9F2;
+    border-radius: 10px;
+    background: #FAF6FE;
+}
+
+.pagina-disponibilidad .icono-total-asignaturas {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    background: #EFE5F8;
+    color: #5A3E7D;
+    font-size: 20px;
+}
+
+.pagina-disponibilidad .total-asignaturas > div:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.pagina-disponibilidad .total-asignaturas span {
+    color: #796D85;
+    font-size: 13px;
+}
+
+.pagina-disponibilidad .total-asignaturas strong {
+    color: #49345F;
+    font-size: 22px;
+    font-weight: 750;
+}
+
+.pagina-disponibilidad .consulta-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: start;
+    gap: 23px;
+    padding: 0;
+}
+
+.pagina-disponibilidad .buscador-consulta {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    min-width: 0;
+}
+
+.pagina-disponibilidad .resultados-consulta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 0;
+}
+
+.pagina-disponibilidad .resultados-consulta h3 {
+    margin: 6px 0 4px;
+    color: #51405F;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.pagina-disponibilidad .resultados-consulta > p,
+.pagina-disponibilidad .mensaje-sin-resultados {
+    margin: 7px 0;
+    padding: 0;
+}
+
+.pagina-disponibilidad #resultados-consulta-asignatura {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 340px;
+    overflow-y: auto;
+}
+
+.pagina-disponibilidad #resultados-consulta-asignatura [hidden] {
+    display: none !important;
+}
+
+.pagina-disponibilidad .resultado-consulta-item {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 5px;
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid #ECE4F3;
+    border-radius: 9px;
+    background: #FFFFFF;
+    color: inherit;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.pagina-disponibilidad .resultado-consulta-item:hover,
+.pagina-disponibilidad .resultado-consulta-item.seleccionado {
+    border-color: #C9B2E0;
+    background: #FAF6FE;
+}
+
+.pagina-disponibilidad .texto-resultado {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+
+.pagina-disponibilidad .resultado-consulta-item strong {
+    color: #3C2B4B;
+    font-size: 14px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.pagina-disponibilidad .tarjeta-detalle {
+    min-width: 0;
+    min-height: 235px;
+    padding: 22px;
+    border: 1px solid #E6D9F2;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #FCFAFE, #F7F1FC);
+}
+
+.pagina-disponibilidad .detalle-vacio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 185px;
+    padding: 0;
+    text-align: center;
+}
+
+.pagina-disponibilidad .detalle-vacio .icono-detalle {
+    margin-bottom: 13px;
+}
+
+.pagina-disponibilidad .detalle-vacio h3 {
+    margin: 0;
+    color: #49345F;
+    font-size: 17px;
+}
+
+.pagina-disponibilidad .detalle-vacio p {
+    max-width: 320px;
+    margin: 7px 0 0;
+    color: #797181;
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+.pagina-disponibilidad .encabezado-detalle {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #E8DDF1;
+}
+
+.pagina-disponibilidad .encabezado-detalle h3 {
+    margin: 0;
+    color: #39264F;
+    font-size: 18px;
+    font-weight: 750;
+    overflow-wrap: anywhere;
+}
+
+.pagina-disponibilidad .encabezado-detalle .icono-detalle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background: #EFE5F8;
+    color: #5A3E7D;
+    font-size: 22px;
+}
+
+.pagina-disponibilidad .encabezado-detalle p {
+    margin: 5px 0 0;
+    color: #7C6D89;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.pagina-disponibilidad .lista-detalle {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 7px;
+}
+
+.pagina-disponibilidad .fila-detalle {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 13px 0;
+    border-bottom: 1px solid #EDE5F3;
+}
+
+.pagina-disponibilidad .fila-detalle:last-child {
+    border-bottom: 0;
+}
+
+.pagina-disponibilidad .fila-detalle > span {
+    flex-shrink: 0;
+    color: #796D85;
+    font-size: 13px;
+}
+
+.pagina-disponibilidad .fila-detalle > strong {
+    color: #453452;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+.pagina-disponibilidad [hidden] {
+    display: none !important;
+}
+
+@media (max-width: 850px) {
+    .pagina-disponibilidad .consulta-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/*  ADAPTACIÓN A PANTALLAS PEQUEÑAS */
+
+@media (max-width: 768px) {
+    #calendario-disponibilidad {
+        padding: 8px;
+    }
+
+    #calendario-disponibilidad .fc-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    #calendario-disponibilidad .fc-toolbar-title {
+        font-size: 1rem;
+    }
+
+    .horario-seleccionado {
+        padding: 10px;
+    }
+}
+
+                                                                                                        /*Quita*/
+
 /* =========================================================
    CALENDARIO DE DISPONIBILIDAD ACADÉMICA
    ========================================================= */
@@ -19,9 +608,7 @@
     padding-bottom: 5px;
 }
 
-/* =========================================================
-   ENCABEZADO DEL CALENDARIO
-   ========================================================= */
+/*   ENCABEZADO DEL CALENDARIO */
 
 /* Título de los días y controles de navegación. */
 #calendario-disponibilidad .fc-toolbar-title {
@@ -54,9 +641,7 @@
     box-shadow: none !important;
 }
 
-/* =========================================================
-   ENCABEZADOS DE LOS DÍAS
-   ========================================================= */
+/*  ENCABEZADOS DE LOS DÍAS */
 
 /* Fondo y texto de los encabezados de lunes a sábado. */
 #calendario-disponibilidad .fc-col-header-cell {
@@ -73,9 +658,7 @@
     text-transform: capitalize;
 }
 
-/* =========================================================
-   TABLA DE HORARIOS
-   ========================================================= */
+/*  TABLA DE HORARIOS */
 
 /* Fondo de las celdas de las horas. */
 #calendario-disponibilidad .fc-timegrid-slot {
@@ -105,9 +688,7 @@
     background-color: rgba(250, 204, 21, 0.35);
 }
 
-/* =========================================================
-   HORARIOS SELECCIONADOS
-   ========================================================= */
+/*  HORARIOS SELECCIONADOS */
 
 /* Apariencia de los bloques de disponibilidad seleccionados. */
 #calendario-disponibilidad .evento-disponibilidad {
@@ -132,9 +713,7 @@
     background-color: #FACC15 !important;
 }
 
-/* =========================================================
-   RESUMEN DE HORARIOS SELECCIONADOS
-   ========================================================= */
+/*  RESUMEN DE HORARIOS SELECCIONADOS */
 
 /* Contenedor de los horarios seleccionados. */
 #lista-horarios-seleccionados {
@@ -213,28 +792,4 @@
 #total-horarios-seleccionados {
     color: #51346F;
     font-weight: 700;
-}
-
-/* =========================================================
-   ADAPTACIÓN A PANTALLAS PEQUEÑAS
-   ========================================================= */
-
-@media (max-width: 768px) {
-    #calendario-disponibilidad {
-        padding: 8px;
-    }
-
-    #calendario-disponibilidad .fc-toolbar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-
-    #calendario-disponibilidad .fc-toolbar-title {
-        font-size: 1rem;
-    }
-
-    .horario-seleccionado {
-        padding: 10px;
-    }
 }

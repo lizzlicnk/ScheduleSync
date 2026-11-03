@@ -12,14 +12,9 @@ use Illuminate\Validation\Rule;
 class DisponibilidadProfesorController extends Controller
 {
     /**
-     * Descripción: Muestra la disponibilidad horaria de los docentes
-     * registrados para el periodo seleccionado.
-     *
-     * Entradas:
-     * $solicitud: solicitud HTTP del usuario autenticado.
-     *
-     * Salidas:
-     * Vista de gestión con la disponibilidad de los docentes.
+     * Descripción: Muestra la disponibilidad horaria de los docentes registrados para el periodo seleccionado.
+     * Entradas: $solicitud: solicitud HTTP del usuario autenticado.
+     * Salidas: Vista de gestión con la disponibilidad de los docentes.
      */
     public function index(Request $solicitud)
     {
@@ -27,58 +22,106 @@ class DisponibilidadProfesorController extends Controller
         $this->verificarRol([1, 2, 3]);
 
         // Obtener los periodos registrados.
-        $periodosRegistrados = Periodo::orderBy('anio', 'desc')
-            ->orderBy('estacion')
-            ->get();
+        $periodosRegistrados = Periodo::orderBy('anio', 'desc')->orderBy('estacion')->get();
 
         // Obtener el periodo seleccionado.
-        $periodoSeleccionado = $solicitud->input(
-            'id_periodo',
-            $periodosRegistrados->first()?->id_periodo
-        );
+        $periodoSeleccionado = $solicitud->input( 'id_periodo', $periodosRegistrados->first()?->id_periodo );
 
         // Obtener el usuario autenticado.
         $usuarioAutenticado = auth()->user();
 
         // Consultar los docentes registrados.
-        $consultaDocentes = Usuario::where('rol', 3)
-            ->where('estado', 1)
-            ->with('docente');
+        $consultaDocentes = Usuario::where('rol', 3)->where('estado', 1)->with('docente');
 
         // Si es docente, limitar la consulta a su propia información.
         if ((int) $usuarioAutenticado->rol === 3) {
-            $consultaDocentes->where(
-                'id_usuario',
-                $usuarioAutenticado->id_usuario
-            );
+            $consultaDocentes->where( 'id_usuario', $usuarioAutenticado->id_usuario );
         }
 
         // Obtener los docentes registrados.
-        $docentesRegistrados = $consultaDocentes
-            ->orderBy('nombreUsuario')
-            ->get();
+        $docentesRegistrados = $consultaDocentes->orderBy('nombreUsuario')->get();
 
         // Obtener las disponibilidades del periodo seleccionado.
         $disponibilidadesRegistradas = collect();
 
         if ($periodoSeleccionado) {
-            $disponibilidadesRegistradas = DisponibilidadProfesor::where(
-                'id_periodo',
-                $periodoSeleccionado
-            )->with('docente')->get();
+            $disponibilidadesRegistradas = DisponibilidadProfesor::where( 'id_periodo', $periodoSeleccionado )->with('docente')->get();
         }
 
         // Enviar la información a la vista.
-        return view(
-            'DisponibilidadAcademica.GestionDisponibilidadAcademica',
-            compact(
-                'periodosRegistrados',
-                'periodoSeleccionado',
-                'docentesRegistrados',
-                'disponibilidadesRegistradas'
-            )
+        return view( 'DisponibilidadAcademica.GestionDisponibilidadAcademica',
+            compact( 'periodosRegistrados', 'periodoSeleccionado', 'docentesRegistrados', 'disponibilidadesRegistradas' )
         );
     }
+
+    /**
+     * Descripción: Muestra la información de disponibilidad de un docente.
+     *
+     * Entradas:
+     * $idDocente: identificador del docente.
+     * $idPeriodo: identificador del periodo académico.
+     *
+     * Salidas: Vista con la disponibilidad horaria del docente.
+     */
+
+    public function show($idDocente, $idPeriodo)
+    {
+        // Comprobar que el usuario tenga un rol autorizado.
+        $this->verificarRol([1, 2, 3]);
+
+        // Obtener el usuario autenticado.
+        $usuarioAutenticado = auth()->user();
+
+        // Buscar el docente seleccionado.
+        $docenteEncontrado = Docente::with('usuario')->findOrFail($idDocente);
+
+        // Comprobar que el docente solamente consulte su información.
+        if ((int) $usuarioAutenticado->rol === 3) {
+            abort_unless(
+                (int) $docenteEncontrado->id_usuario === (int) $usuarioAutenticado->id_usuario,
+                403
+            );
+        }
+
+        // Buscar el periodo seleccionado.
+        $periodoEncontrado = Periodo::findOrFail($idPeriodo);
+
+        // Obtener la disponibilidad del docente en ese periodo.
+        $disponibilidadesRegistradas = DisponibilidadProfesor::where( 'id_docente', $idDocente )
+        ->where( 'id_periodo', $idPeriodo )->orderBy('dia')->orderBy('hora_inicio')->get();
+
+        // Enviar los datos a la vista.
+        return view( 'DisponibilidadAcademica.ConsultarDisponibilidadAcademica',
+            compact( 'docenteEncontrado', 'periodoEncontrado', 'disponibilidadesRegistradas' )
+        );
+    }
+
+    /**
+     * Descripción: Comprueba que el usuario autenticado tenga uno de los roles permitidos.
+     * Entradas:
+     * $rolesPermitidos: identificadores de los roles autorizados.
+     * Salidas: No devuelve datos; genera un error 403 si el usuario no tiene permiso.
+     */
+
+    private function verificarRol(array $rolesPermitidos): void
+    {
+        // Obtener al usuario autenticado.
+        $usuarioAutenticado = auth()->user();
+        
+        // Comprobar que exista una sesión y tenga un rol autorizado.
+        abort_unless(
+            $usuarioAutenticado
+            && in_array(
+                (int) $usuarioAutenticado->rol,
+                $rolesPermitidos,
+                true
+            ),
+            403
+        );
+    }
+}
+
+
 
     /**
      * Descripción: Muestra el formulario para registrar la disponibilidad
@@ -90,6 +133,7 @@ class DisponibilidadProfesorController extends Controller
      * Salidas:
      * Vista para registrar la disponibilidad del docente.
      */
+    /*
     public function create($idDocente = null)
     {
         // Comprobar que el usuario tenga un rol autorizado.
@@ -119,7 +163,7 @@ class DisponibilidadProfesorController extends Controller
             'DisponibilidadAcademica.RegistrarDisponibilidadAcademica',
             compact('docenteEncontrado', 'periodosRegistrados')
         );
-    }
+    }*/
 
     /**
      * Descripción: Valida y registra la disponibilidad horaria de un docente.
@@ -131,6 +175,7 @@ class DisponibilidadProfesorController extends Controller
      * Salidas:
      * Redirige al listado con un mensaje de confirmación.
      */
+    /*
     public function store(Request $solicitud, $idDocente = null)
     {
         // Comprobar que el usuario tenga un rol autorizado.
@@ -164,7 +209,7 @@ class DisponibilidadProfesorController extends Controller
             'disponibilidades.*.dia' => [
                 'required',
                 'integer',
-                Rule::in([1, 2, 3, 4, 5, 6, 7]),
+                Rule::in([1, 2, 3, 4, 5, 6]),
             ],
             'disponibilidades.*.hora_inicio' => [
                 'required',
@@ -210,62 +255,7 @@ class DisponibilidadProfesorController extends Controller
                 'mensaje_modal_disponibilidad',
                 'La disponibilidad horaria se registró correctamente.'
             );
-    }
-
-    /**
-     * Descripción: Muestra la información de disponibilidad de un docente.
-     *
-     * Entradas:
-     * $idDocente: identificador del docente.
-     * $idPeriodo: identificador del periodo académico.
-     *
-     * Salidas:
-     * Vista con la disponibilidad horaria del docente.
-     */
-    public function show($idDocente, $idPeriodo)
-    {
-        // Comprobar que el usuario tenga un rol autorizado.
-        $this->verificarRol([1, 2, 3]);
-
-        // Obtener el usuario autenticado.
-        $usuarioAutenticado = auth()->user();
-
-        // Buscar el docente seleccionado.
-        $docenteEncontrado = Docente::with('usuario')->findOrFail($idDocente);
-
-        // Comprobar que el docente solamente consulte su información.
-        if ((int) $usuarioAutenticado->rol === 3) {
-            abort_unless(
-                (int) $docenteEncontrado->id_usuario ===
-                (int) $usuarioAutenticado->id_usuario,
-                403
-            );
-        }
-
-        // Buscar el periodo seleccionado.
-        $periodoEncontrado = Periodo::findOrFail($idPeriodo);
-
-        // Obtener la disponibilidad del docente en ese periodo.
-        $disponibilidadesRegistradas = DisponibilidadProfesor::where(
-            'id_docente',
-            $idDocente
-        )->where(
-            'id_periodo',
-            $idPeriodo
-        )->orderBy('dia')
-            ->orderBy('hora_inicio')
-            ->get();
-
-        // Enviar los datos a la vista.
-        return view(
-            'DisponibilidadAcademica.ConsultarDisponibilidadAcademica',
-            compact(
-                'docenteEncontrado',
-                'periodoEncontrado',
-                'disponibilidadesRegistradas'
-            )
-        );
-    }
+    } */
 
     /**
      * Descripción: Muestra el formulario para modificar la disponibilidad
@@ -278,6 +268,7 @@ class DisponibilidadProfesorController extends Controller
      * Salidas:
      * Vista de edición con la disponibilidad registrada.
      */
+    /*
     public function edit($idDocente, $idPeriodo)
     {
         // Comprobar que el usuario tenga un rol autorizado.
@@ -322,7 +313,7 @@ class DisponibilidadProfesorController extends Controller
             )
         );
     }
-
+    */
     /**
      * Descripción: Actualiza la disponibilidad horaria de un docente.
      *
@@ -334,6 +325,7 @@ class DisponibilidadProfesorController extends Controller
      * Salidas:
      * Redirección al módulo con un mensaje de confirmación.
      */
+    /*
     public function update(Request $solicitud, $idDocente, $idPeriodo)
     {
         // Comprobar que el usuario tenga un rol autorizado.
@@ -367,7 +359,7 @@ class DisponibilidadProfesorController extends Controller
             'disponibilidades.*.dia' => [
                 'required',
                 'integer',
-                Rule::in([1, 2, 3, 4, 5, 6, 7]),
+                Rule::in([1, 2, 3, 4, 5, 6]),
             ],
             'disponibilidades.*.hora_inicio' => [
                 'required',
@@ -425,7 +417,8 @@ class DisponibilidadProfesorController extends Controller
                 'mensaje_modal_disponibilidad',
                 'La disponibilidad horaria se modificó correctamente.'
             );
-    }
+    } 
+            */
 
     /**
      * Descripción: Elimina la disponibilidad horaria de un docente
@@ -438,6 +431,7 @@ class DisponibilidadProfesorController extends Controller
      * Salidas:
      * Redirección al módulo con un mensaje de confirmación.
      */
+    /*
     public function destroy($idDocente, $idPeriodo)
     {
         // Solo el administrador puede eliminar disponibilidades.
@@ -475,32 +469,4 @@ class DisponibilidadProfesorController extends Controller
                 'mensaje_modal_disponibilidad',
                 'La disponibilidad del docente se eliminó correctamente.'
             );
-    }
-
-    /**
-     * Descripción: Comprueba que el usuario autenticado tenga uno de los
-     * roles permitidos.
-     *
-     * Entradas:
-     * $rolesPermitidos: identificadores de los roles autorizados.
-     *
-     * Salidas:
-     * No devuelve datos; genera un error 403 si el usuario no tiene permiso.
-     */
-    private function verificarRol(array $rolesPermitidos): void
-    {
-        // Obtener al usuario autenticado.
-        $usuarioAutenticado = auth()->user();
-
-        // Comprobar que exista una sesión y tenga un rol autorizado.
-        abort_unless(
-            $usuarioAutenticado
-            && in_array(
-                (int) $usuarioAutenticado->rol,
-                $rolesPermitidos,
-                true
-            ),
-            403
-        );
-    }
-}
+    } */

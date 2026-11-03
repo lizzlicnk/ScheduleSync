@@ -10,12 +10,8 @@ class CargaAcademicaController extends Controller
 {
     /**
      * Descripción: Consulta los docentes registrados y su carga académica.
-     *
-     * Entradas:
-     * $solicitud: solicitud HTTP con los filtros de búsqueda.
-     *
-     * Salidas:
-     * Retorna la vista de gestión de carga académica con los docentes registrados.
+     * Entradas: $solicitud: solicitud HTTP con los filtros de búsqueda.
+     * Salidas: Retorna la vista de gestión de carga académica con los docentes registrados.
      */
     public function index(Request $solicitud)
     {
@@ -32,30 +28,19 @@ class CargaAcademicaController extends Controller
 
         // Si es docente, solamente consultar su propia información.
         if ((int) $usuarioAutenticado->rol === 3) {
-            $consultaDocentes->where(
-                'id_usuario',
-                $usuarioAutenticado->id_usuario
-            );
+            $consultaDocentes->where( 'id_usuario', $usuarioAutenticado->id_usuario );
         }
 
         // Obtener los docentes registrados.
-        $docentesRegistrados = $consultaDocentes
-            ->orderBy('nombreUsuario')
-            ->get();
+        $docentesRegistrados = $consultaDocentes->orderBy('nombreUsuario')->get();
 
         // Retornar la vista con los docentes registrados.
-        return view(
-            'CargaAcademica.GestionCargaAcademica',
-            compact('docentesRegistrados')
-        );
+        return view( 'CargaAcademica.GestionCargaAcademica', compact('docentesRegistrados') );
     }
 
     /**
      * Descripción: Muestra el formulario para modificar la carga académica de un docente.
-     *
-     * Entradas:
-     * $idDocente: identificador del docente que se desea modificar.
-     *
+     * Entradas: $idDocente: identificador del docente que se desea modificar.
      * Salidas:
      * Retorna la vista de edición con los datos del docente seleccionado.
      */
@@ -71,10 +56,7 @@ class CargaAcademicaController extends Controller
         $usuarioEncontrado = Usuario::findOrFail($docenteEncontrado->id_usuario);
 
         // Retornar la vista con la información del docente.
-        return view(
-            'CargaAcademica.EditarCargaAcademica',
-            compact('docenteEncontrado', 'usuarioEncontrado')
-        );
+        return view( 'CargaAcademica.EditarCargaAcademica', compact('docenteEncontrado', 'usuarioEncontrado') );
     }
 
     /**
@@ -123,8 +105,7 @@ class CargaAcademicaController extends Controller
         $docenteEncontrado->save();
 
         // Regresar a la página de gestión de carga académica.
-        return redirect()
-            ->route('carga-academica.index')
+        return redirect()->route('carga-academica.index')
             ->with('tipo_modal_carga', 'exito')
             ->with('mensaje_modal_carga', 'La carga académica se modificó correctamente.');
     }
@@ -153,20 +134,15 @@ class CargaAcademicaController extends Controller
         $docenteEncontrado->save();
 
         // Regresar a la página de gestión de carga académica.
-        return redirect()
-            ->route('carga-academica.index')
+        return redirect()->route('carga-academica.index')
             ->with('tipo_modal_carga', 'exito')
             ->with('mensaje_modal_carga', 'La carga académica se eliminó correctamente.');
     }
 
     /**
      * Descripción: Comprueba que el usuario tenga un rol autorizado.
-     *
-     * Entradas:
-     * $rolesPermitidos: identificadores de los roles autorizados.
-     *
-     * Salidas:
-     * No devuelve datos; genera un error 403 si no tiene permiso.
+     * Entradas: $rolesPermitidos: identificadores de los roles autorizados.
+     *  Salidas: No devuelve datos; genera un error 403 si no tiene permiso.
      */
     private function verificarRol(array $rolesPermitidos): void
     {

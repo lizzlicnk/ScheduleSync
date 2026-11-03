@@ -1,6 +1,4 @@
-/* =========================================================
-   PÁGINA PRINCIPAL
-========================================================= */
+/*   PÁGINA PRINCIPAL */
 
 .pagina-carga-academica {
     width: 100%;
@@ -128,9 +126,7 @@
     outline-offset: 2px;
 }
 
-/* =========================================================
-   PANELES
-========================================================= */
+/*  PANELES */
 
 .panel-carga-academica {
     min-width: 0;
@@ -195,9 +191,7 @@
     font-size: 14px;
 }
 
-/* =========================================================
-   CAMPOS Y FILTROS
-========================================================= */
+/* CAMPOS Y FILTROS */
 
 .pagina-carga-academica .campo {
     display: flex;
@@ -328,9 +322,7 @@
     color: #A49AAE;
 }
 
-/* =========================================================
-   TABLA DE CARGA ACADÉMICA
-========================================================= */
+/*  TABLA DE CARGA ACADÉMICA */
 
 .pagina-carga-academica .tabla-contenedor {
     width: 100%;
@@ -433,9 +425,7 @@
     white-space: nowrap;
 }
 
-/* =========================================================
-   ACCIONES DE LA TABLA
-========================================================= */
+/*  ACCIONES DE LA TABLA */
 
 .pagina-carga-academica .acciones-tabla {
     display: flex;
@@ -499,9 +489,7 @@
     line-height: 1.6;
 }
 
-/* =========================================================
-   PAGINACIÓN
-========================================================= */
+/* PAGINACIÓN */
 
 .paginacion-carga-academica {
     display: flex;
@@ -546,9 +534,7 @@
     cursor: not-allowed;
 }
 
-/* =========================================================
-   CONSULTA DE CARGA ACADÉMICA
-========================================================= */
+/*   CONSULTA DE CARGA ACADÉMICA */
 
 #panel-consulta {
     scroll-margin-top: 24px;
@@ -602,9 +588,7 @@
 }
 
 
-/* =========================================================
-   CONSULTA DE CARGA ACADÉMICA
-========================================================= */
+/* CONSULTA DE CARGA ACADÉMICA */
 
 .pagina-carga-academica #panel-consulta {
     scroll-margin-top: 24px;
@@ -816,9 +800,7 @@
 }
 
 
-/* =========================================================
-   BOTONES GENERALES DEL ENCABEZADO
-========================================================= */
+/* BOTONES GENERALES DEL ENCABEZADO  */
 
 .botones-encabezado {
     display: flex;
@@ -853,9 +835,7 @@
     box-shadow: 0 0 0 3px rgba(112, 71, 163, 0.12);
 }
 
-/* =========================================================
-   RESPONSIVE: CELULARES PEQUEÑOS
-========================================================= */
+/*  RESPONSIVE: CELULARES PEQUEÑOS */
 
 @media (max-width: 380px) {
     .pagina-carga-academica .botones-encabezado {
@@ -878,9 +858,7 @@
     }
 }
 
-/* =========================================================
-   RESPONSIVE: TABLET Y PANTALLAS MEDIANAS
-========================================================= */
+/* RESPONSIVE: TABLET Y PANTALLAS MEDIANAS */
 
 @media (max-width: 1000px) {
     .pagina-carga-academica .encabezado-tabla {
@@ -912,9 +890,7 @@
     }
 }
 
-/* =========================================================
-   RESPONSIVE: CELULARES
-========================================================= */
+/*  RESPONSIVE: CELULARES */
 
 @media (max-width: 700px) {
     .pagina-carga-academica .encabezado-tabla {
@@ -1003,4 +979,18 @@
     background: #F4EBFF;
     color: #6B21A8;
     font-size: 22px;
+}
+
+/* Estado de usuario sin información académica */
+.estado-sin-informacion {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background-color: #fff4df;
+    color: #986515;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
 }

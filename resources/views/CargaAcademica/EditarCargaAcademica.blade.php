@@ -52,17 +52,11 @@
 
         <!-- Formulario para actualizar la carga académica -->
         <form
-            action="{{ route('carga-academica.update', [
-                'idDocente' => $docenteEncontrado->id_docente
-            ]) }}"
-            method="POST"
-            class="formulario-editar-carga">
-
+            action="{{ route('carga-academica.update', [ 'idDocente' => $docenteEncontrado->id_docente ]) }}" method="POST" class="formulario-editar-carga">
             @csrf
             @method('PUT')
 
             <div class="campos-edicion-carga">
-
                 <!-- Matrícula -->
                 <div class="campo-edicion-carga">
                     <label for="matricula">
@@ -70,11 +64,7 @@
                         Matrícula
                     </label>
 
-                    <input
-                        type="text"
-                        id="matricula"
-                        value="{{ $docenteEncontrado->matricula }}"
-                        readonly>
+                    <input type="text" id="matricula" value="{{ $docenteEncontrado->matricula }}" readonly>
                 </div>
 
                 <!-- Tipo de docente -->
@@ -84,11 +74,7 @@
                         Tipo de docente
                     </label>
 
-                    <input
-                        type="text"
-                        id="tipoDocente"
-                        value="{{ $tipoDocente }}"
-                        readonly>
+                    <input type="text" id="tipoDocente" value="{{ $tipoDocente }}" readonly>
                 </div>
 
                 <!-- Carga académica -->
@@ -98,20 +84,11 @@
                         Carga académica (horas)
                     </label>
 
-                    <input
-                        type="number"
-                        id="cargaAcademica"
-                        name="cargaAcademica"
-                        value="{{ old('cargaAcademica', $docenteEncontrado->cargaAcademica) }}"
-                        min="1"
-                        max="{{ $limiteHoras }}"
-                        step="1"
-                        placeholder="Ingresa la cantidad de horas"
-                        required>
+                    <input type="number" id="cargaAcademica" name="cargaAcademica" value="{{ old('cargaAcademica', $docenteEncontrado->cargaAcademica) }}"
+                        min="1" max="{{ $limiteHoras }}" step="1" placeholder="Ingresa la cantidad de horas" required>
 
                     <small>
-                        El docente {{ $tipoDocente }} puede tener un máximo de
-                        {{ $limiteHoras }} horas académicas.
+                        El docente {{ $tipoDocente }} puede tener un máximo de {{ $limiteHoras }} horas académicas.
                     </small>
                 </div>
 
@@ -120,8 +97,7 @@
             <!-- Botones para cancelar o guardar los cambios -->
             <div class="acciones-edicion-carga">
 
-                <a href="{{ route('carga-academica.index') }}"
-                    class="boton-cancelar-edicion-carga">
+                <a href="{{ route('carga-academica.index') }}" class="boton-cancelar-edicion-carga">
                     Cancelar
                 </a>
 
@@ -129,7 +105,6 @@
                     <i class="fa-solid fa-floppy-disk"></i>
                     Guardar cambios
                 </button>
-
             </div>
         </form>
 

@@ -11,11 +11,19 @@
 
     <!-- ENCABEZADO DEL MÓDULO -->
     <header class="encabezado-modulo">
-        <div>
-            <p class="ruta-modulo"> Inicio / Administración / Asignaturas</p>
-            <h1>Gestión de asignaturas</h1>
-            <p class="descripcion-modulo"> Administra las asignaturas correspondientes a las carreras de la universidad. </p>
-        </div>
+        @if (auth()->user()->rol == 3)
+            <div>
+                <p class="ruta-modulo"> Inicio / Consulta / Asignaturas</p>
+                <h1>Consulta de asignaturas</h1>
+                <p class="descripcion-modulo"> Consulta las asignaturas correspondientes a las carreras de la universidad. </p>
+            </div>
+        @else
+            <div>
+                <p class="ruta-modulo"> Inicio / Administración / Asignaturas</p>
+                <h1>Gestión de asignaturas</h1>
+                <p class="descripcion-modulo"> Administra las asignaturas correspondientes a las carreras de la universidad. </p>
+            </div>
+        @endif
     </header>
 
     <!-- MENSAJES DEL SISTEMA -->

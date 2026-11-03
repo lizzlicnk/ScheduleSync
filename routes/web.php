@@ -404,8 +404,59 @@ Route::middleware(['auth', \App\Http\Middleware\PrevenirCachePrivada::class, For
     ])->whereNumber('idDocente')
     ->name('carga-academica.destroy');
 
-    /* Rutas para la gestión de la disponibilidad de los docentes */                   
- 
+                        /* Rutas para la gestión de la disponibilidad académica */
+
+    // Mostrar la página de gestión de disponibilidad académica.
+    Route::get('/disponibilidad-academica', [
+        DisponibilidadProfesorController::class,
+        'index'
+    ])->name('disponibilidad-academica.index');
+
+    // Mostrar el formulario para registrar la disponibilidad de un docente.
+    Route::get('/disponibilidad-academica/crear/{idDocente?}', [
+        DisponibilidadProfesorController::class,
+        'create'
+    ])->whereNumber('idDocente')
+    ->name('disponibilidad-academica.create');
+
+    // Registrar la disponibilidad horaria de un docente.
+    Route::post('/disponibilidad-academica/registrar/{idDocente?}', [
+        DisponibilidadProfesorController::class,
+        'store'
+    ])->whereNumber('idDocente')
+    ->name('disponibilidad-academica.store');
+
+    // Consultar la disponibilidad de un docente en un periodo académico.
+    Route::get('/disponibilidad-academica/{idDocente}/{idPeriodo}', [
+        DisponibilidadProfesorController::class,
+        'show'
+    ])->whereNumber('idDocente')
+    ->whereNumber('idPeriodo')
+    ->name('disponibilidad-academica.show');
+
+    // Mostrar el formulario para modificar la disponibilidad de un docente.
+    Route::get('/disponibilidad-academica/{idDocente}/{idPeriodo}/editar', [
+        DisponibilidadProfesorController::class,
+        'edit'
+    ])->whereNumber('idDocente')
+    ->whereNumber('idPeriodo')
+    ->name('disponibilidad-academica.edit');
+
+    // Actualizar la disponibilidad horaria de un docente.
+    Route::put('/disponibilidad-academica/{idDocente}/{idPeriodo}', [
+        DisponibilidadProfesorController::class,
+        'update'
+    ])->whereNumber('idDocente')
+    ->whereNumber('idPeriodo')
+    ->name('disponibilidad-academica.update');
+
+    // Eliminar la disponibilidad de un docente en un periodo académico.
+    Route::delete('/disponibilidad-academica/{idDocente}/{idPeriodo}', [
+        DisponibilidadProfesorController::class,
+        'destroy'
+    ])->whereNumber('idDocente')
+    ->whereNumber('idPeriodo')
+    ->name('disponibilidad-academica.destroy'); 
 });
 
 

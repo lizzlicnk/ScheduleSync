@@ -1,8 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-
-    // =========================================================
     // ELEMENTOS PRINCIPALES DE LA TABLA
-    // =========================================================
 
     // Obtiene los elementos principales de la tabla.
     const buscarCarga = document.getElementById('buscar-carga-academica');
@@ -22,9 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const paginaAnterior = document.getElementById('pagina-anterior');
     const paginaSiguiente = document.getElementById('pagina-siguiente');
 
-    // =========================================================
     // ELEMENTOS DEL PANEL DE CONSULTA
-    // =========================================================
 
     // Obtiene los elementos del panel de consulta.
     const panelConsulta = document.getElementById('panel-consulta');
@@ -37,22 +32,16 @@ document.addEventListener('DOMContentLoaded', function () {
     // Guarda la página actual de la tabla.
     let paginaActual = 1;
 
-    // Define la cantidad de docentes que se muestran por página.
+    // cantidad de docentes que se muestran por página.
     const docentesPorPagina = 5;
 
-    // Obtiene las filas reales y excluye las filas de mensajes.
-    const filasDocentes = cuerpoTabla
-        ? Array.from(cuerpoTabla.querySelectorAll('tr[data-id-docente]'))
-        : [];
+    // Filas reales y excluye las filas de mensajes.
+    const filasDocentes = cuerpoTabla ? Array.from(cuerpoTabla.querySelectorAll('tr[data-id-docente]')) : [];
 
-    // Obtiene los resultados disponibles para consultar.
-    const opcionesConsulta = resultadosConsulta
-        ? Array.from(resultadosConsulta.querySelectorAll('[data-resultado-carga]'))
-        : [];
+    //Resultados disponibles para consultar.
+    const opcionesConsulta = resultadosConsulta ? Array.from(resultadosConsulta.querySelectorAll('[data-resultado-carga]')) : [];
 
-    // =========================================================
     // FUNCIONES GENERALES
-    // =========================================================
 
     // Normaliza los textos para ignorar mayúsculas, minúsculas y acentos.
     function normalizarTexto(texto) {
@@ -79,25 +68,17 @@ document.addEventListener('DOMContentLoaded', function () {
             const tipo = fila.dataset.tipo;
 
             // Comprueba si coincide con el texto de búsqueda.
-            const coincideBusqueda =
-                !texto ||
-                matricula.includes(texto) ||
-                nombre.includes(texto) ||
-                id.includes(texto);
+            const coincideBusqueda = !texto || matricula.includes(texto) || nombre.includes(texto) || id.includes(texto);
 
             // Comprueba si coincide con el tipo de docente seleccionado.
-            const coincideTipo =
-                tipoSeleccionado === '' ||
-                tipo === tipoSeleccionado;
+            const coincideTipo = tipoSeleccionado === '' || tipo === tipoSeleccionado;
 
             // Devuelve únicamente los docentes que cumplen ambos criterios.
             return coincideBusqueda && coincideTipo;
         });
     }
 
-    // =========================================================
     // ACTUALIZACIÓN DE LA TABLA
-    // =========================================================
 
     // Muestra los docentes correspondientes a la página actual.
     function actualizarTabla() {
@@ -140,14 +121,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (filaSinResultados) {
-            filaSinResultados.hidden =
-                filasDocentes.length === 0 || cantidadDocentes > 0;
+            filaSinResultados.hidden = filasDocentes.length === 0 || cantidadDocentes > 0;
         }
 
         // Actualiza la información y el estado de los botones de paginación.
         if (informacionPagina) {
-            informacionPagina.textContent =
-                `Página ${paginaActual} de ${totalPaginas}`;
+            informacionPagina.textContent = `Página ${paginaActual} de ${totalPaginas}`;
         }
 
         if (paginaAnterior) {
@@ -159,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Actualiza la tabla cuando se escribe una búsqueda nueva.
+    // Actualiza la tabla cuando se escribe una búsqueda 
     buscarCarga?.addEventListener('input', function () {
         paginaActual = 1;
         actualizarTabla();
@@ -188,9 +167,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // =========================================================
     // CONSULTA DE CARGA ACADÉMICA
-    // =========================================================
 
     // Muestra los detalles del docente seleccionado.
     function consultarCarga(idDocente, botonSeleccionado = null) {
@@ -269,9 +246,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // =========================================================
     // FILTRADO DE RESULTADOS DE CONSULTA
-    // =========================================================
 
     // Filtra los resultados del panel de consulta.
     function actualizarResultadosConsulta() {
@@ -281,13 +256,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         opcionesConsulta.forEach(function (opcion) {
 
-            // Obtiene los datos del docente.
+            // Datos del docente.
             const matricula = normalizarTexto(opcion.dataset.matriculaConsulta);
             const nombre = normalizarTexto(opcion.dataset.nombreConsulta);
 
-            // Muestra coincidencias por matrícula o nombre.
-            const mostrar = texto.length > 0 &&
-                (matricula.includes(texto) || nombre.includes(texto));
+            // coincidencias por matrícula o nombre.
+            const mostrar = texto.length > 0 && (matricula.includes(texto) || nombre.includes(texto));
 
             opcion.hidden = !mostrar;
 
@@ -329,16 +303,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         opcion.addEventListener('click', function () {
 
-            consultarCarga(
-                opcion.dataset.resultadoCarga,
-                opcion
-            );
+            consultarCarga( opcion.dataset.resultadoCarga, opcion );
         });
     });
 
-    // =========================================================
     // FILTROS
-    // =========================================================
 
     // Abre o cierra el panel de filtros.
     botonFiltros?.addEventListener('click', function () {
@@ -379,9 +348,7 @@ document.addEventListener('DOMContentLoaded', function () {
         actualizarTabla();
     });
 
-    // =========================================================
     // ELIMINAR CARGA ACADÉMICA
-    // =========================================================
 
     // Obtiene los formularios para eliminar la carga académica.
     const formulariosEliminar = document.querySelectorAll(
@@ -412,9 +379,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // =========================================================
     // INICIALIZACIÓN
-    // =========================================================
 
     // Oculta los resultados de consulta al cargar la página.
     actualizarResultadosConsulta();

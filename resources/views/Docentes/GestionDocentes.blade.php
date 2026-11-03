@@ -83,11 +83,19 @@
     <section class="panel-docentes">
         <div class="encabezado-panel encabezado-tabla">
             <div class="titulo-tabla">
-                <h2>Docentes registrados</h2>
-                <p class="texto-secundario">
-                    <span id="total-resultados">{{ $docentesRegistrados->count() }}</span>
-                    docente(s) encontrado(s)
-                </p>
+                @if (auth()->user()->rol == 3)
+                    <h2>Mi información académica</h2>
+                    <p class="texto-secundario">
+                        <span id="total-resultados">{{ $docentesRegistrados->count() }}</span>
+                        docente(s) encontrado(s)
+                    </p>
+                @else
+                    <h2>Docentes registrados</h2>
+                    <p class="texto-secundario">
+                        <span id="total-resultados">{{ $docentesRegistrados->count() }}</span>
+                        docente(s) encontrado(s)
+                    </p>
+                @endif
             </div>
 
             <div class="botones-encabezado">
@@ -386,9 +394,15 @@
         <div class="encabezado-panel">
             <div>
                 <h2>Consultar docente</h2>
-                <p class="texto-secundario">
-                    Busca por nombre o apellido para consultar los datos.
-                </p>
+                @if (in_array((int) auth()->user()->rol, [1, 2], true))
+                    <p class="texto-secundario">
+                        Busca por nombre o apellido para consultar los datos.
+                    </p>
+                @else
+                    <p class="texto-secundario">
+                        Busca por nombre o apellido para consultar tu información académica.
+                    </p>
+                @endif
             </div>
         </div>
 
