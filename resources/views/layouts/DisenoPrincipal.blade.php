@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="{{ asset('css/menu-lateral.css') }}">
     <link rel="stylesheet" href="{{ asset('css/Componentes/modal.css') }}">
 
+    <link rel="stylesheet" href="{{ asset('css/componentes/sweet-alert.css') }}">
+
      <!-- Permite agregar estilos específicos desde cada vista. -->
     @stack('estilos')
     
@@ -44,7 +46,10 @@
         </main>
     </div>
     
-     <!-- script controlar la inactividad de la sesión. -->
+    <!-- script controlar la inactividad de la sesión. -->
     <script src="{{ asset('js/inicio/sesion/control-inactividad.js') }}"></script>
+
+    <!-- Componente global de alertas -->
+    <x-alertas.sweet-alert />
 </body>
 </html>

@@ -348,6 +348,7 @@ document.addEventListener('DOMContentLoaded', function () {
         actualizarTabla();
     });
 
+
     // ELIMINAR CARGA ACADÉMICA
 
     // Obtiene los formularios para eliminar la carga académica.
@@ -359,7 +360,7 @@ document.addEventListener('DOMContentLoaded', function () {
     formulariosEliminar.forEach(function (formulario) {
 
         // Escucha el envío del formulario.
-        formulario.addEventListener('submit', function (evento) {
+        formulario.addEventListener('submit', async function (evento) {
 
             // Evita el envío inmediato.
             evento.preventDefault();
@@ -367,17 +368,20 @@ document.addEventListener('DOMContentLoaded', function () {
             // Obtiene el nombre del docente.
             const nombreDocente = this.dataset.nombreDocente;
 
-            // Muestra la confirmación antes de eliminar.
-            const confirmarEliminacion = confirm(
-                `¿Estás seguro de eliminar la carga académica de ${nombreDocente}?`
-            );
+            // Solicita confirmación antes de eliminar.
+            const confirmado = await confirmarEliminarCarga(nombreDocente);
 
             // Envía el formulario si se confirma.
-            if (confirmarEliminacion) {
+            if (confirmado) {
                 this.submit();
             }
+
         });
+
     });
+
+
+
 
     // INICIALIZACIÓN
 

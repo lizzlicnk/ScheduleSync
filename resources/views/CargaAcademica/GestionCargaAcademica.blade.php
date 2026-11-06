@@ -28,14 +28,6 @@
         </div>
     </header>
 
-    <!-- MENSAJES DEL SISTEMA -->
-    @if (session('error'))
-        <div class="alerta-carga-academica alerta-error" role="alert">
-            <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
-            <span>{{ session('error') }}</span>
-        </div>
-    @endif
-
     <!-- FILTROS DE CARGA ACADÉMICA -->
     @if (in_array((int) auth()->user()->rol, [1, 2], true))
         <section class="panel-carga-academica panel-filtros" id="contenedor-filtros" hidden>

@@ -104,10 +104,9 @@ class CargaAcademicaController extends Controller
         // Guardar los cambios.
         $docenteEncontrado->save();
 
-        // Regresar a la página de gestión de carga académica.
+        // Regresar a la página con un mensaje de éxito.
         return redirect()->route('carga-academica.index')
-            ->with('tipo_modal_carga', 'exito')
-            ->with('mensaje_modal_carga', 'La carga académica se modificó correctamente.');
+            ->with('alerta_exito', 'La carga académica se modificó correctamente.');
     }
 
     /**
@@ -133,10 +132,9 @@ class CargaAcademicaController extends Controller
         // Guardar los cambios.
         $docenteEncontrado->save();
 
-        // Regresar a la página de gestión de carga académica.
+        // Regresar a la página con un mensaje de éxito.
         return redirect()->route('carga-academica.index')
-            ->with('tipo_modal_carga', 'exito')
-            ->with('mensaje_modal_carga', 'La carga académica se eliminó correctamente.');
+            ->with('alerta_exito', 'La carga académica se eliminó correctamente.');
     }
 
     /**
