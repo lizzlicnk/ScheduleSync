@@ -168,4 +168,150 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+
+    // Confirma la eliminación de la disponibilidad académica.
+    document.querySelectorAll('.formulario-eliminar-disponibilidad').forEach(function (formulario) {
+
+        formulario.addEventListener('submit', function (evento) {
+
+            // Obtiene el nombre del docente.
+            const nombreDocente = formulario.dataset.nombreDocente;
+
+            // Solicita confirmación antes de eliminar.
+            const confirmarEliminacion = confirm(
+                `¿Estás seguro de eliminar la disponibilidad académica de ${nombreDocente}?`
+            );
+
+            // Cancela el envío si no se confirma.
+            if (!confirmarEliminacion) {
+                evento.preventDefault();
+            }
+
+        });
+
+    });
+
+    // Obtiene los elementos de búsqueda y paginación de docentes.
+    const buscarDisponibilidad = document.getElementById('buscar-disponibilidad');
+    const cuerpoTabla = document.getElementById('cuerpo-tabla-disponibilidad');
+    const totalResultados = document.getElementById('total-resultados');
+    const filaSinResultados = document.getElementById('fila-sin-resultados');
+    const informacionPagina = document.getElementById('informacion-pagina');
+    const botonPaginaAnterior = document.getElementById('pagina-anterior');
+    const botonPaginaSiguiente = document.getElementById('pagina-siguiente');
+
+    // Obtiene las filas de docentes.
+    const filasDocentes = cuerpoTabla
+        ? Array.from(cuerpoTabla.querySelectorAll('tr[data-id-docente]'))
+        : [];
+
+    // Configuración de la paginación.
+    const registrosPorPagina = 10;
+    let paginaActual = 1;
+    let docentesFiltrados = [...filasDocentes];
+
+    // Normaliza los textos para ignorar mayúsculas, minúsculas y acentos.
+    function normalizarTexto(texto) {
+        return (texto || '')
+            .toString()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .trim();
+    }
+
+    // Actualiza la información y visibilidad de la tabla.
+    function actualizarTablaDisponibilidad() {
+
+        const totalDocentes = docentesFiltrados.length;
+        const totalPaginas = Math.ceil(totalDocentes / registrosPorPagina);
+
+        // Evita permanecer en una página que ya no existe.
+        if (paginaActual > totalPaginas && totalPaginas > 0) {
+            paginaActual = totalPaginas;
+        }
+
+        const inicio = (paginaActual - 1) * registrosPorPagina;
+        const fin = inicio + registrosPorPagina;
+
+        // Oculta todas las filas antes de mostrar la página correspondiente.
+        filasDocentes.forEach(function (fila) {
+            fila.hidden = true;
+        });
+
+        // Muestra únicamente los docentes de la página actual.
+        docentesFiltrados.slice(inicio, fin).forEach(function (fila) {
+            fila.hidden = false;
+        });
+
+        // Actualiza el contador de resultados.
+        if (totalResultados) {
+            totalResultados.textContent = totalDocentes;
+        }
+
+        // Muestra el mensaje cuando no hay coincidencias.
+        if (filaSinResultados) {
+            filaSinResultados.hidden = totalDocentes > 0;
+        }
+
+        // Actualiza la información de la página.
+        if (informacionPagina) {
+            informacionPagina.textContent =
+                `Página ${totalDocentes > 0 ? paginaActual : 0} de ${totalPaginas}`;
+        }
+
+        // Actualiza el estado de los botones.
+        if (botonPaginaAnterior) {
+            botonPaginaAnterior.disabled = paginaActual <= 1;
+        }
+
+        if (botonPaginaSiguiente) {
+            botonPaginaSiguiente.disabled =
+                paginaActual >= totalPaginas || totalPaginas === 0;
+        }
+    }
+
+    // Busca docentes por matrícula o nombre.
+    buscarDisponibilidad?.addEventListener('input', function () {
+
+        const texto = normalizarTexto(buscarDisponibilidad.value);
+
+        docentesFiltrados = filasDocentes.filter(function (fila) {
+
+            const matricula = normalizarTexto(fila.dataset.matricula);
+            const nombre = normalizarTexto(fila.dataset.nombre);
+
+            return matricula.includes(texto) || nombre.includes(texto);
+        });
+
+        // Reinicia la paginación después de cada búsqueda.
+        paginaActual = 1;
+
+        actualizarTablaDisponibilidad();
+    });
+
+    // Muestra la página anterior.
+    botonPaginaAnterior?.addEventListener('click', function () {
+
+        if (paginaActual > 1) {
+            paginaActual--;
+            actualizarTablaDisponibilidad();
+        }
+    });
+
+    // Muestra la página siguiente.
+    botonPaginaSiguiente?.addEventListener('click', function () {
+
+        const totalPaginas = Math.ceil(
+            docentesFiltrados.length / registrosPorPagina
+        );
+
+        if (paginaActual < totalPaginas) {
+            paginaActual++;
+            actualizarTablaDisponibilidad();
+        }
+    });
+
+    // Inicializa la tabla.
+    actualizarTablaDisponibilidad();
 });

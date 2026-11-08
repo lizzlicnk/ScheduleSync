@@ -22,44 +22,37 @@
 
 /* ICONOS */
 
-/* Icono de éxito */
 .alerta-schedulesync .swal2-icon-success {
     border-color: #23964B !important;
     color: #23964B !important;
 }
 
-/* Icono de error */
 .alerta-schedulesync .swal2-icon-error {
     border-color: #DC3545 !important;
     color: #DC3545 !important;
 }
 
-/* Icono de advertencia */
 .alerta-schedulesync .swal2-icon-warning {
     border-color: #E0A800 !important;
     color: #E0A800 !important;
 }
 
-/* Icono informativo */
 .alerta-schedulesync .swal2-icon-info {
     border-color: #5A3E7D !important;
     color: #5A3E7D !important;
 }
 
-/* Icono de confirmación */
 .alerta-schedulesync .swal2-icon-question {
     border-color: #5A3E7D !important;
     color: #5A3E7D !important;
 }
 
-/* Iconos personalizados */
 .alerta-schedulesync .swal2-icon-content {
     font-size: 30px !important;
 }
 
 /* BOTONES */
 
-/* Contenedor de botones */
 .alerta-schedulesync .swal2-actions {
     gap: 10px;
 }
@@ -73,7 +66,6 @@
     font-weight: 600 !important;
 }
 
-/* Hover del botón morado */
 .alerta-schedulesync .boton-confirmar-alerta:hover {
     background-color: #472D68 !important;
 }
@@ -87,17 +79,15 @@
     font-weight: 600 !important;
 }
 
-/* Hover del botón de cancelación */
 .alerta-schedulesync .boton-cancelar-alerta:hover {
     background-color: #565E64 !important;
 }
 
-/* Botón rojo para acciones de eliminación */
+/* Botón rojo para acciones de peligro */
 .alerta-schedulesync .boton-alerta-peligro {
     background-color: #DC3545 !important;
 }
 
-/* Hover del botón rojo */
 .alerta-schedulesync .boton-alerta-peligro:hover {
     background-color: #B02A37 !important;
 }
@@ -108,7 +98,6 @@
     color: #30263B !important;
 }
 
-/* Hover del botón amarillo */
 .alerta-schedulesync .boton-alerta-advertencia:hover {
     background-color: #C69500 !important;
 }
@@ -120,21 +109,18 @@
 
 /*   MODAL PARA ELIMINAR CARGA ACADÉMICA */
 
-/* Contenedor principal */
 .modal-eliminar-carga {
     max-width: 480px !important;
     padding: 35px 30px !important;
     border-radius: 16px !important;
 }
 
-/* Título negro */
 .modal-eliminar-carga .swal2-title {
     color: #30263B !important;
     font-size: 22px !important;
     font-weight: 700 !important;
 }
 
-/* Contenedor del mensaje */
 .mensaje-eliminar-carga {
     margin-top: 8px;
     color: #555555;
@@ -142,7 +128,6 @@
     line-height: 1.6;
 }
 
-/* Nombre del docente en morado */
 .nombre-docente-alerta {
     display: block;
     margin: 12px 0 18px;
@@ -152,14 +137,12 @@
     overflow-wrap: anywhere;
 }
 
-/* Mensajes adicionales */
 .nota-eliminar-carga {
     margin: 8px 0;
     color: #666666;
     font-size: 13px;
 }
 
-/* Contenedor de botones */
 .modal-eliminar-carga .swal2-actions {
     display: flex;
     justify-content: center;
@@ -167,7 +150,6 @@
     margin-top: 25px;
 }
 
-/* Botón cancelar transparente */
 .boton-cancelar-carga {
     padding: 11px 22px !important;
     border: 1px solid #5A3E7D !important;
@@ -181,14 +163,12 @@
     transition: background 0.2s ease, color 0.2s ease;
 }
 
-/* Hover del botón cancelar */
 .boton-cancelar-carga:hover {
     background: #F1EBF7 !important;
     border-color: #472D68 !important;
     color: #472D68 !important;
 }
 
-/* Botón eliminar rojo */
 .boton-eliminar-carga {
     padding: 11px 22px !important;
     border: 1px solid #DC3545 !important;
@@ -202,18 +182,15 @@
     transition: background 0.2s ease, border-color 0.2s ease;
 }
 
-/* Hover del botón eliminar */
 .boton-eliminar-carga:hover {
     background: #B02A37 !important;
     border-color: #B02A37 !important;
 }
 
-/* Eliminar contorno predeterminado */
 .modal-eliminar-carga button:focus {
     box-shadow: none !important;
 }
 
-/* Adaptación para pantallas pequeñas */
 @media (max-width: 480px) {
 
     .modal-eliminar-carga {

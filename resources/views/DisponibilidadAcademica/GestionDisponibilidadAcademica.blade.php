@@ -6,6 +6,11 @@
     <link rel="stylesheet" href="{{ asset('css/DisponibilidadAcademica/gestion-disponibilidadAcademica.css') }}">
 @endpush
 
+@php
+    // Solo se preselecciona un docente si viene del botón "Agregar" o de un error de validación.
+    $docentePreseleccionado = old('id_docente', $idDocenteSeleccionado ?? '');
+@endphp
+
 @section('contenido')
 <main class="pagina-registro-disponibilidad pagina-disponibilidad">
 
@@ -85,6 +90,7 @@
         <div class="encabezado-panel encabezado-tabla">
 
             <div class="titulo-tabla">
+               
                 <h2>Disponibilidad académica registrada</h2>
 
                 <p class="texto-secundario">
@@ -186,12 +192,20 @@
                                 </td>
 
                                 <!-- ACCIONES -->
+                                <!-- ACCIONES -->
                                 <td>
                                     <div class="acciones-tabla">
 
                                         @if ($periodoSeleccionado)
 
-                                            @if ($disponibilidadesRegistradas->where('id_docente', $usuario->docente->id_docente)->isNotEmpty())
+                                            @php
+                                                // Comprueba si el docente tiene disponibilidad en el periodo.
+                                                $tieneDisponibilidad = $disponibilidadesRegistradas
+                                                    ->where('id_docente', $usuario->docente->id_docente)
+                                                    ->isNotEmpty();
+                                            @endphp
+
+                                            @if ($tieneDisponibilidad)
 
                                                 <!-- CONSULTAR -->
                                                 <a
@@ -223,11 +237,26 @@
 
                                                 <!-- ELIMINAR -->
                                                 @if ((int) auth()->user()->rol === 1)
-                                                    <button type="button" class="boton-accion boton-eliminar" data-baja-disponibilidad="{{ $usuario->docente->id_docente }}"
-                                                        data-periodo-disponibilidad="{{ $periodoSeleccionado }}" data-nombre-docente="{{ $usuario->nombreUsuario }}" >
-                                                        <i class="fa-solid fa-trash"></i>
-                                                        Eliminar
-                                                    </button>
+                                                    <form
+                                                        action="{{ route('disponibilidad-academica.destroy', [
+                                                            'idDocente' => $usuario->docente->id_docente,
+                                                            'idPeriodo' => $periodoSeleccionado
+                                                        ]) }}"
+                                                        method="POST"
+                                                        class="formulario-eliminar-disponibilidad"
+                                                        data-nombre-docente="{{ $usuario->nombreUsuario }}"
+                                                    >
+                                                        @csrf
+                                                        @method('DELETE')
+
+                                                        <button
+                                                            type="submit"
+                                                            class="boton-accion boton-eliminar"
+                                                        >
+                                                            <i class="fa-solid fa-trash"></i>
+                                                            Eliminar
+                                                        </button>
+                                                    </form>
                                                 @endif
 
                                             @else
@@ -235,11 +264,12 @@
                                                 <!-- AGREGAR -->
                                                 @if (in_array((int) auth()->user()->rol, [1, 3]))
                                                     <a
-                                                        href="{{ route('disponibilidad-academica.create',
-                                                            (int) auth()->user()->rol === 1
-                                                                ? ['idDocente' => $usuario->docente->id_docente]
-                                                                : []
-                                                        ) }}"
+                                                        href="{{ route('disponibilidad-academica.create', array_filter([
+                                                            'idDocente' => (int) auth()->user()->rol === 1
+                                                                ? $usuario->docente->id_docente
+                                                                : null,
+                                                            'id_periodo' => $periodoSeleccionado
+                                                        ])) }}#registro-disponibilidad"
                                                         class="boton-accion boton-agregar"
                                                         aria-label="Agregar disponibilidad de {{ $usuario->nombreUsuario }}"
                                                     >
@@ -300,48 +330,47 @@
         </div>
     </section>
 
+    
     <!-- FORMULARIO PARA REGISTRAR DISPONIBILIDAD -->
-    <!--
-    <section class="panel-registro-disponibilidad">
+    <section class="panel-disponibilidad panel-registro-disponibilidad" id="registro-disponibilidad">
         <div class="encabezado-panel">
             <div>
-                <h2>Registrar disponibilidad</h2>
+                <h2>Registrar disponibilidad académica</h2>
 
                 <p class="texto-secundario">
-                    Selecciona al docente, el periodo académico y los horarios en los que se encuentra disponible.
+                    Registra los días y horarios en los que el docente no puede impartir clases durante el periodo académico.
                 </p>
             </div>
         </div>
 
+        <!-- FORMULARIO -->
         <form
+            id="formulario-disponibilidad"
             action="{{ route('disponibilidad-academica.store') }}"
             method="POST"
-            id="formulario-disponibilidad"
-            data-rol="{{ auth()->user()->rol }}"
-            data-ruta-registro="{{ url('/disponibilidad-academica/registrar') }}"
         >
             @csrf
 
-            <div class="formulario-grid">
+            <!-- INFORMACIÓN DEL REGISTRO -->
+            <div class="informacion-registro">
 
-                <!-- DOCENTE 
-                <div class="campo campo-docente-disponibilidad">
-                    <label for="id_docente">
-                        <i class="fa-solid fa-user-tie" aria-hidden="true"></i>
-                        Docente
-                        <span class="campo-requerido">*</span>
-                    </label>
+                <!-- DOCENTE -->
+                <div class="campo">
+                    <label for="id_docente">Docente</label>
 
-                    @if ((int) auth()->user()->rol === 1)
+                    @if (in_array((int) auth()->user()->rol, [1, 2]))
 
-                        <select name="id_docente" id="id_docente" required>
-                            <option value="">Selecciona un docente</option>
+                        <select name="id_docente" id="id_docente" autocomplete="off" required>
+
+                            <option value="" {{ $docentePreseleccionado === '' || $docentePreseleccionado === null ? 'selected' : '' }}>
+                                Selecciona un docente
+                            </option>
 
                             @foreach ($docentesRegistrados as $usuario)
                                 @if ($usuario->docente)
                                     <option
                                         value="{{ $usuario->docente->id_docente }}"
-                                        {{ old('id_docente') == $usuario->docente->id_docente ? 'selected' : '' }}
+                                        {{ (string) $docentePreseleccionado === (string) $usuario->docente->id_docente ? 'selected' : '' }}
                                     >
                                         {{ trim(
                                             $usuario->nombreUsuario . ' ' .
@@ -352,6 +381,7 @@
                                     </option>
                                 @endif
                             @endforeach
+
                         </select>
 
                     @else
@@ -369,13 +399,9 @@
                     @endif
                 </div>
 
-                <!-- PERIODO ACADÉMICO 
-                <div class="campo campo-periodo-disponibilidad">
-                    <label for="id_periodo">
-                        <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
-                        Periodo académico
-                        <span class="campo-requerido">*</span>
-                    </label>
+                <!-- PERIODO ACADÉMICO -->
+                <div class="campo">
+                    <label for="id_periodo">Periodo académico</label>
 
                     <select name="id_periodo" id="id_periodo" required>
                         <option value="">Selecciona un periodo</option>
@@ -393,246 +419,151 @@
 
             </div>
 
-            <!-- SELECCIÓN DE HORARIOS 
+            <!-- CUADRÍCULA DE HORARIOS -->
             <div class="seccion-horarios-disponibilidad">
 
                 <div class="encabezado-panel">
                     <div>
-                        <h2>Disponibilidad horaria</h2>
+                        <h2>Registrar horarios no disponibles</h2>
 
                         <p class="texto-secundario">
-                            Selecciona los espacios de tiempo en los que el docente puede impartir clases.
+                            Selecciona los bloques de tiempo en los que el docente no puede impartir clases.
                         </p>
                     </div>
                 </div>
 
-                <!-- LEYENDA DE COLORES 
-                <div class="leyenda-disponibilidad">
-
-                    <div class="elemento-leyenda">
-                        <span class="color-disponible"></span>
-                        <span>Horario seleccionado</span>
+                <!-- REFERENCIA DE COLORES -->
+                <div class="referencia-horarios">
+                    <div>
+                        <span class="referencia-disponible"></span>
+                        Disponible
                     </div>
 
-                    <div class="elemento-leyenda">
-                        <span class="color-no-disponible"></span>
-                        <span>Horario no seleccionado</span>
+                    <div>
+                        <span class="referencia-no-disponible"></span>
+                        No disponible
                     </div>
+                </div>
+
+                <!-- CUADRÍCULA -->
+                <div class="contenedor-cuadricula">
+
+                    <table class="tabla-horarios">
+
+                        <thead>
+                            <tr>
+                                <th>Hora</th>
+                                <th>Lunes</th>
+                                <th>Martes</th>
+                                <th>Miércoles</th>
+                                <th>Jueves</th>
+                                <th>Viernes</th>
+                                <th>Sábado</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @for ($hora = 7; $hora < 21; $hora++)
+
+                                <tr>
+
+                                    <th>
+                                        {{ sprintf('%02d:00', $hora) }}
+                                        -
+                                        {{ sprintf('%02d:00', $hora + 1) }}
+                                    </th>
+
+                                    @for ($dia = 1; $dia <= 6; $dia++)
+
+                                        @php
+                                            $bloque = $dia . '-' . $hora;
+                                            $seleccionado = in_array(
+                                                $bloque,
+                                                old('bloques_no_disponibles', [])
+                                            );
+                                        @endphp
+
+                                        <td>
+                                            <button
+                                                type="button"
+                                                class="bloque-horario {{ $seleccionado ? 'bloque-no-disponible' : '' }}"
+                                                data-bloque="{{ $bloque }}"
+                                                aria-pressed="{{ $seleccionado ? 'true' : 'false' }}"
+                                                aria-label="Día {{ $dia }}, {{ $hora }}:00 a {{ $hora + 1 }}:00"
+                                            >
+                                                {{ $seleccionado ? 'No disponible' : 'Disponible' }}
+                                            </button>
+                                        </td>
+
+                                    @endfor
+
+                                </tr>
+
+                            @endfor
+
+                        </tbody>
+                    </table>
 
                 </div>
 
-                <!-- INSTRUCCIONES 
-                <div class="ayuda-disponibilidad">
-                    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                <!-- BLOQUES SELECCIONADOS -->
+                <div id="bloques-seleccionados">
 
-                    <p>
-                        Selecciona y arrastra el cursor sobre el calendario para marcar un horario disponible. Puedes seleccionar varios intervalos en un mismo día. Para quitar un horario, haz clic sobre el intervalo seleccionado.
-                    </p>
-                </div>
-
-                <!-- CALENDARIO 
-                <div class="contenedor-calendario">
-                    <div id="calendario-disponibilidad"></div>
-                </div>
-
-                <!-- HORARIOS SELECCIONADOS 
-                <div class="resumen-disponibilidad">
-
-                    <div class="encabezado-resumen-disponibilidad">
-                        <h3>Horarios seleccionados</h3>
-
-                        <span id="total-horarios-seleccionados">
-                            0 horarios
-                        </span>
-                    </div>
-
-                    <div
-                        id="lista-horarios-seleccionados"
-                        class="lista-horarios-seleccionados"
-                    >
-                        <p class="texto-secundario" id="sin-horarios-seleccionados">
-                            Todavía no has seleccionado ningún horario.
-                        </p>
-                    </div>
+                    @foreach (old('bloques_no_disponibles', []) as $bloque)
+                        <input
+                            type="hidden"
+                            name="bloques_no_disponibles[]"
+                            value="{{ $bloque }}"
+                            data-input-bloque="{{ $bloque }}"
+                        >
+                    @endforeach
 
                 </div>
 
-                <!-- CAMPOS OCULTOS GENERADOS POR JAVASCRIPT
-                <div id="campos-disponibilidad"></div>
+                <p class="texto-ayuda-horarios">
+                    Haz clic sobre un bloque para cambiar su estado. Los bloques marcados en color amarillo representan horarios en los que el docente no está disponible.
+                </p>
 
             </div>
 
-            <!-- ACCIONES DEL FORMULARIO 
-            <div class="acciones-registro-disponibilidad">
+            <!-- ACCIONES -->
+            <div class="acciones-disponibilidad">
 
-                <a
-                    href="{{ route('disponibilidad-academica.index') }}"
-                    class="boton-cancelar-disponibilidad"
+                <button
+                    type="reset"
+                    class="boton-secundario"
                 >
-                    Cancelar
-                </a>
+                    Limpiar formulario
+                </button>
 
-                <button type="submit" class="boton-guardar-disponibilidad">
-                    <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
-                    Registrar disponibilidad
+                <button
+                    type="submit"
+                    name="accion"
+                    value="borrador"
+                    class="boton-guardar-borrador"
+                >
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Guardar borrador
+                </button>
+
+                <button
+                    type="submit"
+                    name="accion"
+                    value="entregar"
+                    class="boton-entregar-disponibilidad"
+                >
+                    <i class="fa-solid fa-check"></i>
+                    Entregar disponibilidad
                 </button>
 
             </div>
 
         </form>
     </section>
--->
 
     <!-- PANEL PARA CONSULTAR ASIGNATURAS SELECCIONADAS -->
-    <section class="panel-disponibilidad panel-consulta-disponibilidad" id="panel-consulta">
-        <div class="encabezado-panel">
-            <div>
-                <h2>Consultar asignaturas seleccionadas</h2>
-                <p class="texto-secundario">
-                    Consulta las asignaturas seleccionadas por el docente.
-                </p>
-            </div>
-        </div>
-
-        <div class="total-asignaturas">
-            <div class="icono-total-asignaturas" aria-hidden="true">
-                <i class="fa-solid fa-book-open"></i>
-            </div>
-
-            <div>
-                <span>Total de asignaturas seleccionadas</span>
-                <strong id="total-asignaturas-seleccionadas">
-                    {{ isset($asignaturasSeleccionadas) ? $asignaturasSeleccionadas->count() : '-' }}
-                </strong>
-            </div>
-        </div>
-
-        <div class="consulta-grid">
-            <div class="buscador-consulta">
-                <div class="campo">
-                    <label for="buscar-consulta-asignatura">
-                        Nombre de la asignatura o carrera
-                    </label>
-
-                    <div class="entrada-busqueda">
-                        <span aria-hidden="true">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </span>
-
-                        <input
-                            type="search"
-                            id="buscar-consulta-asignatura"
-                            placeholder="Escribe el nombre de una asignatura o carrera..."
-                            autocomplete="off"
-                        >
-                    </div>
-                </div>
-
-                <div class="resultados-consulta">
-                    <h3>Resultados</h3>
-
-                    <div id="resultados-consulta-asignatura" aria-live="polite">
-                        @forelse (($asignaturasSeleccionadas ?? collect()) as $asignatura)
-                            <button
-                                type="button"
-                                class="resultado-consulta-item"
-                                data-resultado-asignatura="{{ $asignatura->id_asignatura }}"
-                                data-nombre-consulta="{{ mb_strtolower($asignatura->nombreAsignatura) }}"
-                                data-carrera-consulta="{{ mb_strtolower($asignatura->carrera->nombreCarrera ?? '') }}"
-                            >
-                                <span class="texto-resultado">
-                                    <strong>
-                                        {{ $asignatura->nombreAsignatura }} -
-                                        {{ $asignatura->carrera->nombreCarrera ?? '-' }}
-                                    </strong>
-                                </span>
-                            </button>
-                        @empty
-                            <p class="texto-secundario mensaje-sin-resultados">
-                                -
-                            </p>
-                        @endforelse
-
-                        <p
-                            class="texto-secundario mensaje-sin-resultados"
-                            id="sin-resultados-consulta-asignatura"
-                            hidden
-                        >
-                            No se encontraron asignaturas con ese nombre o carrera.
-                        </p>
-                    </div> 
-                </div>
-            </div>
-
-            <div class="tarjeta-detalle" id="tarjeta-detalle-asignatura">
-                <div class="detalle-vacio" id="detalle-vacio-asignatura">
-                    <div class="icono-detalle" aria-hidden="true">
-                        <i class="fa-solid fa-book-open"></i>
-                    </div>
-
-                    <h3>Información de la asignatura</h3>
-
-                    <p class="texto-secundario">
-                        Selecciona una asignatura de los resultados para ver su información.
-                    </p>
-                </div>
-
-                @foreach (($asignaturasSeleccionadas ?? collect()) as $asignatura)
-                    <div
-                        class="contenido-detalle-asignatura"
-                        data-detalle-asignatura="{{ $asignatura->id_asignatura }}"
-                        hidden
-                        >
-                        <div class="encabezado-detalle">
-                            <div class="icono-detalle" aria-hidden="true">
-                                <i class="fa-solid fa-book-open"></i>
-                            </div>
-
-                            <div>
-                                <h3>{{ $asignatura->nombreAsignatura }}</h3>
-
-                                <p class="texto-secundario">
-                                    {{ $asignatura->carrera->nombreCarrera ?? '-' }}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="lista-detalle">
-                            <div class="fila-detalle">
-                                <span>ID de asignatura</span>
-                                <strong>{{ $asignatura->id_asignatura }}</strong>
-                            </div>
-
-                            <div class="fila-detalle">
-                                <span>Clave</span>
-                                <strong>{{ $asignatura->clave ?? '-' }}</strong>
-                            </div>
-
-                            <div class="fila-detalle">
-                                <span>Nombre de la asignatura</span>
-                                <strong>{{ $asignatura->nombreAsignatura }}</strong>
-                            </div>
-
-                            <div class="fila-detalle">
-                                <span>Carrera</span>
-                                <strong>{{ $asignatura->carrera->nombreCarrera ?? '-' }}</strong>
-                            </div>
-
-                            <div class="fila-detalle">
-                                <span>Cuatrimestre</span>
-                                <strong>{{ $asignatura->cuatrimestre ?? '-' }}</strong>
-                            </div>
-
-                            <div class="fila-detalle">
-                                <span>Horas</span>
-                                <strong>{{ $asignatura->cantidadHoras ?? '-' }}</strong>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
+    
 </main>
 
 <!-- CONFIGURACIÓN PARA JAVASCRIPT -->
@@ -670,13 +601,10 @@
     });
 </script>
 
-<!-- BIBLIOTECA FULLCALENDAR -->
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
-
-<!-- FUNCIONAMIENTO DEL CALENDARIO -->
-<script src="{{ asset('js/DisponibilidadAcademica/calendario-disponibilidadAcademica.js') }}" defer></script>
-
 <!-- GESTIÓN DE LOS HORARIOS SELECCIONADOS -->
 <script src="{{ asset('js/DisponibilidadAcademica/gestion-DisponibilidadAcademica.js') }}" defer></script>
+
+<!-- REGISTRO DE DISPONIBILIDAD -->
+<script src="{{ asset('js/DisponibilidadAcademica/registro-DisponibilidadAcademica.js') }}" defer></script>
 
 @endsection

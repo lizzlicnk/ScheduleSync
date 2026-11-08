@@ -1,8 +1,3 @@
-
-/*
- * Descripción: Funciones genéricas para mostrar alertas en los diferentes módulos de ScheduleSync.
- */
-
 // CONFIGURACIÓN GENERAL DE LAS ALERTAS
 
 const configuracionAlertas = {
@@ -19,16 +14,12 @@ const configuracionAlertas = {
 };
 
 /**
- * Muestra una alerta de éxito.
- *
+ * Descripción: Muestra una alerta de éxito.
  * Entradas:
  * mensaje: Mensaje que se mostrará.
  * titulo: Título de la alerta.
  */
-function mostrarExito(
-    mensaje,
-    titulo = '¡Operación exitosa!'
-) {
+function mostrarExito( mensaje, titulo = '¡Operación exitosa!' ) {
     Swal.fire({
         ...configuracionAlertas,
         icon: 'success',
@@ -39,18 +30,14 @@ function mostrarExito(
 }
 
 /**
- * Muestra una alerta de error.
+ * Descripción: Muestra una alerta de error.
  *
  * Entradas:
  * mensaje: Mensaje que se mostrará.
  * titulo: Título de la alerta.
  * icono: Icono que representa el error.
  */
-function mostrarError(
-    mensaje,
-    titulo = '¡Ha ocurrido un error!',
-    icono = 'fa-circle-exclamation'
-) {
+function mostrarError( mensaje, titulo = '¡Ha ocurrido un error!', icono = 'fa-circle-exclamation' ) {
     Swal.fire({
         ...configuracionAlertas,
         icon: 'error',
@@ -63,18 +50,14 @@ function mostrarError(
 
 
 /**
- * Muestra una alerta de advertencia.
+ * Descripción: Muestra una alerta de advertencia.
  *
  * Entradas:
  * mensaje: Mensaje que se mostrará.
  * titulo: Título de la alerta.
  * icono: Icono que representa la advertencia.
  */
-function mostrarAdvertencia(
-    mensaje,
-    titulo = '¡Atención!',
-    icono = 'fa-triangle-exclamation'
-) {
+function mostrarAdvertencia( mensaje, titulo = '¡Atención!', icono = 'fa-triangle-exclamation' ) {
     Swal.fire({
         ...configuracionAlertas,
         icon: 'warning',
@@ -87,18 +70,14 @@ function mostrarAdvertencia(
 
 
 /**
- * Muestra una alerta informativa.
+ * Descripción: Muestra una alerta informativa.
  *
  * Entradas:
  * mensaje: Mensaje que se mostrará.
  * titulo: Título de la alerta.
  * icono: Icono que representa la información.
  */
-function mostrarInformacion(
-    mensaje,
-    titulo = 'Información',
-    icono = 'fa-circle-info'
-) {
+function mostrarInformacion( mensaje, titulo = 'Información', icono = 'fa-circle-info' ) {
     Swal.fire({
         ...configuracionAlertas,
         icon: 'info',
@@ -110,13 +89,9 @@ function mostrarInformacion(
 }
 
 /**
- * Solicita confirmación antes de eliminar la carga académica de un docente.
- *
- * Entradas:
- * nombreUsuario: Nombre completo del docente.
- *
- * Salida:
- * Devuelve true si se confirma la eliminación y false si se cancela.
+ * Descripción: Solicita confirmación antes de eliminar la carga académica de un docente.
+ * Entradas: nombreUsuario: Nombre completo del docente.
+ * Salida: Devuelve true si se confirma la eliminación y false si se cancela.
  */
 async function confirmarEliminarCarga(nombreUsuario) {
 
@@ -135,41 +110,27 @@ async function confirmarEliminarCarga(nombreUsuario) {
         },
 
         icon: 'warning',
-
         title: '¿Deseas eliminar esta carga académica?',
 
         html: `
             <div class="mensaje-eliminar-carga">
-
-                <p>
-                    Estás a punto de dar de baja la carga académica de:
-                </p>
+                <p> Estás a punto de dar de baja la carga académica de: </p>
 
                 <strong class="nombre-docente-alerta">
                     ${nombreSeguro.innerHTML}
                 </strong>
 
-                <p class="nota-eliminar-carga">
-                    Esta acción no se puede deshacer.
-                </p>
-
+                <p class="nota-eliminar-carga"> Esta acción no se puede deshacer. </p>
             </div>
         `,
 
         showCancelButton: true,
-
         confirmButtonText: 'Sí, eliminar',
-
         cancelButtonText: 'Cancelar',
-
         confirmButtonColor: '#DC3545',
-
         cancelButtonColor: 'transparent',
-
         reverseButtons: true,
-
         buttonsStyling: false
-
     });
 
     // Devolver el resultado de la confirmación.
