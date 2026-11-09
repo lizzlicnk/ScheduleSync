@@ -1,0 +1,625 @@
+
+/* =========================================
+   CONFIGURACIÓN GENERAL
+========================================= */
+
+.pagina-editar-disponibilidad {
+    width: min(100% - 32px, 1450px);
+    margin: 35px auto;
+    color: #30263B;
+}
+
+/* =========================================
+   ENCABEZADO
+========================================= */
+
+.encabezado-editar-disponibilidad {
+    margin-bottom: 25px;
+}
+
+.ruta-navegacion {
+    display: block;
+    margin-bottom: 10px;
+    color: #81758D;
+    font-size: 13px;
+}
+
+.encabezado-editar-disponibilidad h1 {
+    margin: 0 0 8px;
+    color: #51346F;
+    font-size: 27px;
+    font-weight: 700;
+}
+
+.encabezado-editar-disponibilidad p {
+    margin: 0;
+    color: #81758D;
+    font-size: 14px;
+}
+
+/* =========================================
+   PANEL PRINCIPAL
+========================================= */
+
+.panel-edicion-disponibilidad {
+    position: relative;
+    overflow: hidden;
+    padding: 30px;
+    background: #FFFFFF;
+    border: 1px solid #EAE3F1;
+    border-radius: 16px;
+    box-shadow: 0 5px 18px rgba(48, 38, 59, 0.06);
+}
+
+.panel-edicion-disponibilidad::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(
+        90deg,
+        #452E62,
+        #6B4C91,
+        #B9A2D3
+    );
+}
+
+/* =========================================
+   INFORMACIÓN DEL DOCENTE
+========================================= */
+
+.encabezado-panel-edicion {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #EAE3F1;
+}
+.encabezado-panel-edicion h2 {
+    margin: 0 0 7px;
+    color: #51346F;
+    font-size: 21px;
+    font-weight: 700;
+}
+
+.encabezado-panel-edicion p {
+    margin: 0;
+    color: #81758D;
+    font-size: 13px;
+}
+
+.informacion-periodo {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 12px 17px;
+    background: #F8F5FC;
+    border: 1px solid #EAE3F1;
+    border-radius: 10px;
+}
+
+.informacion-periodo span {
+    color: #81758D;
+    font-size: 12px;
+}
+
+.informacion-periodo strong {
+    color: #51346F;
+    font-size: 14px;
+}
+
+/* =========================================
+   SECCIONES
+========================================= */
+
+.seccion-horarios-edicion,
+.seccion-asignaturas-edicion {
+    margin-top: 30px;
+}
+
+.encabezado-seccion-edicion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.encabezado-seccion-edicion h3 {
+    margin: 0 0 6px;
+    color: #51346F;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.encabezado-seccion-edicion h3 span {
+    color: #D94A5B;
+}
+
+.encabezado-seccion-edicion p {
+    margin: 0;
+    color: #81758D;
+    font-size: 13px;
+}
+
+/* =========================================
+   REFERENCIAS DE HORARIOS
+========================================= */
+
+.referencia-horarios {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 7px;
+    color: #665A70;
+    font-size: 12px;
+    width: 100%;
+}
+
+
+.referencia-horarios {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    margin: 0 auto 18px 0;
+    gap: 22px;
+    text-align: left;
+}
+
+
+.referencia-bloque {
+    width: 13px;
+    height: 13px;
+    border: 1px solid #D9D0E3;
+    border-radius: 3px;
+}
+
+.referencia-bloque.seleccionado {
+    background: #F4D45D;
+    border-color: #D9B72F;
+}
+
+.referencia-bloque.disponible {
+    background: #FFFFFF;
+}
+
+/* =========================================
+   TABLA DE HORARIOS
+========================================= */
+
+.contenedor-tabla-horarios {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid #EAE3F1;
+    border-radius: 10px;
+}
+
+.tabla-horarios-edicion {
+    width: 100%;
+    min-width: 850px;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #FFFFFF;
+    text-align: center;
+}
+
+.tabla-horarios-edicion thead th {
+    padding: 15px 10px;
+    border-bottom: 1px solid #EAE3F1;
+    background: #F8F5FC;
+    color: #655276;
+    font-size: 12px;
+    font-weight: 750;
+    white-space: nowrap;
+}
+
+.tabla-horarios-edicion tbody th {
+    width: 115px;
+    padding: 9px;
+    border-right: 1px solid #EAE3F1;
+    border-bottom: 1px solid #F0ECF4;
+    background: #FCFAFE;
+    color: #6E607B;
+    font-size: 11px;
+    font-weight: 650;
+    white-space: nowrap;
+}
+
+.tabla-horarios-edicion tbody td {
+    min-width: 105px;
+    padding: 5px;
+    border-bottom: 1px solid #F0ECF4;
+    border-right: 1px solid #F0ECF4;
+}
+
+.tabla-horarios-edicion tbody tr:last-child th,
+.tabla-horarios-edicion tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.tabla-horarios-edicion tbody td:last-child {
+    border-right: none;
+}
+
+
+/* =========================================
+   ASIGNATURAS
+========================================= */
+
+.contenedor-carreras-edicion {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.carrera-edicion {
+    overflow: hidden;
+    background: #FFFFFF;
+    border: 1px solid #EAE3F1;
+    border-radius: 9px;
+}
+
+.encabezado-carrera-edicion {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 15px 18px;
+    color: #51346F;
+    font-size: 14px;
+    font-weight: 700;
+    background: #FCFAFE;
+    cursor: pointer;
+    list-style: none;
+}
+
+.encabezado-carrera-edicion::-webkit-details-marker {
+    display: none;
+}
+
+.encabezado-carrera-edicion i {
+    color: #7955A3;
+    font-size: 13px;
+    transition: transform 0.2s ease;
+}
+
+.carrera-edicion[open] .encabezado-carrera-edicion i {
+    transform: rotate(180deg);
+}
+
+.contenido-carrera-edicion {
+    padding: 18px;
+    border-top: 1px solid #EAE3F1;
+}
+
+.cuatrimestre-edicion {
+    margin-bottom: 20px;
+}
+
+.cuatrimestre-edicion:last-child {
+    margin-bottom: 0;
+}
+
+.cuatrimestre-edicion h4 {
+    margin: 0 0 12px;
+    color: #655A70;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* ASIGNATURAS POR FILA */
+
+.lista-asignaturas-edicion {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.opcion-asignatura-edicion {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    padding: 12px;
+    background: #FFFFFF;
+    border: 1px solid #EAE3F1;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.opcion-asignatura-edicion:hover {
+    border-color: #A78AC5;
+    background: #FAF7FD;
+}
+
+.opcion-asignatura-edicion:has(input:checked) {
+    background: #F5EFFB;
+    border-color: #8A63B5;
+}
+
+.opcion-asignatura-edicion input {
+    flex-shrink: 0;
+    accent-color: #654282;
+}
+
+.opcion-asignatura-edicion span {
+    color: #30263B;
+    font-size: 12px;
+}
+
+/* MENSAJE SIN ASIGNATURAS */
+
+.mensaje-sin-asignaturas {
+    padding: 20px;
+    color: #81758D;
+    background: #FCFAFE;
+    border: 1px dashed #D9D0E3;
+    border-radius: 8px;
+    text-align: center;
+}
+
+/* =========================================
+   DISEÑO PARA PANTALLAS MEDIANAS
+========================================= */
+
+@media (max-width: 900px) {
+
+    .lista-asignaturas-edicion {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+/* =========================================
+   BLOQUES DE HORARIO
+========================================= */
+
+.tabla-horarios-edicion .bloque-horario {
+    width: 100%;
+    min-height: 43px;
+    padding: 7px 5px;
+    border: 1px solid #E6DFF0;
+    border-radius: 6px;
+    background: #FFFFFF;
+    color: #756982;
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 650;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.tabla-horarios-edicion .bloque-horario:hover {
+    border-color: #BFAAD7;
+    background: #F8F3FC;
+}
+
+.tabla-horarios-edicion .bloque-horario[aria-pressed="true"] {
+    border-color: #E8C95B;
+    background: #FFF1B8;
+    color: #755B12;
+}
+
+.tabla-horarios-edicion .bloque-horario[aria-pressed="true"]:hover {
+    border-color: #D7B33D;
+    background: #FFE99A;
+}
+
+.tabla-horarios-edicion .bloque-no-disponible {
+    color: #C8C1D0;
+    font-size: 12px;
+}
+
+/* =========================================
+   MENSAJES DE VALIDACIÓN
+========================================= */
+
+.error-edicion {
+    margin: 10px 0 0;
+    color: #D04452;
+    font-size: 12px;
+}
+
+/* =========================================
+   BOTONES
+========================================= */
+
+.acciones-edicion-disponibilidad {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 30px;
+    padding-top: 22px;
+    border-top: 1px solid #EAE3F1;
+}
+
+.boton-cancelar-edicion,
+.boton-guardar-borrador,
+.boton-entregar-edicion {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 42px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.boton-cancelar-edicion {
+    color: #655A70;
+    background: #FFFFFF;
+    border: 1px solid #D9D0E3;
+}
+
+.boton-cancelar-edicion:hover {
+    background: #F8F5FC;
+}
+
+.boton-guardar-borrador {
+    color: #FFFFFF;
+    background: #70518D;
+    border: 1px solid #70518D;
+}
+
+.boton-guardar-borrador:hover {
+    background: #593B76;
+}
+
+.boton-entregar-edicion {
+    color: #30263B;
+    background: #F4D45D;
+    border: 1px solid #E5C343;
+}
+
+.boton-entregar-edicion:hover {
+    background: #EBC638;
+}
+
+/* =========================================
+   DISEÑO RESPONSIVO
+========================================= */
+
+@media (max-width: 650px) {
+    .pagina-editar-disponibilidad {
+        width: min(100% - 20px, 1450px);
+        margin: 20px auto;
+    }
+
+    .panel-edicion-disponibilidad {
+        padding: 20px 15px;
+    }
+
+    .encabezado-editar-disponibilidad h1 {
+        font-size: 22px;
+    }
+
+    .encabezado-panel-edicion {
+        align-items: flex-start;
+    }
+
+    .acciones-edicion-disponibilidad {
+        flex-direction: column;
+    }
+
+    .boton-cancelar-edicion,
+    .boton-guardar-borrador,
+    .boton-entregar-edicion {
+        width: 100%;
+    }
+}
+
+/* =========================================
+   ENCABEZADO DE EDICIÓN
+========================================= */
+.encabezado-editar-disponibilidad {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+.informacion-docente {
+    flex: 1;
+}
+
+.informacion-docente h1 {
+    margin: 0 0 8px;
+}
+
+.informacion-docente p {
+    margin: 0;
+}
+
+.informacion-periodo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+    flex-shrink: 0;
+}
+
+/* =========================================
+   ICONO DE AYUDA
+========================================= */
+
+.titulo-con-ayuda {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.ayuda-horarios {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: help;
+}
+
+.icono-ayuda-horarios {
+    color: #7955A3;
+    font-size: 16px;
+    transition: color 0.2s;
+}
+
+.icono-ayuda-horarios:hover {
+    color: #51346F;
+}
+
+/* CUADRO INFORMATIVO */
+
+.mensaje-ayuda-horarios {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    z-index: 100;
+    width: 310px;
+    padding: 16px;
+    background: #FFFFFF;
+    border: 1px solid #5A3E7D;
+    border-radius: 10px;
+    box-shadow: 0 5px 18px rgba(90, 62, 125, 0.15);
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-5px);
+    transition: all 0.2s ease;
+}
+
+.ayuda-horarios:hover .mensaje-ayuda-horarios {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.mensaje-ayuda-horarios strong {
+    display: block;
+    margin-bottom: 9px;
+    color: #5A3E7D;
+    font-size: 0.9rem;
+}
+
+.mensaje-ayuda-horarios p {
+    margin: 0 0 8px;
+    color: #51475B;
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+.mensaje-ayuda-horarios p:last-child {
+    margin-bottom: 0;
+}
+

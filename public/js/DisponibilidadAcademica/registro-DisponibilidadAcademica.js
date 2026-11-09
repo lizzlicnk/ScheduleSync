@@ -5,6 +5,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const formulario = document.getElementById('formulario-disponibilidad');
     const bloquesSeleccionados = document.getElementById('bloques-seleccionados');
 
+    // Obtiene los elementos del modal de validación.
+    const modalValidacion = document.getElementById('modal-validacion');
+    const botonCerrarModal = document.getElementById('cerrar-modal-validacion');
+
     // Comprueba que el archivo JavaScript se haya cargado.
     console.log('JavaScript de registro de disponibilidad cargado.');
 
@@ -95,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             boton.classList.add('bloque-no-disponible');
             boton.setAttribute('aria-pressed', 'true');
-            boton.textContent = 'No disponible';
+            boton.textContent = '';
 
             // Aplica directamente el color amarillo.
             boton.style.setProperty('background-color', '#FFF1B8', 'important');
@@ -106,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             boton.classList.remove('bloque-no-disponible');
             boton.setAttribute('aria-pressed', 'false');
-            boton.textContent = 'Disponible';
+            boton.textContent = '';
 
             // Restablece los estilos originales del bloque.
             boton.style.removeProperty('background-color');
@@ -134,26 +138,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
         }, 0);
-
-    });
-
-    // Confirma la entrega de la disponibilidad académica.
-    formulario?.addEventListener('submit', function (evento) {
-
-        // Identifica el botón que realizó el envío.
-        const botonEnviar = evento.submitter;
-
-        if (botonEnviar && botonEnviar.value === 'entregar') {
-
-            const confirmarEntrega = confirm(
-                '¿Estás seguro de entregar tu disponibilidad académica? Después de entregarla, quedará registrada como confirmada.'
-            );
-
-            if (!confirmarEntrega) {
-                evento.preventDefault();
-            }
-
-        }
 
     });
 
@@ -328,5 +312,50 @@ document.addEventListener('DOMContentLoaded', function () {
         sessionStorage.removeItem('datosDisponibilidadPendientes');
 
     }
-    
+
+    //MODAL
+
+    // Comprueba los datos obligatorios antes de entregar la disponibilidad.
+    formulario?.addEventListener('submit', function (evento) {
+
+        // Obtiene los datos seleccionados.
+        const docente = document.getElementById('id_docente');
+        const periodo = document.getElementById('id_periodo');
+
+        const bloques = bloquesSeleccionados
+            ? bloquesSeleccionados.querySelectorAll('[data-input-bloque]')
+            : [];
+
+        const asignaturas = formulario.querySelectorAll(
+            'input[name="asignaturas[]"]:checked'
+        );
+
+        // Comprueba si falta algún dato obligatorio.
+        const faltanDatos =
+            (docente && !docente.value) ||
+            (periodo && !periodo.value) ||
+            bloques.length === 0 ||
+            asignaturas.length === 0;
+
+        if (faltanDatos) {
+
+            // Evita que se envíe el formulario.
+            evento.preventDefault();
+
+            // Muestra el modal de información incompleta.
+            if (modalValidacion) {
+                modalValidacion.hidden = false;
+            }
+
+        }
+
+    });
+
+    // Cierra el modal y permite continuar con el formulario.
+    botonCerrarModal?.addEventListener('click', function () {
+
+        modalValidacion.hidden = true;
+
+    });
+
 });

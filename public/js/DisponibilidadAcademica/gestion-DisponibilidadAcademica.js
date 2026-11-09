@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', function () {
 
     // Obtiene los elementos del panel de filtros.
@@ -6,35 +7,76 @@ document.addEventListener('DOMContentLoaded', function () {
     const limpiarFiltros = document.getElementById('limpiar-filtros');
     const filtroPeriodo = document.getElementById('filtro-periodo');
 
+
     // Obtiene los elementos del panel de consulta.
     const panelConsulta = document.getElementById('panel-consulta');
-    const buscarConsulta = document.getElementById('buscar-consulta-asignatura');
-    const resultadosConsulta = document.getElementById('resultados-consulta-asignatura');
-    const sinResultadosConsulta = document.getElementById('sin-resultados-consulta-asignatura');
-    const tarjetaDetalle = document.getElementById('tarjeta-detalle-asignatura');
-    const detalleVacio = document.getElementById('detalle-vacio-asignatura');
+    const buscarConsulta = document.getElementById('buscar-consulta');
+    const resultadosConsulta = document.getElementById('resultados-consulta');
+    const sinResultadosConsulta = document.getElementById('sin-resultados-consulta');
+    const tarjetaDetalle = document.getElementById('tarjeta-detalle');
+    const detalleVacio = document.getElementById('detalle-vacio');
 
-    //Asignaturas disponibles para consultar.
-    const opcionesConsulta = resultadosConsulta ? Array.from(resultadosConsulta.querySelectorAll('[data-resultado-asignatura]')) : [];
 
-    // Total de asignaturas seleccionadas.
-    const totalAsignaturas = document.getElementById('total-asignaturas-seleccionadas');
+    // Obtiene los docentes disponibles para consultar.
+    const opcionesConsulta = resultadosConsulta
+        ? Array.from(resultadosConsulta.querySelectorAll('[data-resultado-docente]'))
+        : [];
+
 
     // Normaliza los textos para ignorar mayúsculas, minúsculas y acentos.
     function normalizarTexto(texto) {
+
         return (texto || '')
             .toString()
             .normalize('NFD')
             .replace(/[\u0300-\u036f]/g, '')
             .toLowerCase()
             .trim();
+
     }
 
-    // Muestra los detalles de la asignatura seleccionada.
-    function consultarAsignatura(idAsignatura, botonSeleccionado = null) {
-        if (!tarjetaDetalle) return;
 
-        const detalleSeleccionado = tarjetaDetalle.querySelector( `[data-detalle-asignatura="${idAsignatura}"]` );
+    // Abre o cierra el panel de filtros.
+    botonFiltros?.addEventListener('click', function () {
+
+        if (!contenedorFiltros) return;
+
+        // Cambia la visibilidad del panel de filtros.
+        contenedorFiltros.hidden = !contenedorFiltros.hidden;
+
+        // Actualiza el estado de accesibilidad del botón.
+        botonFiltros.setAttribute(
+            'aria-expanded',
+            String(!contenedorFiltros.hidden)
+        );
+
+        // Resalta el botón mientras el panel esté abierto.
+        botonFiltros.classList.toggle(
+            'boton-activo',
+            !contenedorFiltros.hidden
+        );
+
+    });
+
+
+    // Limpia el periodo seleccionado.
+    limpiarFiltros?.addEventListener('click', function () {
+
+        if (filtroPeriodo) {
+            filtroPeriodo.value = '';
+        }
+
+    });
+
+
+    // Muestra la información del docente seleccionado.
+    function consultarDocente(idDocente, botonSeleccionado = null) {
+
+        if (!resultadosConsulta || !tarjetaDetalle) return;
+
+        const detalleSeleccionado = tarjetaDetalle.querySelector(
+            '[data-detalle-docente="' + idDocente + '"]'
+        );
 
         if (!detalleSeleccionado) return;
 
@@ -43,11 +85,11 @@ document.addEventListener('DOMContentLoaded', function () {
             detalleVacio.hidden = true;
         }
 
-        tarjetaDetalle.querySelectorAll('[data-detalle-asignatura]').forEach(function (detalle) {
+        tarjetaDetalle.querySelectorAll('[data-detalle-docente]').forEach(function (detalle) {
             detalle.hidden = true;
         });
 
-        // Muestra los datos de la asignatura seleccionada.
+        // Muestra la información del docente seleccionado.
         detalleSeleccionado.hidden = false;
 
         // Quita la selección visual de los resultados anteriores.
@@ -66,32 +108,38 @@ document.addEventListener('DOMContentLoaded', function () {
         if (panelConsulta) {
             panelConsulta.hidden = false;
         }
+
     }
 
-    // Filtra los resultados del panel de consulta.
+
+    // Filtra los docentes por nombre o matrícula.
     function actualizarResultadosConsulta() {
+
         const texto = normalizarTexto(buscarConsulta?.value);
         let cantidadVisible = 0;
 
         opcionesConsulta.forEach(function (opcion) {
 
-            // Obtiene el nombre de la asignatura y de la carrera.
             const nombre = normalizarTexto(opcion.dataset.nombreConsulta);
-            const carrera = normalizarTexto(opcion.dataset.carreraConsulta);
+            const matricula = normalizarTexto(opcion.dataset.matriculaConsulta);
 
-            // Comprueba si coincide con el texto de búsqueda.
-            const mostrar = !texto || nombre.includes(texto) || carrera.includes(texto);
+            // Comprueba si el docente coincide con la búsqueda.
+            const mostrar = texto.length > 0 &&
+                (nombre.includes(texto) || matricula.includes(texto));
 
             opcion.hidden = !mostrar;
 
             if (mostrar) {
                 cantidadVisible++;
             }
+
         });
 
-        // Oculta los detalles cuando se modifica la búsqueda.
-        if (texto) {
-            tarjetaDetalle?.querySelectorAll('[data-detalle-asignatura]').forEach(function (detalle) {
+
+        // Oculta los detalles anteriores cuando no hay una búsqueda.
+        if (!texto) {
+
+            tarjetaDetalle?.querySelectorAll('[data-detalle-docente]').forEach(function (detalle) {
                 detalle.hidden = true;
             });
 
@@ -99,74 +147,46 @@ document.addEventListener('DOMContentLoaded', function () {
                 detalleVacio.hidden = false;
             }
 
+            // Quita la selección visual de los resultados.
             opcionesConsulta.forEach(function (opcion) {
                 opcion.classList.remove('seleccionado');
                 opcion.setAttribute('aria-pressed', 'false');
             });
-        } else {
-            // Muestra nuevamente todas las asignaturas.
-            if (detalleVacio) {
-                detalleVacio.hidden = false;
-            }
 
-            tarjetaDetalle?.querySelectorAll('[data-detalle-asignatura]').forEach(function (detalle) {
-                detalle.hidden = true;
-            });
-
-            opcionesConsulta.forEach(function (opcion) {
-                opcion.classList.remove('seleccionado');
-                opcion.setAttribute('aria-pressed', 'false');
-            });
         }
+
 
         // Muestra un aviso cuando no hay coincidencias.
         if (sinResultadosConsulta) {
-            sinResultadosConsulta.hidden = cantidadVisible > 0;
+            sinResultadosConsulta.hidden = !texto || cantidadVisible > 0;
         }
+
     }
 
-    // Actualiza los resultados mientras se escribe.
+
+    // Actualiza los resultados conforme se escribe el nombre o matrícula.
     buscarConsulta?.addEventListener('input', actualizarResultadosConsulta);
 
-    // Permite consultar una asignatura desde la lista de resultados.
+
+    // Permite seleccionar un docente de los resultados.
     opcionesConsulta.forEach(function (opcion) {
+
         opcion.setAttribute('aria-pressed', 'false');
 
         opcion.addEventListener('click', function () {
-            consultarAsignatura(
-                opcion.dataset.resultadoAsignatura,
+
+            consultarDocente(
+                opcion.dataset.resultadoDocente,
                 opcion
             );
+
         });
+
     });
 
-    // Oculta los detalles y muestra todas las asignaturas al cargar.
-    if (buscarConsulta) {
-        buscarConsulta.value = '';
-    }
 
+    // Oculta los resultados al cargar la página por primera vez.
     actualizarResultadosConsulta();
-
-    // Abre o cierra el panel de filtros.
-    botonFiltros?.addEventListener('click', function () {
-        if (!contenedorFiltros) return;
-
-        // Cambia la visibilidad del panel de filtros.
-        contenedorFiltros.hidden = !contenedorFiltros.hidden;
-
-        // Actualiza el estado de accesibilidad del botón.
-        botonFiltros.setAttribute( 'aria-expanded', String(!contenedorFiltros.hidden) );
-
-        // Resalta el botón mientras el panel esté abierto.
-        botonFiltros.classList.toggle( 'boton-activo', !contenedorFiltros.hidden );
-    });
-
-    // Limpia el periodo seleccionado.
-    limpiarFiltros?.addEventListener('click', function () {
-        if (filtroPeriodo) {
-            filtroPeriodo.value = '';
-        }
-    });
 
 
     // Confirma la eliminación de la disponibilidad académica.
@@ -191,6 +211,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 
+
     // Obtiene los elementos de búsqueda y paginación de docentes.
     const buscarDisponibilidad = document.getElementById('buscar-disponibilidad');
     const cuerpoTabla = document.getElementById('cuerpo-tabla-disponibilidad');
@@ -200,25 +221,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const botonPaginaAnterior = document.getElementById('pagina-anterior');
     const botonPaginaSiguiente = document.getElementById('pagina-siguiente');
 
-    // Obtiene las filas de docentes.
+
+    // Obtiene las filas reales de docentes.
     const filasDocentes = cuerpoTabla
         ? Array.from(cuerpoTabla.querySelectorAll('tr[data-id-docente]'))
         : [];
+
 
     // Configuración de la paginación.
     const registrosPorPagina = 10;
     let paginaActual = 1;
     let docentesFiltrados = [...filasDocentes];
 
-    // Normaliza los textos para ignorar mayúsculas, minúsculas y acentos.
-    function normalizarTexto(texto) {
-        return (texto || '')
-            .toString()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .toLowerCase()
-            .trim();
-    }
 
     // Actualiza la información y visibilidad de la tabla.
     function actualizarTablaDisponibilidad() {
@@ -269,9 +283,11 @@ document.addEventListener('DOMContentLoaded', function () {
             botonPaginaSiguiente.disabled =
                 paginaActual >= totalPaginas || totalPaginas === 0;
         }
+
     }
 
-    // Busca docentes por matrícula o nombre.
+
+    // Busca docentes por matrícula o nombre en la tabla.
     buscarDisponibilidad?.addEventListener('input', function () {
 
         const texto = normalizarTexto(buscarDisponibilidad.value);
@@ -282,13 +298,16 @@ document.addEventListener('DOMContentLoaded', function () {
             const nombre = normalizarTexto(fila.dataset.nombre);
 
             return matricula.includes(texto) || nombre.includes(texto);
+
         });
 
         // Reinicia la paginación después de cada búsqueda.
         paginaActual = 1;
 
         actualizarTablaDisponibilidad();
+
     });
+
 
     // Muestra la página anterior.
     botonPaginaAnterior?.addEventListener('click', function () {
@@ -297,7 +316,9 @@ document.addEventListener('DOMContentLoaded', function () {
             paginaActual--;
             actualizarTablaDisponibilidad();
         }
+
     });
+
 
     // Muestra la página siguiente.
     botonPaginaSiguiente?.addEventListener('click', function () {
@@ -310,10 +331,49 @@ document.addEventListener('DOMContentLoaded', function () {
             paginaActual++;
             actualizarTablaDisponibilidad();
         }
+
     });
+
 
     // Inicializa la tabla.
     actualizarTablaDisponibilidad();
+
+    // Obtiene el docente que se desea consultar inicialmente.
+    const idDocenteConsultaInicial = window.idDocenteConsultaInicial;
+
+    // Comprueba si se recibió un docente desde el botón Consultar.
+    if (idDocenteConsultaInicial) {
+
+        const opcionSeleccionada = opcionesConsulta.find(function (opcion) {
+            return opcion.dataset.resultadoDocente === String(idDocenteConsultaInicial);
+        });
+
+        if (opcionSeleccionada) {
+
+            // Coloca el nombre del docente en el buscador.
+            buscarConsulta.value = opcionSeleccionada.dataset.nombreConsulta;
+
+            // Actualiza los resultados de búsqueda.
+            actualizarResultadosConsulta();
+
+            // Muestra directamente la información del docente.
+            consultarDocente(
+                idDocenteConsultaInicial,
+                opcionSeleccionada
+            );
+
+        } else {
+
+            actualizarResultadosConsulta();
+
+        }
+
+    } else {
+
+        // Oculta los resultados al cargar normalmente la página.
+        actualizarResultadosConsulta();
+
+    }
 
 
 });

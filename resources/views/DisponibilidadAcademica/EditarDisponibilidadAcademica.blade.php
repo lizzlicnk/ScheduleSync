@@ -1,375 +1,328 @@
-<section class="panel-disponibilidad panel-consulta-disponibilidad" id="panel-consulta">
-        <div class="encabezado-panel">
-            <div>
-                <h2>Consultar asignaturas seleccionadas</h2>
-                <p class="texto-secundario">
-                    Consulta las asignaturas seleccionadas por el docente.
-                </p>
-            </div>
-        </div>
+@extends('layouts.DisenoPrincipal')
 
-        <div class="total-asignaturas">
-            <div class="icono-total-asignaturas" aria-hidden="true">
-                <i class="fa-solid fa-book-open"></i>
-            </div>
+@section('title', 'Modificar disponibilidad académica | Schedule-Sync')
 
-            <div>
-                <span>Total de asignaturas seleccionadas</span>
-                <strong id="total-asignaturas-seleccionadas">
-                    {{ isset($asignaturasSeleccionadas) ? $asignaturasSeleccionadas->count() : '-' }}
-                </strong>
-            </div>
-        </div>
+@push('estilos')
+    <link rel="stylesheet" href="{{ asset('css/DisponibilidadAcademica/editar-disponibilidad-academica.css') }}">
+@endpush
 
-        <div class="consulta-grid">
-            <div class="buscador-consulta">
-                <div class="campo">
-                    <label for="buscar-consulta-asignatura">
-                        Nombre de la asignatura o carrera
-                    </label>
+@section('contenido')
 
-                    <div class="entrada-busqueda">
-                        <span aria-hidden="true">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </span>
+@php
+    // Obtener el periodo académico que se está modificando.
+    $periodoActual = $periodos->firstWhere('id_periodo', $periodoSeleccionado);
 
-                        <input
-                            type="search"
-                            id="buscar-consulta-asignatura"
-                            placeholder="Escribe el nombre de una asignatura o carrera..."
-                            autocomplete="off"
-                        >
-                    </div>
-                </div>
+    // Obtener el nombre completo del docente.
+    $nombreDocente = trim(
+        $docente->usuario->nombreUsuario . ' ' .
+        ($docente->usuario->apellidoPaterno ?? '') . ' ' .
+        ($docente->usuario->apellidoMaterno ?? '')
+    );
 
-                <div class="resultados-consulta">
-                    <h3>Resultados</h3>
+    // Recuperar los bloques seleccionados.
+    $bloquesMarcados = old('bloques_no_disponibles', $bloquesNoDisponibles);
 
-                    <div id="resultados-consulta-asignatura" aria-live="polite">
-                        @forelse (($asignaturasSeleccionadas ?? collect()) as $asignatura)
-                            <button
-                                type="button"
-                                class="resultado-consulta-item"
-                                data-resultado-asignatura="{{ $asignatura->id_asignatura }}"
-                                data-nombre-consulta="{{ mb_strtolower($asignatura->nombreAsignatura) }}"
-                                data-carrera-consulta="{{ mb_strtolower($asignatura->carrera->nombreCarrera ?? '') }}"
-                            >
-                                <span class="texto-resultado">
-                                    <strong>
-                                        {{ $asignatura->nombreAsignatura }} -
-                                        {{ $asignatura->carrera->nombreCarrera ?? '-' }}
-                                    </strong>
-                                </span>
-                            </button>
-                        @empty
-                            <p class="texto-secundario mensaje-sin-resultados">
-                                -
-                            </p>
-                        @endforelse
+    // Recuperar las asignaturas seleccionadas.
+    $asignaturasMarcadas = old('asignaturas', $asignaturasSeleccionadas);
+@endphp
 
-                        <p
-                            class="texto-secundario mensaje-sin-resultados"
-                            id="sin-resultados-consulta-asignatura"
-                            hidden
-                        >
-                            No se encontraron asignaturas con ese nombre o carrera.
-                        </p>
-                    </div> 
-                </div>
-            </div>
+<div class="pagina-editar-disponibilidad">
 
-            <div class="tarjeta-detalle" id="tarjeta-detalle-asignatura">
-                <div class="detalle-vacio" id="detalle-vacio-asignatura">
-                    <div class="icono-detalle" aria-hidden="true">
-                        <i class="fa-solid fa-book-open"></i>
-                    </div>
-
-                    <h3>Información de la asignatura</h3>
-
-                    <p class="texto-secundario">
-                        Selecciona una asignatura de los resultados para ver su información.
-                    </p>
-                </div>
-
-                @foreach (($asignaturasSeleccionadas ?? collect()) as $asignatura)
-                    <div
-                        class="contenido-detalle-asignatura"
-                        data-detalle-asignatura="{{ $asignatura->id_asignatura }}"
-                        hidden
-                        >
-                        <div class="encabezado-detalle">
-                            <div class="icono-detalle" aria-hidden="true">
-                                <i class="fa-solid fa-book-open"></i>
-                            </div>
-
-                            <div>
-                                <h3>{{ $asignatura->nombreAsignatura }}</h3>
-
-                                <p class="texto-secundario">
-                                    {{ $asignatura->carrera->nombreCarrera ?? '-' }}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="lista-detalle">
-                            <div class="fila-detalle">
-                                <span>ID de asignatura</span>
-                                <strong>{{ $asignatura->id_asignatura }}</strong>
-                            </div>
-
-                            <div class="fila-detalle">
-                                <span>Clave</span>
-                                <strong>{{ $asignatura->clave ?? '-' }}</strong>
-                            </div>
-
-                            <div class="fila-detalle">
-                                <span>Nombre de la asignatura</span>
-                                <strong>{{ $asignatura->nombreAsignatura }}</strong>
-                            </div>
-
-                            <div class="fila-detalle">
-                                <span>Carrera</span>
-                                <strong>{{ $asignatura->carrera->nombreCarrera ?? '-' }}</strong>
-                            </div>
-
-                            <div class="fila-detalle">
-                                <span>Cuatrimestre</span>
-                                <strong>{{ $asignatura->cuatrimestre ?? '-' }}</strong>
-                            </div>
-
-                            <div class="fila-detalle">
-                                <span>Horas</span>
-                                <strong>{{ $asignatura->cantidadHoras ?? '-' }}</strong>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
+    <section class="panel-edicion-disponibilidad">
 
 
-       <!-- PANEL PARA CONSULTAR DISPONIBILIDAD ACADÉMICA -->
-    <section class="panel-disponibilidad panel-consulta-disponibilidad" id="consulta-disponibilidad">
+<!-- ENCABEZADO DEL FORMULARIO DE EDICIÓN -->
+<div class="encabezado-editar-disponibilidad">
 
-        <div class="encabezado-panel">
-            <div>
-                <h2>Consulta de disponibilidad académica</h2>
+    <div class="informacion-docente">
+        <h1>
+            Editar disponibilidad académica:
+            {{ $nombreDocente }}
+        </h1>
 
-                <p class="texto-secundario">
-                    Consulta los horarios no disponibles y las asignaturas seleccionadas por el docente.
-                </p>
-            </div>
-        </div>
+        <p>
+            Modifica los datos de la disponibilidad académica y guarda los cambios.
+        </p>
+    </div>
 
-        @if (isset($docenteConsultado) && $docenteConsultado)
+    <!-- INFORMACIÓN DEL PERIODO -->
+    <div class="informacion-periodo">
+        <span>Periodo académico</span>
 
-            @php
-                // Obtiene el nombre completo del docente.
-                $nombreDocenteConsulta = trim(
-                    $docenteConsultado->usuario->nombreUsuario . ' ' .
-                    ($docenteConsultado->usuario->apellidoPaterno ?? '') . ' ' .
-                    ($docenteConsultado->usuario->apellidoMaterno ?? '')
-                );
+        <strong>
+            {{ $periodoActual->estacion ?? '' }}
+            {{ $periodoActual->anio ?? '' }}
+        </strong>
+    </div>
 
-                // Define los días de la semana.
-                $diasConsulta = [
-                    1 => 'Lunes',
-                    2 => 'Martes',
-                    3 => 'Miércoles',
-                    4 => 'Jueves',
-                    5 => 'Viernes',
-                    6 => 'Sábado',
-                ];
-            @endphp
+</div>
 
-            <!-- INFORMACIÓN DEL DOCENTE -->
-            <div class="tarjeta-detalle">
+        <form
+            id="formulario-editar-disponibilidad"
+            action="{{ route('disponibilidad-academica.update', [
+                'idDocente' => $docente->id_docente,
+                'idPeriodo' => $periodoSeleccionado
+            ]) }}"
+            method="POST"
+            novalidate
+        >
+            @csrf
+            @method('PUT')
 
-                <div class="encabezado-detalle">
-                    <div class="icono-detalle">
-                        <i class="fa-solid fa-user"></i>
-                    </div>
+            <input
+                type="hidden"
+                name="id_periodo"
+                value="{{ $periodoSeleccionado }}"
+            >
 
+            <!-- TABLA DE HORARIOS -->
+            <section class="seccion-horarios-edicion">
+
+                <div class="encabezado-seccion-edicion">
                     <div>
-                        <h3>Información del docente</h3>
-                        <p class="texto-secundario">
-                            Datos generales del registro consultado.
-                        </p>
-                    </div>
-                </div>
 
-                <div class="lista-detalle">
+                        <div class="titulo-con-ayuda">
+                            <h3>
+                                Editar disponibilidad académica
+                                <span>*</span>
+                            </h3>
 
-                    <div class="fila-detalle">
-                        <span>Nombre del docente</span>
-                        <strong>{{ $nombreDocenteConsulta }}</strong>
-                    </div>
+                            <div class="ayuda-horarios">
+                                <i class="fa-solid fa-circle-info icono-ayuda-horarios"></i>
 
-                    <div class="fila-detalle">
-                        <span>Matrícula</span>
-                        <strong>{{ $docenteConsultado->matricula }}</strong>
-                    </div>
+                                <div class="mensaje-ayuda-horarios">
+                                    <strong>¿Cómo editar tu disponibilidad académica?</strong>
 
-                    <div class="fila-detalle">
-                        <span>Periodo</span>
-                        <strong>
-                            {{ $periodoConsultado->estacion }}
-                            {{ $periodoConsultado->anio }}
-                        </strong>
-                    </div>
+                                    <p>
+                                        Haz clic sobre el cuadro correspondiente al día y la hora en los que no puedes impartir clases.
+                                        El cuadro cambiará a color amarillo para indicar que ese horario no está disponible.
+                                    </p>
 
-                </div>
-            </div>
-
-            <!-- HORARIOS NO DISPONIBLES -->
-            <div class="tarjeta-detalle">
-
-                <div class="encabezado-detalle">
-                    <div class="icono-detalle">
-                        <i class="fa-solid fa-calendar-days"></i>
-                    </div>
-
-                    <div>
-                        <h3>Disponibilidad académica</h3>
-                        <p class="texto-secundario">
-                            Horarios en los que el docente no puede impartir clases.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="lista-detalle">
-
-                    @foreach ($diasConsulta as $numeroDia => $nombreDia)
-
-                        @php
-                            // Obtiene los horarios registrados para el día.
-                            $horariosDia = $disponibilidadesConsulta
-                                ->where('dia', $numeroDia)
-                                ->sortBy('hora_inicio')
-                                ->values();
-
-                            // Agrupa los horarios consecutivos.
-                            $intervalosDia = [];
-
-                            foreach ($horariosDia as $horario) {
-
-                                $inicio = substr($horario->hora_inicio, 0, 5);
-                                $fin = substr($horario->hora_fin, 0, 5);
-
-                                $ultimoIndice = count($intervalosDia) - 1;
-
-                                if (
-                                    $ultimoIndice >= 0 &&
-                                    $intervalosDia[$ultimoIndice]['fin'] === $inicio
-                                ) {
-                                    $intervalosDia[$ultimoIndice]['fin'] = $fin;
-                                } else {
-                                    $intervalosDia[] = [
-                                        'inicio' => $inicio,
-                                        'fin' => $fin,
-                                    ];
-                                }
-                            }
-                        @endphp
-
-                        <div class="fila-detalle">
-                            <strong>{{ $nombreDia }}</strong>
-
-                            <span>
-                                @if (count($intervalosDia) > 0)
-
-                                    @foreach ($intervalosDia as $indice => $intervalo)
-
-                                        {{ $intervalo['inicio'] }} - {{ $intervalo['fin'] }}{{ $indice < count($intervalosDia) - 1 ? ' y ' : '' }}
-
-                                    @endforeach
-
-                                @else
-                                    Sin horarios registrados
-                                @endif
-                            </span>
-                        </div>
-
-                    @endforeach
-
-                </div>
-            </div>
-
-            <!-- ASIGNATURAS SELECCIONADAS -->
-            <div class="tarjeta-detalle">
-
-                <div class="encabezado-detalle">
-                    <div class="icono-detalle">
-                        <i class="fa-solid fa-book"></i>
-                    </div>
-
-                    <div>
-                        <h3>Asignaturas seleccionadas</h3>
-
-                        <p class="texto-secundario">
-                            {{ $asignaturasConsulta->count() }}
-                            {{ $asignaturasConsulta->count() === 1 ? 'materia seleccionada' : 'materias seleccionadas' }}
-                        </p>
-                    </div>
-                </div>
-
-                @if ($asignaturasConsulta->isNotEmpty())
-
-                    <div class="lista-detalle">
-
-                        @foreach ($asignaturasConsulta as $asignatura)
-
-                            <div class="fila-detalle">
-
-                                <div>
-                                    <strong>{{ $asignatura->nombreAsignatura }}</strong>
-
-                                    <p class="texto-secundario">
-                                        {{ $asignatura->carrera->nombreCarrera ?? 'Carrera no disponible' }}
+                                    <p>
+                                        Si vuelves a hacer clic sobre el mismo cuadro, cambiará nuevamente a color blanco,
+                                        indicando que el horario está disponible.
                                     </p>
                                 </div>
+                            </div>
+                        </div>
 
+                        <p>
+                            Edita los días y horarios en los que el docente no puede impartir clases durante el periodo académico.
+                        </p>
+
+                    </div>
+                </div>
+
+                <div class="referencia-horarios">
+                    <span class="referencia-bloque seleccionado"></span>
+                        No disponible
+                    <span class="referencia-bloque disponible"></span>
+                        Disponible
+                </div>
+
+                <div class="contenedor-tabla-horarios">
+                    <table class="tabla-horarios-edicion">
+                        <thead>
+                            <tr>
+                                <th>Horario</th>
+                                <th>Lunes</th>
+                                <th>Martes</th>
+                                <th>Miércoles</th>
+                                <th>Jueves</th>
+                                <th>Viernes</th>
+                                <th>Sábado</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @for ($hora = 7; $hora <= 20; $hora++)
+                                <tr>
+                                    <th>
+                                        {{ sprintf('%02d:00', $hora) }}
+                                        -
+                                        {{ sprintf('%02d:00', $hora + 1) }}
+                                    </th>
+
+                                    @for ($dia = 1; $dia <= 6; $dia++)
+                                        <td>
+                                            @if ($dia !== 6 || $hora <= 14)
+                                                @php
+                                                    $identificadorBloque = $dia . '-' . $hora;
+                                                @endphp
+
+                                                <button
+                                                    type="button"
+                                                    class="bloque-horario"
+                                                    data-bloque="{{ $identificadorBloque }}"
+                                                    aria-pressed="{{ in_array($identificadorBloque, $bloquesMarcados) ? 'true' : 'false' }}"
+                                                >
+                                                    <span class="texto-bloque">
+                                                        {{ in_array($identificadorBloque, $bloquesMarcados) ? 'No disponible' : 'Disponible' }}
+                                                    </span>
+                                                </button>
+                                            @else
+                                                <span class="bloque-no-disponible">
+                                                    
+                                                </span>
+                                            @endif
+                                        </td>
+                                    @endfor
+                                </tr>
+                            @endfor
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Aquí se guardan los bloques seleccionados -->
+                <div id="bloques-seleccionados">
+                    @foreach ($bloquesMarcados as $bloque)
+                        <input
+                            type="hidden"
+                            name="bloques_no_disponibles[]"
+                            value="{{ $bloque }}"
+                            data-input-bloque
+                        >
+                    @endforeach
+                </div>
+
+                @error('bloques_no_disponibles')
+                    <p class="error-edicion">{{ $message }}</p>
+                @enderror
+
+                @error('bloques_no_disponibles.*')
+                    <p class="error-edicion">{{ $message }}</p>
+                @enderror
+
+            </section>
+
+            <!-- ASIGNATURAS -->
+            <section class="seccion-asignaturas-edicion">
+
+                <!-- ENCABEZADO DE ASIGNATURAS -->
+                <div class="encabezado-seccion-edicion">
+                    <div>
+                        <h3> Asignaturas <span>*</span> </h3>
+
+                        <p>
+                            Selecciona las asignaturas que el docente prefiere impartir durante este periodo.
+                        </p>
+                    </div>
+                </div>
+
+
+                <div class="contenedor-carreras-edicion">
+
+                    @forelse ($asignaturasPorCarrera as $grupoCarrera)
+
+                        @php
+                            $carrera = $grupoCarrera['carrera'];
+                        @endphp
+
+                        <details class="carrera-edicion">
+
+                            <summary class="encabezado-carrera-edicion">
                                 <span>
-                                    {{ $asignatura->cuatrimestre }}.º cuatrimestre
+                                    {{ $carrera->claveCarrera }} - {{ $carrera->nombreCarrera }}
                                 </span>
+
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </summary>
+
+                            <div class="contenido-carrera-edicion">
+
+                                @foreach ($grupoCarrera['cuatrimestres'] as $grupoCuatrimestre)
+
+                                    <div class="cuatrimestre-edicion">
+
+                                        <h4>
+                                            {{ $grupoCuatrimestre['cuatrimestre'] }}°
+                                            cuatrimestre
+                                        </h4>
+
+                                        <div class="lista-asignaturas-edicion">
+
+                                            @foreach ($grupoCuatrimestre['asignaturas'] as $asignatura)
+
+                                                <label class="opcion-asignatura-edicion">
+
+                                                    <input
+                                                        type="checkbox"
+                                                        name="asignaturas[]"
+                                                        value="{{ $asignatura->id_asignatura }}"
+                                                        @checked(
+                                                            in_array(
+                                                                $asignatura->id_asignatura,
+                                                                $asignaturasMarcadas
+                                                            )
+                                                        )
+                                                    >
+
+                                                    <span>
+                                                        {{ $asignatura->nombreAsignatura }}
+                                                    </span>
+
+                                                </label>
+
+                                            @endforeach
+
+                                        </div>
+
+                                    </div>
+
+                                @endforeach
 
                             </div>
 
-                        @endforeach
+                        </details>
 
-                    </div>
+                    @empty
 
-                @else
+                        <p class="mensaje-sin-asignaturas">
+                            No hay asignaturas disponibles para este periodo académico.
+                        </p>
 
-                    <div class="tabla-vacia">
-                        El docente no ha seleccionado asignaturas.
-                    </div>
+                    @endforelse
 
-                @endif
+                </div>
 
-            </div>
+            </section>
+            <!-- ACCIONES -->
+            <div class="acciones-edicion-disponibilidad">
 
-            <!-- ACCIONES DE CONSULTA -->
-            <div class="acciones-disponibilidad">
-
-                <button
-                    type="button"
-                    class="boton-secundario"
-                    id="boton-imprimir-consulta"
+                <a
+                    href="{{ route('disponibilidad-academica.show', [
+                        'idDocente' => $docente->id_docente,
+                        'idPeriodo' => $periodoSeleccionado
+                    ]) }}"
+                    class="boton-cancelar-edicion"
                 >
-                    <i class="fa-solid fa-print"></i>
-                    Imprimir consulta
+                    Cancelar
+                </a>
+<!--
+                <button
+                    type="submit"
+                    name="accion"
+                    value="borrador"
+                    class="boton-guardar-borrador"
+                >
+                    Guardar cambios
+                </button> 
+-->
+
+                <button type="submit" name="accion" value="entregar" class="boton-entregar-edicion" >
+                    Entregar disponibilidad
                 </button>
 
             </div>
 
-        @else
-
-            <div class="tabla-vacia">
-                Selecciona la opción Consultar de un docente para visualizar su disponibilidad académica.
-            </div>
-
-        @endif
-
+        </form>
     </section>
+
+</main>
+
+@endsection
+
+<script src="{{ asset('js/DisponibilidadAcademica/editar-DisponibilidadAcademica.js') }}"></script>
+
+
+
