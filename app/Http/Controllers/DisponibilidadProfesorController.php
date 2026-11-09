@@ -8,6 +8,7 @@ use App\Models\Docente;
 use App\Models\Periodo;
 use App\Models\Asignatura;
 use App\Models\AsignaturaPreferida;
+use App\Models\Grupo;
 use App\Models\Carrera;
 
 use Illuminate\Http\Request;
@@ -48,26 +49,21 @@ class DisponibilidadProfesorController extends Controller
         // Obtener los docentes registrados.
         $docentesRegistrados = $consultaDocentes->orderBy('nombreUsuario')->get();
 
-        // Obtener las disponibilidades del periodo seleccionado.
-        $disponibilidadesRegistradas = collect();
+        // Obtener las disponibilidades registradas en el periodo seleccionado.
+        $disponibilidadesRegistradas = DisponibilidadProfesor::where(
+            'id_periodo',
+            $periodoSeleccionado
+        )->get();
 
         // Obtener las carreras activas.
         $carreras = Carrera::where('estado', 1)
             ->orderBy('nombreCarrera')
             ->get();
 
-        // Obtener las asignaturas activas de carreras activas.
-        $asignaturasPorCarrera = Asignatura::where('estado', 1)
-            ->whereHas('carrera', function ($consulta) {
-                $consulta->where('estado', 1);
-            })
-            ->orderBy('nombreAsignatura')
-            ->get()
-            ->groupBy('id_carrera');
-
-        if ($periodoSeleccionado) {
-            $disponibilidadesRegistradas = DisponibilidadProfesor::where( 'id_periodo', $periodoSeleccionado )->with('docente')->get();
-        }
+        // Obtiene las asignaturas de las carreras y cuatrimestres del periodo seleccionado.
+        $asignaturasPorCarrera = $this->obtenerAsignaturasPorCarreraYCuatrimestre(
+            $periodoSeleccionado
+        );
 
         
         // Enviar la información a la vista.
@@ -242,14 +238,10 @@ class DisponibilidadProfesorController extends Controller
             ->orderBy('nombreCarrera')
             ->get();
 
-        // Obtiene las asignaturas activas de carreras activas.
-        $asignaturasPorCarrera = Asignatura::where('estado', 1)
-            ->whereHas('carrera', function ($consulta) {
-                $consulta->where('estado', 1);
-            })
-            ->orderBy('nombreAsignatura')
-            ->get()
-            ->groupBy('id_carrera');
+        // Obtiene las asignaturas de las carreras y cuatrimestres del periodo seleccionado.
+        $asignaturasPorCarrera = $this->obtenerAsignaturasPorCarreraYCuatrimestre(
+            $periodoSeleccionado
+        );
 
         // Inicializa las selecciones.
         $asignaturasSeleccionadas = [];
@@ -329,7 +321,7 @@ class DisponibilidadProfesorController extends Controller
                 'required',
                 'string',
                 'distinct',
-                'regex:/^[1-6]-(?:[7-9]|1[0-9]|20)$/'
+                'regex:/^(?:[1-5]-(?:[7-9]|1[0-9]|20)|6-(?:[7-9]|1[0-4]))$/'
             ],
             'asignaturas' => [
                 'sometimes',
@@ -384,7 +376,10 @@ class DisponibilidadProfesorController extends Controller
             $periodo->id_periodo
         );
 
-        return redirect()->route('disponibilidad-academica.index')->with(
+        // Regresa al listado conservando el periodo en el que se registró la información.
+        return redirect()->route('disponibilidad-academica.index', [
+            'id_periodo' => $periodo->id_periodo
+        ])->with(
             'mensaje_exito',
             $datosValidados['accion'] === 'entregar'
                 ? 'La disponibilidad académica fue entregada correctamente.'
@@ -392,6 +387,18 @@ class DisponibilidadProfesorController extends Controller
         );
     }
 
+    /**
+     * Descripción:
+     * Mostrar el formulario para modificar la disponibilidad académica de un docente.
+     *
+     * Entradas:
+     * $solicitud: Solicitud HTTP.
+     * $idDocente: Identificador del docente.
+     * $idPeriodo: Identificador del periodo académico.
+     *
+     * Salidas:
+     * Vista para modificar la disponibilidad académica.
+     */
     /**
      * Descripción:
      * Mostrar el formulario para modificar la disponibilidad académica de un docente.
@@ -429,19 +436,10 @@ class DisponibilidadProfesorController extends Controller
             ->orderByDesc('id_periodo')
             ->get();
 
-        // Obtiene las carreras activas.
-        $carreras = Carrera::where('estado', 1)
-            ->orderBy('nombreCarrera')
-            ->get();
-
-        // Obtiene las asignaturas activas de carreras activas.
-        $asignaturasPorCarrera = Asignatura::where('estado', 1)
-            ->whereHas('carrera', function ($consulta) {
-                $consulta->where('estado', 1);
-            })
-            ->orderBy('nombreAsignatura')
-            ->get()
-            ->groupBy('id_carrera');
+        // Obtiene las asignaturas de las carreras y cuatrimestres del periodo seleccionado.
+        $asignaturasPorCarrera = $this->obtenerAsignaturasPorCarreraYCuatrimestre(
+            $periodoSeleccionado->id_periodo
+        );
 
         // Obtiene las asignaturas seleccionadas por el docente en el periodo.
         $asignaturasSeleccionadas = AsignaturaPreferida::where(
@@ -462,25 +460,47 @@ class DisponibilidadProfesorController extends Controller
             ->orderBy('hora_inicio')
             ->get();
 
-        // Convierte los registros en identificadores para la cuadrícula.
-        $bloquesNoDisponibles = $disponibilidades->map(function ($disponibilidad) {
-            return (int) $disponibilidad->dia . '-' .
-                (int) substr($disponibilidad->hora_inicio, 0, 2);
-        })->toArray();
+        // Convierte los intervalos registrados en identificadores para la cuadrícula.
+        $bloquesNoDisponibles = [];
+
+        foreach ($disponibilidades as $disponibilidad) {
+
+            // Obtiene la hora inicial y final del intervalo.
+            $horaInicio = (int) substr($disponibilidad->hora_inicio, 0, 2);
+            $horaFin = (int) substr($disponibilidad->hora_fin, 0, 2);
+
+            // Recupera cada bloque de una hora incluido en el intervalo.
+            for ($hora = $horaInicio; $hora < $horaFin; $hora++) {
+
+                $bloquesNoDisponibles[] = (int) $disponibilidad->dia . '-' . $hora;
+            }
+        }
 
         // Indica que se está modificando una disponibilidad.
         $esEdicion = true;
 
+        // Identificador del docente seleccionado.
+        $idDocenteSeleccionado = $docente->id_docente;
+
+        // Obtiene los docentes registrados.
+        $docentesRegistrados = Docente::with('usuario')
+            ->whereHas('usuario', function ($consulta) {
+                $consulta->where('estado', 1);
+            })
+            ->get();
+
+        // Obtiene las disponibilidades registradas del docente en el periodo.
+        $disponibilidadesRegistradas = $disponibilidades;
+
+        // Devuelve la vista de gestión de disponibilidad académica.
         return view('DisponibilidadAcademica.GestionDisponibilidadAcademica', compact(
-            'periodosRegistrados',
+            'periodos',
             'periodoSeleccionado',
             'idDocenteSeleccionado',
             'docentesRegistrados',
             'disponibilidadesRegistradas',
-            'carreras',
             'asignaturasPorCarrera',
             'docente',
-            'periodos',
             'asignaturasSeleccionadas',
             'bloquesNoDisponibles',
             'esEdicion'
@@ -536,7 +556,7 @@ class DisponibilidadProfesorController extends Controller
                 'required',
                 'string',
                 'distinct',
-                'regex:/^[1-6]-(?:[7-9]|1[0-9]|20)$/'
+                'regex:/^(?:[1-5]-(?:[7-9]|1[0-9]|20)|6-(?:[7-9]|1[0-4]))$/'
             ],
             'asignaturas' => [
                 'sometimes',
@@ -598,68 +618,6 @@ class DisponibilidadProfesorController extends Controller
 
     /**
      * Descripción:
-     * Guardar los bloques no disponibles y las asignaturas preferidas del docente.
-     *
-     * Entradas:
-     * $datosValidados: Información validada del formulario.
-     * $idDocente: Identificador del docente.
-     * $idPeriodo: Identificador del periodo académico.
-     *
-     * Salidas:
-     * Registros actualizados en disponibilidadProfesor y asignatura_preferida.
-     */
-    private function guardarDatosDisponibilidad(array $datosValidados, $idDocente, $idPeriodo)
-    {
-        // Determina si la disponibilidad se guarda como borrador o se entrega.
-        $estadoConfirmacion = $datosValidados['accion'] === 'entregar' ? 1 : 0;
-
-        // Establece la fecha de confirmación únicamente cuando se entrega.
-        $fechaConfirmacion = $estadoConfirmacion === 1 ? now() : null;
-
-        // Elimina los bloques anteriores del docente en el periodo.
-        DisponibilidadProfesor::where('id_docente', $idDocente)
-            ->where('id_periodo', $idPeriodo)
-            ->delete();
-
-        // Registra nuevamente los bloques no disponibles.
-        foreach ($datosValidados['bloques_no_disponibles'] as $bloque) {
-
-            // Separa el día y la hora del bloque seleccionado.
-            [$dia, $hora] = explode('-', $bloque);
-
-            // Convierte la hora seleccionada en un intervalo de una hora.
-            $horaInicio = sprintf('%02d:00:00', (int) $hora);
-            $horaFin = sprintf('%02d:00:00', (int) $hora + 1);
-
-            DisponibilidadProfesor::create([
-                'dia' => (int) $dia,
-                'hora_inicio' => $horaInicio,
-                'hora_fin' => $horaFin,
-                'estadoConfirmacion' => $estadoConfirmacion,
-                'fechaConfirmacion' => $fechaConfirmacion,
-                'id_docente' => $idDocente,
-                'id_periodo' => $idPeriodo
-            ]);
-        }
-
-        // Elimina las asignaturas preferidas anteriores del mismo periodo.
-        AsignaturaPreferida::where('id_docente', $idDocente)
-            ->where('id_periodo', $idPeriodo)
-            ->delete();
-
-        // Registra las nuevas asignaturas seleccionadas.
-        foreach ($datosValidados['asignaturas'] ?? [] as $idAsignatura) {
-
-            AsignaturaPreferida::create([
-                'id_periodo' => $idPeriodo,
-                'id_docente' => $idDocente,
-                'id_asignatura' => $idAsignatura
-            ]);
-        }
-    }
-
-    /**
-     * Descripción:
      * Eliminar la disponibilidad académica de un docente en un periodo.
      *
      * Entradas:
@@ -690,6 +648,191 @@ class DisponibilidadProfesorController extends Controller
             ])
             ->with('mensaje_exito', 'La disponibilidad académica fue eliminada correctamente.');
     }
+
+
+    /**
+     * Descripción:
+     * Guardar los intervalos no disponibles y las asignaturas preferidas del docente.
+     *
+     * Entradas:
+     * $datosValidados: Información validada del formulario.
+     * $idDocente: Identificador del docente.
+     * $idPeriodo: Identificador del periodo académico.
+     *
+     * Salidas:
+     * Registros actualizados en disponibilidadProfesor y asignatura_preferida.
+     */
+    private function guardarDatosDisponibilidad(array $datosValidados, $idDocente, $idPeriodo)
+    {
+        // Determina si la disponibilidad se guarda como borrador o se entrega.
+        $estadoConfirmacion = $datosValidados['accion'] === 'entregar' ? 1 : 0;
+
+        // Establece la fecha de confirmación únicamente cuando se entrega.
+        $fechaConfirmacion = $estadoConfirmacion === 1 ? now() : null;
+
+        // Elimina los intervalos anteriores del docente en el periodo.
+        DisponibilidadProfesor::where('id_docente', $idDocente)
+            ->where('id_periodo', $idPeriodo)
+            ->delete();
+
+        // Agrupa los bloques seleccionados por día.
+        $bloquesPorDia = [];
+
+        foreach ($datosValidados['bloques_no_disponibles'] as $bloque) {
+
+            // Separa el día y la hora del bloque seleccionado.
+            [$dia, $hora] = explode('-', $bloque);
+
+            $bloquesPorDia[(int) $dia][] = (int) $hora;
+        }
+
+        // Recorre los días que contienen bloques seleccionados.
+        foreach ($bloquesPorDia as $dia => $horas) {
+
+            // Ordena las horas de menor a mayor.
+            sort($horas);
+
+            // Inicializa el intervalo con la primera hora.
+            $horaInicio = $horas[0];
+            $horaAnterior = $horas[0];
+
+            // Recorre las horas para agrupar los bloques consecutivos.
+            for ($i = 1; $i <= count($horas); $i++) {
+
+                // Comprueba si existe otra hora consecutiva.
+                if (isset($horas[$i]) && $horas[$i] === $horaAnterior + 1) {
+
+                    $horaAnterior = $horas[$i];
+
+                } else {
+
+                    // Guarda el intervalo completo.
+                    DisponibilidadProfesor::create([
+                        'dia' => $dia,
+                        'hora_inicio' => sprintf('%02d:00:00', $horaInicio),
+                        'hora_fin' => sprintf('%02d:00:00', $horaAnterior + 1),
+                        'estadoConfirmacion' => $estadoConfirmacion,
+                        'fechaConfirmacion' => $fechaConfirmacion,
+                        'id_docente' => $idDocente,
+                        'id_periodo' => $idPeriodo
+                    ]);
+
+                    // Inicializa un nuevo intervalo si quedan horas por recorrer.
+                    if (isset($horas[$i])) {
+                        $horaInicio = $horas[$i];
+                        $horaAnterior = $horas[$i];
+                    }
+                }
+            }
+        }
+
+        // Elimina las asignaturas preferidas anteriores del mismo periodo.
+        AsignaturaPreferida::where('id_docente', $idDocente)
+            ->where('id_periodo', $idPeriodo)
+            ->delete();
+
+        // Registra las nuevas asignaturas seleccionadas.
+        foreach ($datosValidados['asignaturas'] ?? [] as $idAsignatura) {
+
+            AsignaturaPreferida::create([
+                'id_periodo' => $idPeriodo,
+                'id_docente' => $idDocente,
+                'id_asignatura' => $idAsignatura
+            ]);
+        }
+    }
+
+
+
+    /**
+     * Descripción:
+     * Obtiene las asignaturas activas de las carreras activas,
+     * de acuerdo con los cuatrimestres correspondientes a la
+     * estación del periodo académico seleccionado.
+     *
+     * Entradas:
+     * - $idPeriodo: Identificador del periodo académico.
+     *
+     * Salidas:
+     * - Arreglo de carreras con sus respectivos cuatrimestres
+     *   y asignaturas activas.
+     */
+    private function obtenerAsignaturasPorCarreraYCuatrimestre($idPeriodo)
+    {
+        // Obtiene el periodo académico seleccionado.
+        $periodo = Periodo::find($idPeriodo);
+
+        // Comprueba que el periodo exista.
+        if (!$periodo) {
+            return [];
+        }
+
+        // Determina los cuatrimestres correspondientes a la estación.
+        $cuatrimestresPeriodo = match (mb_strtolower(trim($periodo->estacion))) {
+            'otoño' => [1, 4, 7, 10],
+            'invierno' => [2, 5, 8],
+            'primavera' => [3, 6, 9],
+            default => []
+        };
+
+        // Comprueba que la estación tenga cuatrimestres registrados.
+        if (empty($cuatrimestresPeriodo)) {
+            return [];
+        }
+
+        // Obtiene todas las carreras activas.
+        $carrerasActivas = Carrera::where('estado', 1)
+            ->orderBy('nombreCarrera')
+            ->get();
+
+        // Inicializa el arreglo de asignaturas por carrera.
+        $asignaturasPorCarrera = [];
+
+        // Recorre las carreras activas.
+        foreach ($carrerasActivas as $carrera) {
+
+            // Obtiene las asignaturas activas de la carrera
+            // que pertenecen a los cuatrimestres del periodo.
+            $asignaturas = Asignatura::where('id_carrera', $carrera->id_carrera)
+                ->whereIn('cuatrimestre', $cuatrimestresPeriodo)
+                ->where('estado', 1)
+                ->orderBy('cuatrimestre')
+                ->orderBy('nombreAsignatura')
+                ->get()
+                ->groupBy('cuatrimestre');
+
+            // Inicializa los cuatrimestres de la carrera.
+            $cuatrimestres = [];
+
+            // Organiza las asignaturas por cuatrimestre.
+            foreach ($cuatrimestresPeriodo as $cuatrimestre) {
+
+                // Obtiene las asignaturas del cuatrimestre actual.
+                $asignaturasCuatrimestre = $asignaturas->get($cuatrimestre, collect());
+
+                // Agrega el cuatrimestre si tiene asignaturas.
+                if ($asignaturasCuatrimestre->isNotEmpty()) {
+
+                    $cuatrimestres[] = [
+                        'cuatrimestre' => $cuatrimestre,
+                        'asignaturas' => $asignaturasCuatrimestre
+                    ];
+                }
+            }
+
+            // Agrega la carrera si tiene asignaturas disponibles.
+            if (!empty($cuatrimestres)) {
+
+                $asignaturasPorCarrera[$carrera->id_carrera] = [
+                    'carrera' => $carrera,
+                    'cuatrimestres' => $cuatrimestres
+                ];
+            }
+        }
+
+        return $asignaturasPorCarrera;
+    }
+
 
     /**
      * Descripción: Comprueba que el usuario autenticado tenga uno de los roles permitidos.

@@ -476,28 +476,31 @@
 
                                     @for ($dia = 1; $dia <= 6; $dia++)
 
-                                        @php
-                                            $bloque = $dia . '-' . $hora;
-                                            $seleccionado = in_array(
-                                                $bloque,
-                                                old('bloques_no_disponibles', [])
-                                            );
-                                        @endphp
+                                        @if (!($dia == 6 && $hora >= 15))
 
-                                        <td>
-                                            <button
-                                                type="button"
-                                                class="bloque-horario {{ $seleccionado ? 'bloque-no-disponible' : '' }}"
-                                                data-bloque="{{ $bloque }}"
-                                                aria-pressed="{{ $seleccionado ? 'true' : 'false' }}"
-                                                aria-label="Día {{ $dia }}, {{ $hora }}:00 a {{ $hora + 1 }}:00"
-                                            >
-                                                {{ $seleccionado ? 'No disponible' : 'Disponible' }}
-                                            </button>
-                                        </td>
+                                            @php
+                                                $bloque = $dia . '-' . $hora;
+                                                $seleccionado = in_array(
+                                                    $bloque,
+                                                    old('bloques_no_disponibles', [])
+                                                );
+                                            @endphp
+
+                                            <td>
+                                                <button
+                                                    type="button"
+                                                    class="bloque-horario {{ $seleccionado ? 'bloque-no-disponible' : '' }}"
+                                                    data-bloque="{{ $bloque }}"
+                                                    aria-pressed="{{ $seleccionado ? 'true' : 'false' }}"
+                                                    aria-label="Día {{ $dia }}, {{ $hora }}:00 a {{ $hora + 1 }}:00"
+                                                >
+                                                    {{ $seleccionado ? 'No disponible' : 'Disponible' }}
+                                                </button>
+                                            </td>
+
+                                        @endif
 
                                     @endfor
-
                                 </tr>
 
                             @endfor
@@ -527,6 +530,96 @@
 
             </div>
 
+
+            <!-- ASIGNATURAS PREFERIDAS -->
+            <!-- ASIGNATURAS PREFERIDAS -->
+            <div class="encabezado-panel encabezado-asignaturas">
+                <div>
+                    <h2>Asignaturas</h2>
+
+                    <p class="texto-secundario">
+                        Selecciona las asignaturas que te gustaría impartir durante el periodo seleccionado.
+                    </p>
+                </div>
+            </div>
+
+            <div class="contenedor-carreras-preferidas">
+
+                @forelse ($asignaturasPorCarrera as $grupoCarrera)
+
+                    @php
+                        $carrera = $grupoCarrera['carrera'];
+                    @endphp
+
+                    <details class="carrera-preferida">
+
+                        <summary class="encabezado-carrera-preferida">
+                            <span>
+                                {{ $carrera->claveCarrera }} - {{ $carrera->nombreCarrera }}
+                            </span>
+
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </summary>
+
+                        <div class="contenido-carrera-preferida">
+
+                            @foreach ($grupoCarrera['cuatrimestres'] as $grupoCuatrimestre)
+
+                                <div class="cuatrimestre-preferido">
+
+                                    <h4>
+                                        {{ $grupoCuatrimestre['cuatrimestre'] }}°
+                                        cuatrimestre
+                                    </h4>
+
+                                    <div class="lista-asignaturas-preferidas">
+
+                                        @foreach ($grupoCuatrimestre['asignaturas'] as $asignatura)
+
+                                            <label class="opcion-asignatura-preferida">
+
+                                                <input
+                                                    type="checkbox"
+                                                    name="asignaturas[]"
+                                                    value="{{ $asignatura->id_asignatura }}"
+                                                    @checked(
+                                                        in_array(
+                                                            $asignatura->id_asignatura,
+                                                            old('asignaturas', $asignaturasSeleccionadas ?? [])
+                                                        )
+                                                    )
+                                                >
+
+                                                <span>
+                                                    {{ $asignatura->nombreAsignatura }}
+                                                </span>
+
+                                            </label>
+
+                                        @endforeach
+
+                                    </div>
+
+                                </div>
+
+                            @endforeach
+
+                        </div>
+
+                    </details>
+
+                @empty
+
+                    <p class="mensaje-sin-asignaturas">
+                        No hay asignaturas disponibles para las carreras y cuatrimestres
+                        registrados en el periodo seleccionado.
+                    </p>
+
+                @endforelse
+
+            </div>
+
+
             <!-- ACCIONES -->
             <div class="acciones-disponibilidad">
 
@@ -537,6 +630,7 @@
                     Limpiar formulario
                 </button>
 
+                <!--
                 <button
                     type="submit"
                     name="accion"
@@ -545,7 +639,7 @@
                 >
                     <i class="fa-solid fa-floppy-disk"></i>
                     Guardar borrador
-                </button>
+                </button> -->
 
                 <button
                     type="submit"
@@ -563,7 +657,6 @@
     </section>
 
     <!-- PANEL PARA CONSULTAR ASIGNATURAS SELECCIONADAS -->
-    
 </main>
 
 <!-- CONFIGURACIÓN PARA JAVASCRIPT -->

@@ -204,4 +204,129 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
     
+
+    // Obtiene el selector de periodos académicos.
+    const selectorPeriodo = document.getElementById('id_periodo');
+
+    // Detecta cuando cambia el periodo seleccionado.
+    selectorPeriodo?.addEventListener('change', function () {
+
+        // Obtiene el identificador del periodo seleccionado.
+        const idPeriodo = this.value;
+
+        // Comprueba que se haya seleccionado un periodo.
+        if (!idPeriodo) {
+            return;
+        }
+
+        // Obtiene los datos que se deben conservar.
+        const datosDisponibilidad = {
+
+            // Conserva el docente seleccionado.
+            id_docente: document.getElementById('id_docente')?.value ?? '',
+
+            // Conserva los bloques de horario no disponibles.
+            bloques_no_disponibles: Array.from(
+                bloquesSeleccionados?.querySelectorAll('[data-input-bloque]') ?? []
+            ).map(function (input) {
+                return input.value;
+            }),
+
+            // Conserva las asignaturas preferidas seleccionadas.
+            asignaturas: Array.from(
+                formulario?.querySelectorAll('input[name="asignaturas[]"]:checked') ?? []
+            ).map(function (input) {
+                return input.value;
+            })
+
+        };
+
+        // Guarda temporalmente los datos antes de recargar la página.
+        sessionStorage.setItem(
+            'datosDisponibilidadPendientes',
+            JSON.stringify(datosDisponibilidad)
+        );
+
+        // Obtiene la dirección actual.
+        const url = new URL(window.location.href);
+
+        // Actualiza el periodo seleccionado.
+        url.searchParams.set('id_periodo', idPeriodo);
+
+        // Regresa a la sección del formulario.
+        url.hash = 'registro-disponibilidad';
+
+        // Recarga la vista con el nuevo periodo.
+        window.location.href = url.toString();
+
+    });
+
+
+    // Recupera los datos guardados después de cambiar el periodo.
+    const datosGuardados = sessionStorage.getItem(
+        'datosDisponibilidadPendientes'
+    );
+
+    // Comprueba si existen datos pendientes por recuperar.
+    if (datosGuardados) {
+
+        // Convierte los datos almacenados a un objeto.
+        const datosDisponibilidad = JSON.parse(datosGuardados);
+
+        // Recupera el docente seleccionado.
+        const selectorDocente = document.getElementById('id_docente');
+
+        if (selectorDocente && datosDisponibilidad.id_docente) {
+            selectorDocente.value = datosDisponibilidad.id_docente;
+        }
+
+        // Recupera los bloques de horario no disponibles.
+        if (bloquesSeleccionados) {
+
+            // Limpia los bloques generados inicialmente.
+            bloquesSeleccionados.innerHTML = '';
+
+            datosDisponibilidad.bloques_no_disponibles.forEach(function (bloque) {
+
+                // Crea nuevamente el campo oculto del bloque.
+                const nuevoInput = document.createElement('input');
+
+                nuevoInput.type = 'hidden';
+                nuevoInput.name = 'bloques_no_disponibles[]';
+                nuevoInput.value = bloque;
+                nuevoInput.dataset.inputBloque = bloque;
+
+                bloquesSeleccionados.appendChild(nuevoInput);
+
+                // Recupera la apariencia visual del bloque.
+                const boton = Array.from(botonesHorario).find(function (elemento) {
+                    return elemento.dataset.bloque === bloque;
+                });
+
+                if (boton) {
+                    cambiarEstadoVisual(boton, true);
+                }
+
+            });
+
+        }
+
+        // Recupera las asignaturas preferidas seleccionadas.
+        const asignaturasSeleccionadas = formulario?.querySelectorAll(
+            'input[name="asignaturas[]"]'
+        );
+
+        asignaturasSeleccionadas?.forEach(function (checkbox) {
+
+            checkbox.checked = datosDisponibilidad.asignaturas.includes(
+                checkbox.value
+            );
+
+        });
+
+        // Elimina los datos temporales después de recuperarlos.
+        sessionStorage.removeItem('datosDisponibilidadPendientes');
+
+    }
+    
 });

@@ -21,7 +21,7 @@ class AsignaturaController extends Controller
         $this->verificarRol([1, 2, 3]);
 
         // Consultar las asignaturas junto con la información de su carrera.
-        $consulta = Asignatura::with('carrera');
+        $consulta = Asignatura::with('carrera')->orderBy('id_asignatura', 'desc');
 
         // Filtrar por clave o nombre de la asignatura.
         if ($solicitud->filled('buscar')) {
@@ -80,12 +80,7 @@ class AsignaturaController extends Controller
                 'string',
                 'max:20',
                 Rule::unique('asignatura', 'clave')
-                    ->where(function ($consulta) use ($solicitud) {
-                        return $consulta->where(
-                            'id_carrera',
-                            $solicitud->input('id_carrera')
-                        );
-                    }),
+                    
             ],
             'nombreAsignatura' => [
                 'required',
@@ -123,6 +118,7 @@ class AsignaturaController extends Controller
             'horas.max' => 'Las horas no pueden superar 65535.',
             'id_carrera.required' => 'Selecciona una carrera.',
             'id_carrera.exists' => 'La carrera seleccionada no existe.',
+            'claveAsignatura.unique' => 'La clave ingresada ya existe. Por favor, utiliza una clave diferente.',
         ]);
 
         // Mostrar el error en el modal personalizado si la validación falla.

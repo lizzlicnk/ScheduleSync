@@ -147,3 +147,229 @@
             </div>
         </div>
     </section>
+
+
+       <!-- PANEL PARA CONSULTAR DISPONIBILIDAD ACADÉMICA -->
+    <section class="panel-disponibilidad panel-consulta-disponibilidad" id="consulta-disponibilidad">
+
+        <div class="encabezado-panel">
+            <div>
+                <h2>Consulta de disponibilidad académica</h2>
+
+                <p class="texto-secundario">
+                    Consulta los horarios no disponibles y las asignaturas seleccionadas por el docente.
+                </p>
+            </div>
+        </div>
+
+        @if (isset($docenteConsultado) && $docenteConsultado)
+
+            @php
+                // Obtiene el nombre completo del docente.
+                $nombreDocenteConsulta = trim(
+                    $docenteConsultado->usuario->nombreUsuario . ' ' .
+                    ($docenteConsultado->usuario->apellidoPaterno ?? '') . ' ' .
+                    ($docenteConsultado->usuario->apellidoMaterno ?? '')
+                );
+
+                // Define los días de la semana.
+                $diasConsulta = [
+                    1 => 'Lunes',
+                    2 => 'Martes',
+                    3 => 'Miércoles',
+                    4 => 'Jueves',
+                    5 => 'Viernes',
+                    6 => 'Sábado',
+                ];
+            @endphp
+
+            <!-- INFORMACIÓN DEL DOCENTE -->
+            <div class="tarjeta-detalle">
+
+                <div class="encabezado-detalle">
+                    <div class="icono-detalle">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+
+                    <div>
+                        <h3>Información del docente</h3>
+                        <p class="texto-secundario">
+                            Datos generales del registro consultado.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="lista-detalle">
+
+                    <div class="fila-detalle">
+                        <span>Nombre del docente</span>
+                        <strong>{{ $nombreDocenteConsulta }}</strong>
+                    </div>
+
+                    <div class="fila-detalle">
+                        <span>Matrícula</span>
+                        <strong>{{ $docenteConsultado->matricula }}</strong>
+                    </div>
+
+                    <div class="fila-detalle">
+                        <span>Periodo</span>
+                        <strong>
+                            {{ $periodoConsultado->estacion }}
+                            {{ $periodoConsultado->anio }}
+                        </strong>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- HORARIOS NO DISPONIBLES -->
+            <div class="tarjeta-detalle">
+
+                <div class="encabezado-detalle">
+                    <div class="icono-detalle">
+                        <i class="fa-solid fa-calendar-days"></i>
+                    </div>
+
+                    <div>
+                        <h3>Disponibilidad académica</h3>
+                        <p class="texto-secundario">
+                            Horarios en los que el docente no puede impartir clases.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="lista-detalle">
+
+                    @foreach ($diasConsulta as $numeroDia => $nombreDia)
+
+                        @php
+                            // Obtiene los horarios registrados para el día.
+                            $horariosDia = $disponibilidadesConsulta
+                                ->where('dia', $numeroDia)
+                                ->sortBy('hora_inicio')
+                                ->values();
+
+                            // Agrupa los horarios consecutivos.
+                            $intervalosDia = [];
+
+                            foreach ($horariosDia as $horario) {
+
+                                $inicio = substr($horario->hora_inicio, 0, 5);
+                                $fin = substr($horario->hora_fin, 0, 5);
+
+                                $ultimoIndice = count($intervalosDia) - 1;
+
+                                if (
+                                    $ultimoIndice >= 0 &&
+                                    $intervalosDia[$ultimoIndice]['fin'] === $inicio
+                                ) {
+                                    $intervalosDia[$ultimoIndice]['fin'] = $fin;
+                                } else {
+                                    $intervalosDia[] = [
+                                        'inicio' => $inicio,
+                                        'fin' => $fin,
+                                    ];
+                                }
+                            }
+                        @endphp
+
+                        <div class="fila-detalle">
+                            <strong>{{ $nombreDia }}</strong>
+
+                            <span>
+                                @if (count($intervalosDia) > 0)
+
+                                    @foreach ($intervalosDia as $indice => $intervalo)
+
+                                        {{ $intervalo['inicio'] }} - {{ $intervalo['fin'] }}{{ $indice < count($intervalosDia) - 1 ? ' y ' : '' }}
+
+                                    @endforeach
+
+                                @else
+                                    Sin horarios registrados
+                                @endif
+                            </span>
+                        </div>
+
+                    @endforeach
+
+                </div>
+            </div>
+
+            <!-- ASIGNATURAS SELECCIONADAS -->
+            <div class="tarjeta-detalle">
+
+                <div class="encabezado-detalle">
+                    <div class="icono-detalle">
+                        <i class="fa-solid fa-book"></i>
+                    </div>
+
+                    <div>
+                        <h3>Asignaturas seleccionadas</h3>
+
+                        <p class="texto-secundario">
+                            {{ $asignaturasConsulta->count() }}
+                            {{ $asignaturasConsulta->count() === 1 ? 'materia seleccionada' : 'materias seleccionadas' }}
+                        </p>
+                    </div>
+                </div>
+
+                @if ($asignaturasConsulta->isNotEmpty())
+
+                    <div class="lista-detalle">
+
+                        @foreach ($asignaturasConsulta as $asignatura)
+
+                            <div class="fila-detalle">
+
+                                <div>
+                                    <strong>{{ $asignatura->nombreAsignatura }}</strong>
+
+                                    <p class="texto-secundario">
+                                        {{ $asignatura->carrera->nombreCarrera ?? 'Carrera no disponible' }}
+                                    </p>
+                                </div>
+
+                                <span>
+                                    {{ $asignatura->cuatrimestre }}.º cuatrimestre
+                                </span>
+
+                            </div>
+
+                        @endforeach
+
+                    </div>
+
+                @else
+
+                    <div class="tabla-vacia">
+                        El docente no ha seleccionado asignaturas.
+                    </div>
+
+                @endif
+
+            </div>
+
+            <!-- ACCIONES DE CONSULTA -->
+            <div class="acciones-disponibilidad">
+
+                <button
+                    type="button"
+                    class="boton-secundario"
+                    id="boton-imprimir-consulta"
+                >
+                    <i class="fa-solid fa-print"></i>
+                    Imprimir consulta
+                </button>
+
+            </div>
+
+        @else
+
+            <div class="tabla-vacia">
+                Selecciona la opción Consultar de un docente para visualizar su disponibilidad académica.
+            </div>
+
+        @endif
+
+    </section>

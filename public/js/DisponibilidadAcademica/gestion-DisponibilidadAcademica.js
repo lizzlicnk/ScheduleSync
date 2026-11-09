@@ -314,4 +314,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Inicializa la tabla.
     actualizarTablaDisponibilidad();
+
+
 });
