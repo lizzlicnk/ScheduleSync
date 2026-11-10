@@ -1,7 +1,5 @@
 
-/* =========================================
-   CONFIGURACIÓN GENERAL
-========================================= */
+/* CONFIGURACIÓN GENERAL */
 
 .pagina-editar-disponibilidad {
     width: min(100% - 32px, 1450px);
@@ -9,9 +7,7 @@
     color: #30263B;
 }
 
-/* =========================================
-   ENCABEZADO
-========================================= */
+/*  ENCABEZADO */
 
 .encabezado-editar-disponibilidad {
     margin-bottom: 25px;
@@ -37,9 +33,7 @@
     font-size: 14px;
 }
 
-/* =========================================
-   PANEL PRINCIPAL
-========================================= */
+/*  PANEL PRINCIPAL */
 
 .panel-edicion-disponibilidad {
     position: relative;
@@ -66,9 +60,7 @@
     );
 }
 
-/* =========================================
-   INFORMACIÓN DEL DOCENTE
-========================================= */
+/*  INFORMACIÓN DEL DOCENTE  */
 
 .encabezado-panel-edicion {
     display: flex;
@@ -112,9 +104,7 @@
     font-size: 14px;
 }
 
-/* =========================================
-   SECCIONES
-========================================= */
+/*  SECCIONES  */
 
 .seccion-horarios-edicion,
 .seccion-asignaturas-edicion {
@@ -147,9 +137,7 @@
     font-size: 13px;
 }
 
-/* =========================================
-   REFERENCIAS DE HORARIOS
-========================================= */
+/* REFERENCIAS DE HORARIOS */
 
 .referencia-horarios {
     display: flex;

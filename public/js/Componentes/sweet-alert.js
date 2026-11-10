@@ -137,4 +137,58 @@ async function confirmarEliminarCarga(nombreUsuario) {
     return resultado.isConfirmed;
 }
 
+/**
+ * Descripción: Solicita confirmación antes de eliminar una disponibilidad.
+ * Salida: true si se confirma, false si se cancela.
+ */
+async function confirmarEliminarDisponibilidad(nombreUsuario) {
 
+    const nombreSeguro = document.createElement('span');
+    nombreSeguro.textContent = nombreUsuario;
+
+    const resultado = await Swal.fire({
+        customClass: {
+            popup: 'alerta-schedulesync modal-eliminar-carga',
+            confirmButton: 'boton-eliminar-carga',
+            cancelButton: 'boton-cancelar-carga'
+        },
+        icon: 'warning',
+        title: '¿Deseas eliminar esta disponibilidad?',
+        html: `
+            <div class="mensaje-eliminar-carga">
+                <p> Estás a punto de eliminar la disponibilidad académica de: </p>
+                <strong class="nombre-docente-alerta">${nombreSeguro.innerHTML}</strong>
+                <p class="nota-eliminar-carga"> Esta acción no se puede deshacer. </p>
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#DC3545',
+        cancelButtonColor: 'transparent',
+        reverseButtons: true,
+        buttonsStyling: false
+    });
+
+    return resultado.isConfirmed;
+}
+
+/**
+ * Descripción: Solicita confirmación antes de entregar la disponibilidad.
+ * Salida: true si se confirma, false si se cancela.
+ */
+async function confirmarEntregaDisponibilidad() {
+
+    const resultado = await Swal.fire({
+        ...configuracionAlertas,
+        icon: 'question',
+        title: '¿Entregar disponibilidad?',
+        text: 'Después de entregarla, quedará registrada como confirmada.',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, entregar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true
+    });
+
+    return resultado.isConfirmed;
+}

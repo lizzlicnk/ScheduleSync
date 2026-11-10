@@ -115,9 +115,7 @@ class DisponibilidadProfesorController extends Controller
             if (!$idDocente) {
                 return redirect()
                     ->route('disponibilidad-academica.index')
-                    ->withErrors([
-                        'docente' => 'Selecciona un docente para registrar su disponibilidad.'
-                    ]);
+                    ->with('alerta_error', 'No hay periodos académicos registrados.');
             }
 
             // Buscar el docente seleccionado.
@@ -170,6 +168,7 @@ class DisponibilidadProfesorController extends Controller
             $docente->id_docente
         );
 
+        
         // Agregar la información específica del formulario.
         $datos['docente'] = $docente;
         $datos['periodos'] = $periodos;
@@ -368,123 +367,6 @@ class DisponibilidadProfesorController extends Controller
         );
     }
         
-    /**
-     * Descripción:
-     * Registrar la disponibilidad académica de un docente.
-     *
-     * Entradas:
-     * $solicitud: Solicitud HTTP con las asignaturas y bloques seleccionados.
-     * $idDocente: Identificador del docente.
-     *
-     * Salidas:
-     * Redirección a la consulta de disponibilidad.
-     */
-    /*
-    public function store(Request $solicitud, $idDocente = null)
-    {
-        // Verifica que el usuario tenga permiso para registrar.
-        $this->verificarRol([1, 2, 3]);
-
-        // Obtiene el docente correspondiente al usuario autenticado.
-        if ((int) auth()->user()->rol === 3) {
-
-            $docente = Docente::where('id_usuario', auth()->id())->firstOrFail();
-
-        } else {
-
-            // Obtiene el identificador del docente seleccionado.
-            $idDocente = $idDocente ?? $solicitud->input('id_docente');
-
-            // Buscar el docente seleccionado.
-            $docente = Docente::findOrFail($idDocente);
-        }
-
-        // Valida la información recibida.
-        $datosValidados = $solicitud->validate([
-            'id_periodo' => [
-                'required',
-                'integer',
-                Rule::exists('periodo', 'id_periodo')
-            ],
-            'accion' => [
-                'required',
-                Rule::in(['borrador', 'entregar'])
-            ],
-            'bloques_no_disponibles' => [
-                'required',
-                'array',
-                'min:1',
-                'max:84'
-            ],
-            'bloques_no_disponibles.*' => [
-                'required',
-                'string',
-                'distinct',
-                'regex:/^(?:[1-5]-(?:[7-9]|1[0-9]|20)|6-(?:[7-9]|1[0-4]))$/'
-            ],
-            'asignaturas' => [
-                'sometimes',
-                'array',
-                'max:1000'
-            ],
-            'asignaturas.*' => [
-                'integer',
-                'distinct',
-                Rule::exists('asignatura', 'id_asignatura')
-            ]
-        ], [
-            'id_periodo.required' => 'Selecciona un periodo académico.',
-            'accion.required' => 'Selecciona qué acción deseas realizar.',
-            'bloques_no_disponibles.min' => 'Selecciona al menos un horario en el que no estés disponible.',
-            'bloques_no_disponibles.max' => 'La cantidad de horarios seleccionados no es válida.',
-            'bloques_no_disponibles.*.distinct' => 'No puedes seleccionar dos veces el mismo horario.',
-            'bloques_no_disponibles.*.regex' => 'Uno de los horarios seleccionados no es válido.',
-            'asignaturas.*.exists' => 'Una de las asignaturas seleccionadas ya no está disponible.'
-        ]);
-
-        // Comprueba que las asignaturas seleccionadas sigan activas.
-        $idsAsignaturas = $datosValidados['asignaturas'] ?? [];
-
-        if (count($idsAsignaturas) > 0) {
-            $totalAsignaturasValidas = Asignatura::whereIn(
-                'id_asignatura',
-                $idsAsignaturas
-            )
-                ->where('estado', 1)
-                ->whereHas('carrera', function ($consulta) {
-                    $consulta->where('estado', 1);
-                })
-                ->count();
-
-            if ($totalAsignaturasValidas !== count($idsAsignaturas)) {
-                return back()
-                    ->withErrors([
-                        'asignaturas' => 'Una o varias asignaturas pertenecen a carreras inactivas o ya no están disponibles.'
-                    ])
-                    ->withInput();
-            }
-        }
-
-        // Obtiene el periodo seleccionado.
-        $periodo = Periodo::findOrFail($datosValidados['id_periodo']);
-
-        // Guarda la disponibilidad y las asignaturas seleccionadas.
-        $this->guardarDatosDisponibilidad(
-            $datosValidados,
-            $docente->id_docente,
-            $periodo->id_periodo
-        );
-
-        // Regresa al listado conservando el periodo en el que se registró la información.
-        return redirect()->route('disponibilidad-academica.index', [
-            'id_periodo' => $periodo->id_periodo
-        ])->with(
-            'mensaje_exito',
-            $datosValidados['accion'] === 'entregar'
-                ? 'La disponibilidad académica fue entregada correctamente.'
-                : 'La disponibilidad académica se guardó como borrador.'
-        );
-    } */
 
 
     /**
@@ -619,11 +501,8 @@ class DisponibilidadProfesorController extends Controller
 
         // Comprobar que todas las asignaturas sean válidas.
         if ($totalAsignaturasValidas !== count($idsAsignaturas)) {
-
             return back()
-                ->withErrors([
-                    'asignaturas' => 'Una o varias asignaturas pertenecen a carreras inactivas o ya no están disponibles.'
-                ])
+                ->with('alerta_error', 'Una o varias asignaturas pertenecen a carreras inactivas o ya no están disponibles.')
                 ->withInput();
         }
 
@@ -637,139 +516,16 @@ class DisponibilidadProfesorController extends Controller
             $periodo->id_periodo
         );
 
-        // Regresar al listado conservando el periodo seleccionado.
         return redirect()->route('disponibilidad-academica.index', [
             'id_periodo' => $periodo->id_periodo
         ])->with(
-            'mensaje_exito',
+            'alerta_exito',
             $datosValidados['accion'] === 'entregar'
                 ? 'La disponibilidad académica fue entregada correctamente.'
                 : 'La disponibilidad académica se guardó como borrador.'
         );
+
     }
-
-
-    /**
-     * Descripción:
-     * Mostrar el formulario para modificar la disponibilidad académica de un docente.
-     *
-     * Entradas:
-     * $solicitud: Solicitud HTTP.
-     * $idDocente: Identificador del docente.
-     * $idPeriodo: Identificador del periodo académico.
-     *
-     * Salidas:
-     * Vista para modificar la disponibilidad académica.
-     */
-    /**
-     * Descripción:
-     * Mostrar el formulario para modificar la disponibilidad académica de un docente.
-     *
-     * Entradas:
-     * $solicitud: Solicitud HTTP.
-     * $idDocente: Identificador del docente.
-     * $idPeriodo: Identificador del periodo académico.
-     *
-     * Salidas:
-     * Vista para modificar la disponibilidad académica.
-     */
-    /*
-    public function edit(Request $solicitud, $idDocente, $idPeriodo)
-    {
-        // Verifica que el usuario tenga permiso para acceder al módulo.
-        $this->verificarRol([1, 2, 3]);
-
-        // Obtiene el docente registrado.
-        $docente = Docente::with('usuario')
-            ->findOrFail($idDocente);
-
-        // El docente solamente puede modificar su propia disponibilidad.
-        if (
-            (int) auth()->user()->rol === 3 &&
-            $docente->id_usuario !== auth()->id()
-        ) {
-            abort(403);
-        }
-
-        // Obtiene el periodo académico.
-        $periodoSeleccionado = Periodo::findOrFail($idPeriodo);
-
-        // Obtiene los periodos registrados.
-        $periodos = Periodo::orderByDesc('anio')
-            ->orderByDesc('id_periodo')
-            ->get();
-
-        // Obtiene las asignaturas de las carreras y cuatrimestres del periodo seleccionado.
-        $asignaturasPorCarrera = $this->obtenerAsignaturasPorCarreraYCuatrimestre(
-            $periodoSeleccionado->id_periodo
-        );
-
-        // Obtiene las asignaturas seleccionadas por el docente en el periodo.
-        $asignaturasSeleccionadas = AsignaturaPreferida::where(
-            'id_docente',
-            $docente->id_docente
-        )
-            ->where('id_periodo', $periodoSeleccionado->id_periodo)
-            ->pluck('id_asignatura')
-            ->toArray();
-
-        // Obtiene los bloques en los que el docente no está disponible.
-        $disponibilidades = DisponibilidadProfesor::where(
-            'id_docente',
-            $docente->id_docente
-        )
-            ->where('id_periodo', $periodoSeleccionado->id_periodo)
-            ->orderBy('dia')
-            ->orderBy('hora_inicio')
-            ->get();
-
-        // Convierte los intervalos registrados en identificadores para la cuadrícula.
-        $bloquesNoDisponibles = [];
-
-        foreach ($disponibilidades as $disponibilidad) {
-
-            // Obtiene la hora inicial y final del intervalo.
-            $horaInicio = (int) substr($disponibilidad->hora_inicio, 0, 2);
-            $horaFin = (int) substr($disponibilidad->hora_fin, 0, 2);
-
-            // Recupera cada bloque de una hora incluido en el intervalo.
-            for ($hora = $horaInicio; $hora < $horaFin; $hora++) {
-
-                $bloquesNoDisponibles[] = (int) $disponibilidad->dia . '-' . $hora;
-            }
-        }
-
-        // Indica que se está modificando una disponibilidad.
-        $esEdicion = true;
-
-        // Identificador del docente seleccionado.
-        $idDocenteSeleccionado = $docente->id_docente;
-
-        // Obtiene los docentes registrados.
-        $docentesRegistrados = Docente::with('usuario')
-            ->whereHas('usuario', function ($consulta) {
-                $consulta->where('estado', 1);
-            })
-            ->get();
-
-        // Obtiene las disponibilidades registradas del docente en el periodo.
-        $disponibilidadesRegistradas = $disponibilidades;
-
-        // Devuelve la vista de gestión de disponibilidad académica.
-        return view('DisponibilidadAcademica.GestionDisponibilidadAcademica', compact(
-            'periodos',
-            'periodoSeleccionado',
-            'idDocenteSeleccionado',
-            'docentesRegistrados',
-            'disponibilidadesRegistradas',
-            'asignaturasPorCarrera',
-            'docente',
-            'asignaturasSeleccionadas',
-            'bloquesNoDisponibles',
-            'esEdicion'
-        ));
-    }
- */
 
     /**
      * Descripción: Muestra el formulario para modificar la disponibilidad
@@ -863,7 +619,6 @@ class DisponibilidadProfesorController extends Controller
             $datos
         );
     }
-    
     /**
      * Descripción:
      * Actualizar la disponibilidad académica de un docente.
@@ -948,9 +703,7 @@ class DisponibilidadProfesorController extends Controller
 
             if ($totalAsignaturasValidas !== count($idsAsignaturas)) {
                 return back()
-                    ->withErrors([
-                        'asignaturas' => 'Una o varias asignaturas pertenecen a carreras inactivas o ya no están disponibles.'
-                    ])
+                    ->with('alerta_error', 'Una o varias asignaturas pertenecen a carreras inactivas o ya no están disponibles.')
                     ->withInput();
             }
         }
@@ -962,11 +715,13 @@ class DisponibilidadProfesorController extends Controller
             $idPeriodo
         );
 
-        return redirect()->route('disponibilidad-academica.show', [
-            'idDocente' => $docente->id_docente,
-            'idPeriodo' => $idPeriodo
-        ])->with(
-            'mensaje_exito',
+        return redirect()->to(
+            route('disponibilidad-academica.index', [
+                'id_periodo' => $idPeriodo,
+                'id_docente_consulta' => $docente->id_docente
+            ]) . '#panel-consulta'
+        )->with(
+            'alerta_exito',
             $datosValidados['accion'] === 'entregar'
                 ? 'La disponibilidad académica fue entregada correctamente.'
                 : 'Los cambios se guardaron como borrador.'
@@ -999,11 +754,13 @@ class DisponibilidadProfesorController extends Controller
             ->where('id_periodo', $idPeriodo)
             ->delete();
 
-        return redirect()
-            ->route('disponibilidad-academica.index', [
-                'id_periodo' => $idPeriodo
-            ])
-            ->with('mensaje_exito', 'La disponibilidad académica fue eliminada correctamente.');
+
+            // Regresar al listado con un mensaje de confirmación.
+return redirect()
+    ->route('disponibilidad-academica.index', [
+        'id_periodo' => $idPeriodo
+    ])
+    ->with('alerta_exito', 'La disponibilidad académica fue eliminada correctamente.');
     }
 
 

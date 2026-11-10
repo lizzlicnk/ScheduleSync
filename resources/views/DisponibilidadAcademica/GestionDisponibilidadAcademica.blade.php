@@ -11,8 +11,21 @@
     $docentePreseleccionado = old('id_docente', $idDocenteSeleccionado ?? '');
 @endphp
 
+
+
 @section('contenido')
 <main class="pagina-registro-disponibilidad pagina-disponibilidad">
+
+    @if ($errors->any())
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                mostrarError(
+                    @json($errors->first()),
+                    '¡Revisa la información!'
+                );
+            });
+        </script>
+    @endif
 
     <!-- ENCABEZADO DEL MÓDULO -->
     <header class="encabezado-modulo">
@@ -360,17 +373,28 @@
 
                                 @foreach ($docentesRegistrados as $usuario)
                                     @if ($usuario->docente)
-                                        <option
-                                            value="{{ $usuario->docente->id_docente }}"
-                                            {{ (string) $docentePreseleccionado === (string) $usuario->docente->id_docente ? 'selected' : '' }}
-                                        >
-                                            {{ trim(
-                                                $usuario->nombreUsuario . ' ' .
-                                                ($usuario->apellidoPaterno ?? '') . ' ' .
-                                                ($usuario->apellidoMaterno ?? '')
-                                            ) }}
-                                            - {{ $usuario->docente->matricula }}
-                                        </option>
+
+                                        @php
+                                            // Comprueba si el docente ya tiene disponibilidad en el periodo seleccionado.
+                                            $yaTieneDisponibilidad = $disponibilidadesRegistradas
+                                                ->where('id_docente', $usuario->docente->id_docente)
+                                                ->isNotEmpty();
+                                        @endphp
+
+                                        @if (!$yaTieneDisponibilidad)
+                                            <option
+                                                value="{{ $usuario->docente->id_docente }}"
+                                                {{ (string) $docentePreseleccionado === (string) $usuario->docente->id_docente ? 'selected' : '' }}
+                                            >
+                                                {{ trim(
+                                                    $usuario->nombreUsuario . ' ' .
+                                                    ($usuario->apellidoPaterno ?? '') . ' ' .
+                                                    ($usuario->apellidoMaterno ?? '')
+                                                ) }}
+                                                - {{ $usuario->docente->matricula }}
+                                            </option>
+                                        @endif
+
                                     @endif
                                 @endforeach
 
@@ -948,39 +972,13 @@
     </section>
 </main>
 
+
 <!-- CONFIGURACIÓN PARA JAVASCRIPT -->
 <script>
     window.rutaDisponibilidadAcademica =
         @json(url('/disponibilidad-academica'));
 
     window.tokenSeguridad = @json(csrf_token());
-
-    // Ajustar la ruta de registro según el docente seleccionado.
-    document.addEventListener('DOMContentLoaded', function () {
-
-        const formulario = document.getElementById('formulario-disponibilidad');
-
-        if (formulario) {
-
-            formulario.addEventListener('submit', function () {
-
-                const rol = formulario.dataset.rol;
-                const rutaRegistro = formulario.dataset.rutaRegistro;
-
-                // El administrador debe enviar el ID del docente seleccionado.
-                if (parseInt(rol) === 1) {
-
-                    const idDocente = document.getElementById('id_docente').value;
-
-                    formulario.action = `${rutaRegistro}/${idDocente}`;
-
-                }
-
-            });
-
-        }
-
-    });
 </script>
 
 <!-- MODAL DE CAMPOS OBLIGATORIOS -->

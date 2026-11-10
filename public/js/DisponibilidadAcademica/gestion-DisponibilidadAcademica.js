@@ -192,23 +192,19 @@ document.addEventListener('DOMContentLoaded', function () {
     // Confirma la eliminación de la disponibilidad académica.
     document.querySelectorAll('.formulario-eliminar-disponibilidad').forEach(function (formulario) {
 
-        formulario.addEventListener('submit', function (evento) {
+        formulario.addEventListener('submit', async function (evento) {
 
-            // Obtiene el nombre del docente.
-            const nombreDocente = formulario.dataset.nombreDocente;
+            // Detiene el envío hasta recibir la confirmación.
+            evento.preventDefault();
 
-            // Solicita confirmación antes de eliminar.
-            const confirmarEliminacion = confirm(
-                `¿Estás seguro de eliminar la disponibilidad académica de ${nombreDocente}?`
+            const confirmado = await confirmarEliminarDisponibilidad(
+                formulario.dataset.nombreDocente
             );
 
-            // Cancela el envío si no se confirma.
-            if (!confirmarEliminacion) {
-                evento.preventDefault();
+            if (confirmado) {
+                formulario.submit();
             }
-
         });
-
     });
 
 
