@@ -226,15 +226,25 @@
                                     @if ((int) auth()->user()->rol === 1)
                                         @if ($horarioActivo)
 
-                                            <form action="{{ route('datos-generales.destroy', $horario->id_horario) }}" method="POST" class="formulario-baja-horario">
+                                            <form action="{{ route('datos-generales.destroy', $horario->id_horario) }}"
+                                                method="POST"
+                                                class="formulario-desactivar-horario"
+                                                data-nombre="{{ $horario->nombreHorario }}">
+
                                                 @csrf
                                                 @method('DELETE')
 
-                                                <button type="submit" class="boton-accion boton-eliminar" title="Desactivar horario">
+                                                <button type="submit"
+                                                        class="boton-accion boton-eliminar"
+                                                        title="Desactivar horario">
+
                                                     <i class="fa-solid fa-trash" aria-hidden="true"></i>
                                                     Desactivar
+
                                                 </button>
+
                                             </form>
+
                                         @endif
                                     @endif
 
@@ -548,96 +558,4 @@
 
 <script src="{{ asset('js/Horarios/DatosGeneralesHorario/gestion-DatosGeneralesHorario.js') }}" defer></script>
 
-<!-- MODAL PARA CONFIRMAR LA DESACTIVACIÓN 
-<div class="modal-confirmacion" id="modal-baja-horario" hidden>
-
-    <div class="modal-contenido" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-baja-horario">
-
-        <button
-            type="button"
-            class="modal-cerrar"
-            id="cerrar-modal-baja-horario"
-            aria-label="Cerrar modal"
-        >
-            &times;
-        </button>
-
-        <div class="modal-icono">
-            <i class="fa-solid fa-calendar-xmark" aria-hidden="true"></i>
-        </div>
-
-        <h2 id="titulo-modal-baja-horario">¿Desactivar este horario?</h2>
-
-        <p class="modal-mensaje">
-            Estás a punto de desactivar el siguiente horario:
-        </p>
-
-        <strong id="nombre-horario-baja" class="modal-destacado"></strong>
-
-        <p class="modal-nota">
-            El horario dejará de estar activo, pero sus datos permanecerán registrados en el sistema.
-        </p>
-
-        <div class="modal-acciones">
-
-            <button
-                type="button"
-                class="boton-modal-cancelar"
-                id="cancelar-modal-baja-horario"
-            >
-                Cancelar
-            </button>
-
-            <button
-                type="button"
-                class="boton-modal-confirmar"
-                id="confirmar-modal-baja-horario"
-            >
-                <i class="fa-solid fa-trash" aria-hidden="true"></i>
-                Sí, desactivar
-            </button>
-
-        </div>
-
-    </div>
-</div> -->
-
-<!-- MODAL DE RESPUESTA DEL SISTEMA 
-@if (session('tipo_modal_horario') && session('mensaje_modal_horario'))
-
-    <div class="modal-confirmacion" id="modal-mensaje-horario">
-
-        <div class="modal-confirmacion-contenido" role="dialog" aria-modal="true">
-
-            <div class="modal-confirmacion-icono
-                {{ session('tipo_modal_horario') === 'error' ? 'icono-error' : '' }}">
-
-                @if (session('tipo_modal_horario') === 'error')
-                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-                @else
-                    <i class="fa-solid fa-check" aria-hidden="true"></i>
-                @endif
-
-            </div>
-
-            <div class="modal-confirmacion-mensaje">
-
-                <h3>
-                    {{ session('tipo_modal_horario') === 'error' ? 'No se pudo completar la operación' : 'Operación exitosa' }}
-                </h3>
-
-                <p>{{ session('mensaje_modal_horario') }}</p>
-
-            </div>
-
-            <button type="button" class="boton-confirmar" id="aceptar-modal-horario">
-                Aceptar
-            </button>
-
-        </div>
-
-    </div>
-
-@endif -->
- 
 @endsection

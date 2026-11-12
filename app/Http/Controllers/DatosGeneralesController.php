@@ -108,14 +108,12 @@ class DatosGeneralesController extends Controller
             'id_carrera' => [
                 'required',
                 'integer',
-                Rule::exists('carrera', 'id_carrera')
-                    ->where('estado', 1),
+                Rule::exists('carrera', 'id_carrera')->where('estado', 1),
             ],
             'id_grupo' => [
                 'required',
                 'integer',
-                Rule::exists('grupo', 'id_grupo')
-                    ->where('estado', 1),
+                Rule::exists('grupo', 'id_grupo')->where('estado', 1),
             ],
             'estado' => [
                 'required',
@@ -146,14 +144,13 @@ class DatosGeneralesController extends Controller
 
         // Comprueba que el grupo pertenezca a la carrera y al periodo seleccionados. 
         if ( (int) $grupoEncontrado->id_periodo !== (int) $datosValidados['id_periodo'] || (int) $grupoEncontrado->id_carrera !== (int) $datosValidados['id_carrera'] ) {
-            return redirect()->back()->withInput()->with('tipo_modal_horario', 'error')
-            ->with('mensaje_modal_horario', 'El grupo seleccionado no corresponde a la carrera o periodo escolar indicado.');
+            return redirect()->back()->withInput()->with('alerta_error', 'El grupo seleccionado no corresponde a la carrera o periodo escolar indicado.');
         }
 
         // Comprueba si ya existe un horario para el mismo grupo y periodo. Incluye los horarios desactivados para conservar el historial.
         if (Horario::where('id_grupo', $datosValidados['id_grupo'])->where('id_periodo', $datosValidados['id_periodo'])->exists()) {
-            return redirect()->back()->withInput()->with('tipo_modal_horario', 'error')
-                ->with('mensaje_modal_horario', 'Ya existe un horario registrado para el grupo y periodo escolar seleccionados.');
+            return redirect()->back()->withInput()->with('alerta_error', 'Ya existe un horario registrado para el grupo y periodo escolar seleccionados.');
+
         }
 
         // Generar nombre del horario.
@@ -164,8 +161,7 @@ class DatosGeneralesController extends Controller
         // Guarda los datos generales del horario.
         Horario::create([ 'nombreHorario' => $nombreHorario, 'estado' => $datosValidados['estado'], 'id_grupo' => $datosValidados['id_grupo'], 'id_periodo' => $datosValidados['id_periodo'], ]);
 
-        return redirect()->route('datos-generales.index')->with('tipo_modal_horario', 'registro')
-            ->with('mensaje_modal_horario', 'Los datos generales del horario se registraron correctamente.');
+        return redirect()->route('datos-generales.index')->with('alerta_exito', 'Los datos generales del horario se registraron correctamente.');
     }
 
     /**
@@ -250,14 +246,12 @@ class DatosGeneralesController extends Controller
             'id_carrera' => [
                 'required',
                 'integer',
-                Rule::exists('carrera', 'id_carrera')
-                    ->where('estado', 1),
+                Rule::exists('carrera', 'id_carrera')->where('estado', 1),
             ],
             'id_grupo' => [
                 'required',
                 'integer',
-                Rule::exists('grupo', 'id_grupo')
-                    ->where('estado', 1),
+                Rule::exists('grupo', 'id_grupo')->where('estado', 1),
             ],
             'estado' => [
                 'sometimes',
@@ -288,7 +282,8 @@ class DatosGeneralesController extends Controller
 
         // Impide modificar el grupo o periodo cuando existen asignaciones.
         if ($tieneAsignaciones && $cambioDatosGenerales) {
-            return redirect()->back()->withInput()->with('tipo_modal_horario', 'error')->with('mensaje_modal_horario', 'No puedes modificar el grupo o periodo porque este horario ya tiene asignaciones registradas.');
+            return redirect()->back()->withInput()
+                ->with('alerta_error', 'No puedes modificar el grupo o periodo porque este horario ya tiene asignaciones registradas.');
         }
 
         // Busca el grupo y el periodo seleccionados.
@@ -298,16 +293,15 @@ class DatosGeneralesController extends Controller
         // Comprueba que el grupo pertenezca a la carrera y al periodo seleccionados.
         if ( (int) $grupoEncontrado->id_periodo !== (int) $datosValidados['id_periodo'] || (int) $grupoEncontrado->id_carrera !== (int) $datosValidados['id_carrera'] ) {
             return redirect()->back()->withInput()
-                ->with('tipo_modal_horario', 'error')
-                ->with('mensaje_modal_horario', 'El grupo seleccionado no corresponde a la carrera o periodo escolar indicado.');
+                ->with('alerta_error', 'El grupo seleccionado no corresponde a la carrera o periodo escolar indicado.');
         }
 
         // Comprueba que no exista otro horario para el mismo grupo y periodo.
         if (Horario::where('id_grupo', $datosValidados['id_grupo'])->where('id_periodo', $datosValidados['id_periodo'])->where('id_horario', '!=', $horarioEncontrado->id_horario)->exists()
         ) {
             return redirect()->back()->withInput()
-                ->with('tipo_modal_horario', 'error')
-                ->with('mensaje_modal_horario', 'Ya existe otros datos generales registrado para el grupo y periodo escolar seleccionados.');
+                ->with('alerta_error', 'Ya existen otros datos generales registrados para el grupo y periodo escolar seleccionados.');
+        
         }
 
         // Nuevo nombre
@@ -323,9 +317,9 @@ class DatosGeneralesController extends Controller
             'estado' => $datosValidados['estado'] ?? $horarioEncontrado->estado,
         ]);
 
-        return redirect() ->route('datos-generales.edit', [ 'idHorario' => $horarioEncontrado->id_horario, ])
-            ->with('tipo_modal_horario', 'modificacion')
-            ->with('mensaje_modal_horario', 'Los datos generales del horario se actualizaron correctamente.');
+        // Regresa al listado y muestra el mensaje de confirmación.
+        return redirect()->route('datos-generales.index')
+            ->with('alerta_exito', 'Los datos generales del horario se actualizaron correctamente.');
     }
 
     /**
@@ -343,16 +337,15 @@ class DatosGeneralesController extends Controller
         // Comprueba si el horario ya está desactivado.
         if ((int) $horarioEncontrado->estado === 0) {
             return redirect()->route('datos-generales.index')
-                ->with('tipo_modal_horario', 'error')
-                ->with('mensaje_modal_horario', 'El horario seleccionado ya se encuentra desactivado.');
+                ->with('alerta_error', 'El horario seleccionado ya se encuentra desactivado.');
         }
 
         // Cambia el estado 
         $horarioEncontrado->update([ 'estado' => 0, ]);
 
         // Regresa al listado y muestra el modal de confirmación.
-        return redirect()->route('datos-generales.index')->with('tipo_modal_horario', 'eliminacion')
-            ->with('mensaje_modal_horario', 'Los datos generales del horario se desactivó correctamente.');
+        return redirect()->route('datos-generales.index')    
+            ->with('alerta_exito', 'Los datos generales del horario se desactivó correctamente.');
     }
 
 

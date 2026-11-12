@@ -412,4 +412,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 
+    /* CONFIRMAR DESACTIVACIÓN DE HORARIO */
+
+    // Obtener los formularios para desactivar horarios.
+    const formulariosDesactivar = document.querySelectorAll(
+        '.formulario-desactivar-horario'
+    );
+
+    formulariosDesactivar.forEach(function (formulario) {
+
+        formulario.addEventListener('submit', async function (evento) {
+
+            // Evitar que el formulario se envíe inmediatamente.
+            evento.preventDefault();
+
+            const nombreHorario = formulario.dataset.nombre;
+
+            // Solicitar confirmación antes de desactivar.
+            const confirmado = await confirmarDesactivarHorario(nombreHorario);
+
+            // Enviar el formulario solamente si se confirma.
+            if (confirmado) {
+                formulario.submit();
+            }
+
+        });
+
+    });
+
 });

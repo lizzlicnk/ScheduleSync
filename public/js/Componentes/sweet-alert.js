@@ -192,3 +192,40 @@ async function confirmarEntregaDisponibilidad() {
 
     return resultado.isConfirmed;
 }
+
+/**
+ * Descripción: Solicita confirmación antes de desactivar un horario.
+ * Entradas: nombreHorario: Nombre del horario.
+ * Salida: true si se confirma, false si se cancela.
+ */
+async function confirmarDesactivarHorario(nombreHorario) {
+
+    const nombreSeguro = document.createElement('span');
+    nombreSeguro.textContent = nombreHorario;
+
+    const resultado = await Swal.fire({
+        customClass: {
+            popup: 'alerta-schedulesync modal-eliminar-carga',
+            confirmButton: 'boton-eliminar-carga',
+            cancelButton: 'boton-cancelar-carga'
+        },
+        icon: 'warning',
+        title: '¿Deseas desactivar este horario?',
+        html: `
+            <div class="mensaje-eliminar-carga">
+                <p> Estás a punto de desactivar el horario: </p>
+                <strong class="nombre-docente-alerta">${nombreSeguro.innerHTML}</strong>
+                <p class="nota-eliminar-carga"> El horario se conservará en el historial como inactivo. </p>
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Sí, desactivar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#DC3545',
+        cancelButtonColor: 'transparent',
+        reverseButtons: true,
+        buttonsStyling: false
+    });
+
+    return resultado.isConfirmed;
+}
