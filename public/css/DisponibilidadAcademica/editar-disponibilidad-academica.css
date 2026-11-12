@@ -178,9 +178,7 @@
     background: #FFFFFF;
 }
 
-/* =========================================
-   TABLA DE HORARIOS
-========================================= */
+/*  TABLA DE HORARIOS */
 
 .contenedor-tabla-horarios {
     width: 100%;
@@ -237,9 +235,7 @@
 }
 
 
-/* =========================================
-   ASIGNATURAS
-========================================= */
+/* ASIGNATURAS */
 
 .contenedor-carreras-edicion {
     display: flex;
@@ -354,9 +350,7 @@
     text-align: center;
 }
 
-/* =========================================
-   DISEÑO PARA PANTALLAS MEDIANAS
-========================================= */
+/*  DISEÑO PARA PANTALLAS MEDIANAS */
 
 @media (max-width: 900px) {
 
@@ -366,9 +360,7 @@
 
 }
 
-/* =========================================
-   BLOQUES DE HORARIO
-========================================= */
+/* BLOQUES DE HORARIO */
 
 .tabla-horarios-edicion .bloque-horario {
     width: 100%;
@@ -406,9 +398,7 @@
     font-size: 12px;
 }
 
-/* =========================================
-   MENSAJES DE VALIDACIÓN
-========================================= */
+/* MENSAJES DE VALIDACIÓN */
 
 .error-edicion {
     margin: 10px 0 0;
@@ -416,9 +406,7 @@
     font-size: 12px;
 }
 
-/* =========================================
-   BOTONES
-========================================= */
+/*  BOTONES */
 
 .acciones-edicion-disponibilidad {
     display: flex;
@@ -476,9 +464,7 @@
     background: #EBC638;
 }
 
-/* =========================================
-   DISEÑO RESPONSIVO
-========================================= */
+/* DISEÑO RESPONSIVO */
 
 @media (max-width: 650px) {
     .pagina-editar-disponibilidad {
@@ -509,9 +495,7 @@
     }
 }
 
-/* =========================================
-   ENCABEZADO DE EDICIÓN
-========================================= */
+/* ENCABEZADO DE EDICIÓN */
 .encabezado-editar-disponibilidad {
     display: flex;
     justify-content: space-between;
@@ -540,9 +524,7 @@
     flex-shrink: 0;
 }
 
-/* =========================================
-   ICONO DE AYUDA
-========================================= */
+/* ICONO DE AYUDA */
 
 .titulo-con-ayuda {
     display: flex;

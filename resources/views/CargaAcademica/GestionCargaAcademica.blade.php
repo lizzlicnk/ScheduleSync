@@ -41,6 +41,7 @@
                 </div>
 
                 <button type="button" class="boton-secundario" id="limpiar-filtros">
+                    <i class="fa-solid fa-eraser" aria-hidden="true"></i>
                     Limpiar filtros
                 </button>
             </div>

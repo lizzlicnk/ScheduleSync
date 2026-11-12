@@ -1,0 +1,189 @@
+/* CONFIGURACIÓN GENERAL */
+
+.pagina-inicio-horarios {
+    width: 100%;
+    max-width: 1450px;
+    margin: 35px auto;
+    padding: 0 20px;
+    color: #30263B;
+    box-sizing: border-box;
+}
+
+/*  ENCABEZADO DEL MÓDULO */
+
+.encabezado-modulo {
+    margin-bottom: 35px;
+}
+
+.ruta-navegacion {
+    display: block;
+    margin-bottom: 12px;
+    color: #82758E;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.encabezado-modulo h1 {
+    margin: 0 0 10px;
+    color: #51346F;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.encabezado-modulo p {
+    margin: 0;
+    color: #756B80;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+/*  CONTENEDOR DE OPCIONES */
+
+.contenedor-opciones-horarios {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 25px;
+    width: 100%;
+    max-width: 1050px;
+    margin: 45px auto;
+}
+
+/*  TARJETAS DE OPCIONES */
+
+.tarjeta-opcion-horarios {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    min-height: 170px;
+    padding: 28px;
+    background-color: #FFFFFF;
+    border: 1px solid #E8E1EE;
+    border-radius: 14px;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 3px 12px rgba(48, 38, 59, 0.05);
+    transition: transform 0.2s ease,
+                box-shadow 0.2s ease,
+                border-color 0.2s ease;
+    box-sizing: border-box;
+}
+
+.tarjeta-opcion-horarios:hover {
+    transform: translateY(-5px);
+    border-color: #B99ACF;
+    box-shadow: 0 8px 20px rgba(81, 52, 111, 0.12);
+}
+
+/* ICONO DE LAS OPCIONES */
+
+.icono-opcion-horarios {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 65px;
+    height: 65px;
+    background-color: #F2ECF8;
+    border-radius: 12px;
+    color: #654282;
+    font-size: 27px;
+    transition: background-color 0.2s ease,
+                color 0.2s ease;
+}
+
+.tarjeta-opcion-horarios:hover .icono-opcion-horarios {
+    background-color: #654282;
+    color: #FFFFFF;
+}
+
+/* CONTENIDO DE LAS OPCIONES */
+
+.contenido-opcion-horarios {
+    flex: 1;
+    min-width: 0;
+}
+
+.contenido-opcion-horarios h2 {
+    margin: 0 0 10px;
+    color: #51346F;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.contenido-opcion-horarios p {
+    margin: 0;
+    color: #756B80;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/*  FLECHA DE ACCESO */
+
+.flecha-opcion-horarios {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 35px;
+    height: 35px;
+    color: #8B70A5;
+    font-size: 17px;
+    transition: transform 0.2s ease,
+                color 0.2s ease;
+}
+
+.tarjeta-opcion-horarios:hover .flecha-opcion-horarios {
+    transform: translateX(5px);
+    color: #51346F;
+}
+
+/* DISEÑO RESPONSIVO */
+
+@media (max-width: 768px) {
+
+    .pagina-inicio-horarios {
+        margin: 25px auto;
+        padding: 0 15px;
+    }
+
+    .contenedor-opciones-horarios {
+        grid-template-columns: 1fr;
+        gap: 18px;
+        margin: 30px auto;
+    }
+
+    .tarjeta-opcion-horarios {
+        min-height: 145px;
+        padding: 22px;
+    }
+
+    .encabezado-modulo h1 {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .tarjeta-opcion-horarios {
+        gap: 14px;
+        padding: 18px;
+    }
+
+    .icono-opcion-horarios {
+        width: 52px;
+        height: 52px;
+        font-size: 22px;
+    }
+
+    .contenido-opcion-horarios h2 {
+        font-size: 17px;
+    }
+
+    .contenido-opcion-horarios p {
+        font-size: 13px;
+    }
+
+    .flecha-opcion-horarios {
+        width: 25px;
+    }
+}

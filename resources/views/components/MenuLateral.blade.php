@@ -70,6 +70,7 @@
                 <span>Grupos</span>
             </a>
         @endif
+
         <!-- Gestión de carreras -->
         @if (in_array((int) auth()->user()->rol, [1, 2]))
             <a href="{{ url('/carreras') }}"
@@ -83,7 +84,7 @@
         <a href="{{ url('/disponibilidad-academica') }}"
             class="menu-item {{ request()->is('disponibilidad-academica*') ? 'activo' : '' }}">
             <i class="fa-solid fa-clock"></i>
-            <span>Disponibilidad docente</span>
+            <span>Disponibilidad académica</span>
         </a>
 
         <!-- Carga académica -->
@@ -94,11 +95,13 @@
         </a>
 
         <!-- Gestión de horarios -->
-        <a href="{{ url('/horarios') }}"
-            class="menu-item {{ request()->is('horarios*') ? 'activo' : '' }}">
-            <i class="fa-solid fa-calendar"></i>
-            <span>Horarios</span>
-        </a>
+        @if (in_array((int) auth()->user()->rol, [1, 2]))
+            <a href="{{ route('horarios.inicio') }}"
+                class="menu-item {{ request()->is('horarios*') ? 'activo' : '' }}">
+                <i class="fa-solid fa-calendar"></i>
+                <span>Horarios</span>
+            </a>
+        @endif   
 
         <!-- Generación de reportes -->
         <a href="{{ url('/reportes') }}"

@@ -14,7 +14,8 @@ use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\AsignaturaController;
 use App\Http\Controllers\CargaAcademicaController;
 use App\Http\Controllers\DisponibilidadProfesorController;
-
+use App\Http\Controllers\DatosGeneralesController;
+use App\Http\Controllers\HorarioController;
 
                     /* Rutas de inicio de sesión */
 
@@ -457,6 +458,141 @@ Route::middleware(['auth', \App\Http\Middleware\PrevenirCachePrivada::class, For
     ])->whereNumber('idDocente')
     ->whereNumber('idPeriodo')
     ->name('disponibilidad-academica.destroy'); 
+
+                            /* Rutas de horarios académicos */
+
+    // Mostrar la página principal del módulo de horarios.
+    Route::get('/horarios', [
+        HorarioController::class,
+        'inicio'
+    ])->name('horarios.inicio');
+
+                            /* Rutas para la gestión de datos generales de los horarios académicos */
+
+    // Mostrar los datos generales de los horarios registrados.
+    Route::get('/horarios/datos-generales', [
+        DatosGeneralesController::class,
+        'index'
+    ])->name('datos-generales.index');
+
+    // Mostrar el formulario para registrar los datos generales de un horario.
+    Route::get('/horarios/datos-generales/crear', [
+        DatosGeneralesController::class,
+        'create'
+    ])->name('datos-generales.create');
+
+    // Registrar los datos generales de un horario.
+    Route::post('/horarios/datos-generales/registrar', [
+        DatosGeneralesController::class,
+        'store'
+    ])->name('datos-generales.store');
+
+    // Consultar la información general de un horario.
+    Route::get('/horarios/datos-generales/{idHorario}', [
+        DatosGeneralesController::class,
+        'show'
+    ])->whereNumber('idHorario')
+        ->name('datos-generales.show');
+
+    // Mostrar el formulario para modificar los datos generales de un horario.
+    Route::get('/horarios/datos-generales/{idHorario}/editar', [
+        DatosGeneralesController::class,
+        'edit'
+    ])->whereNumber('idHorario')
+        ->name('datos-generales.edit');
+
+    // Actualizar los datos generales de un horario.
+    Route::put('/horarios/datos-generales/{idHorario}', [
+        DatosGeneralesController::class,
+        'update'
+    ])->whereNumber('idHorario')
+        ->name('datos-generales.update');
+
+    // Desactivar un horario mediante borrado lógico.
+    Route::delete('/horarios/datos-generales/{idHorario}', [
+        DatosGeneralesController::class,
+        'destroy'
+    ])->whereNumber('idHorario')
+        ->name('datos-generales.destroy');
+
+    // Reactivar un horario.
+    Route::patch('/horarios/datos-generales/{idHorario}/activar', [
+        DatosGeneralesController::class,
+        'activar'
+    ])->whereNumber('idHorario')
+        ->name('datos-generales.activar');
+
+                            /* Rutas para la gestión de horarios académicos */
+
+    // Mostrar la página de datos generales de los horarios.
+    /*
+    Route::get('/horarios/datos-generales', [
+        HorarioController::class,
+        'index'
+    ])->name('horarios.index');
+
+    // Mostrar el formulario para registrar un nuevo horario.
+    Route::get('/horarios/crear', [
+        HorarioController::class,
+        'create'
+    ])->name('horarios.create');
+
+    // Mostrar la página de gestión de horarios académicos.
+    
+    Route::get('/horarios', [
+        HorarioController::class,
+        'index'
+    ])->name('horarios.index');
+
+    // Mostrar el formulario para registrar un nuevo horario.
+    Route::get('/horarios/crear', [
+        HorarioController::class,
+        'create'
+    ])->name('horarios.create');
+
+    
+
+    // Registrar un nuevo horario académico.
+    Route::post('/horarios/registrar', [
+        HorarioController::class,
+        'store'
+    ])->name('horarios.store');
+
+    // Consultar la información de un horario académico.
+    Route::get('/horarios/{idHorario}', [
+        HorarioController::class,
+        'show'
+    ])->whereNumber('idHorario')
+    ->name('horarios.show');
+
+    // Mostrar el formulario para modificar un horario académico.
+    Route::get('/horarios/{idHorario}/editar', [
+        HorarioController::class,
+        'edit'
+    ])->whereNumber('idHorario')
+    ->name('horarios.edit');
+
+    // Actualizar la información de un horario académico.
+    Route::put('/horarios/{idHorario}', [
+        HorarioController::class,
+        'update'
+    ])->whereNumber('idHorario')
+    ->name('horarios.update');
+
+    // Desactivar un horario académico.
+    Route::delete('/horarios/{idHorario}', [
+        HorarioController::class,
+        'destroy'
+    ])->whereNumber('idHorario')
+    ->name('horarios.destroy');
+
+    // Reactivar un horario académico.
+    Route::patch('/horarios/{idHorario}/activar', [
+        HorarioController::class,
+        'activar'
+    ])->whereNumber('idHorario')
+    ->name('horarios.activar');
+    */
 });
 
 

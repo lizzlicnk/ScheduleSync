@@ -177,9 +177,25 @@
                                                                                                                                     <!-- ME FALTA -->
                                 <!-- ASIGNATURAS SELECCIONADAS -->
                                 <td>
-                                    -
-                                </td>
+                                    @php
+                                        // Busca la información del docente en los datos de consulta.
+                                        $datosDocente = $docentesConsulta->firstWhere(
+                                            'id_docente',
+                                            $usuario->docente->id_docente
+                                        );
 
+                                        // Obtiene la cantidad de asignaturas seleccionadas.
+                                        $cantidadAsignaturas = $datosDocente
+                                            ? $datosDocente['asignaturas']->count()
+                                            : 0;
+                                    @endphp
+
+                                    <span class="contador-asignaturas-consulta">
+                                        {{ $cantidadAsignaturas }}
+                                        {{ $cantidadAsignaturas === 1 ? 'asignatura' : 'asignaturas' }}
+                                    </span>
+                                </td>
+                                
                                 <!-- PERIODO -->
                                 <td>
                                     @if ($periodoSeleccionado)
@@ -332,373 +348,383 @@
 
     
     <!-- FORMULARIO PARA REGISTRAR DISPONIBILIDAD -->
-    <section class="panel-disponibilidad panel-registro-disponibilidad" id="registro-disponibilidad">
-        <div class="franja-institucional"></div>
-    
-        <div class="contenido-formulario">
-            <div class="encabezado-panel">
-                <div>
-                    <h2>Registrar disponibilidad académica</h2>
-
-                    <p class="texto-secundario">
-                        Registra los días y horarios en los que el docente no puede impartir clases durante el periodo académico.
-                    </p>
-                </div>
-            </div>
-
-            <!-- FORMULARIO -->
-            <form
-                id="formulario-disponibilidad"
-                action="{{ route('disponibilidad-academica.store') }}"
-                method="POST"
-                novalidate
-            >
-                @csrf
-
-                <!-- INFORMACIÓN DEL REGISTRO -->
-                <div class="informacion-registro">
-
-                    <!-- DOCENTE -->
-                    <div class="campo">
-                        <label for="id_docente">Docente <span class="obligatorio">*</span></label>
-
-                        @if (in_array((int) auth()->user()->rol, [1, 2]))
-
-                            <select name="id_docente" id="id_docente" autocomplete="off" required>
-
-                                <option value="" {{ $docentePreseleccionado === '' || $docentePreseleccionado === null ? 'selected' : '' }}>
-                                    Selecciona un docente
-                                </option>
-
-
-                                @foreach ($docentesRegistrados as $usuario)
-                                    @if ($usuario->docente)
-
-                                        @php
-                                            // Comprueba si el docente ya tiene disponibilidad en el periodo seleccionado.
-                                            $yaTieneDisponibilidad = $disponibilidadesRegistradas
-                                                ->where('id_docente', $usuario->docente->id_docente)
-                                                ->isNotEmpty();
-                                        @endphp
-
-                                        @if (!$yaTieneDisponibilidad)
-                                            <option
-                                                value="{{ $usuario->docente->id_docente }}"
-                                                {{ (string) $docentePreseleccionado === (string) $usuario->docente->id_docente ? 'selected' : '' }}
-                                            >
-                                                {{ trim(
-                                                    $usuario->nombreUsuario . ' ' .
-                                                    ($usuario->apellidoPaterno ?? '') . ' ' .
-                                                    ($usuario->apellidoMaterno ?? '')
-                                                ) }}
-                                                - {{ $usuario->docente->matricula }}
-                                            </option>
-                                        @endif
-
-                                    @endif
-                                @endforeach
-
-                            </select>
-
-                        @else
-
-                            <input
-                                type="text"
-                                value="{{ trim(
-                                    ($docentesRegistrados->first()->nombreUsuario ?? '') . ' ' .
-                                    ($docentesRegistrados->first()->apellidoPaterno ?? '') . ' ' .
-                                    ($docentesRegistrados->first()->apellidoMaterno ?? '')
-                                ) }}"
-                                readonly
-                            >
-
-                        @endif
-                    </div>
-
-                    <!-- PERIODO ACADÉMICO -->
-                    <div class="campo">
-                        <label for="id_periodo">Periodo académico <span class="obligatorio">*</span></label>
-
-                        <select name="id_periodo" id="id_periodo" required>
-                            <option value="">Selecciona un periodo</option>
-
-                            @foreach ($periodosRegistrados as $periodo)
-                                <option
-                                    value="{{ $periodo->id_periodo }}"
-                                    {{ old('id_periodo', $periodoSeleccionado) == $periodo->id_periodo ? 'selected' : '' }}
-                                >
-                                    {{ $periodo->estacion }} {{ $periodo->anio }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                </div>
-
-                <!-- CUADRÍCULA DE HORARIOS -->
-                <div class="seccion-horarios-disponibilidad">
-
-                    <div class="encabezado-panel">
-                        <div class="titulo-horarios">
-
-                            <div class="titulo-con-ayuda">
-                                <h2>
-                                    Registrar horarios no disponibles
-                                    <span class="obligatorio">*</span>
-                                </h2>
-
-                                <!-- INFORMACIÓN DE AYUDA -->
-                                <div class="ayuda-horarios">
-
-                                    <i class="fa-solid fa-circle-info icono-ayuda-horarios"></i>
-
-                                    <div class="mensaje-ayuda-horarios">
-                                        <strong>¿Cómo registrar tu disponibilidad académica?</strong>
-
-                                        <p>
-                                            Haz clic sobre el cuadro correspondiente al día y la hora
-                                            en los que no puedes impartir clases. El cuadro cambiará
-                                            a color amarillo para indicar que ese horario no está disponible.
-                                        </p>
-
-                                        <p>
-                                            Si vuelves a hacer clic sobre el mismo cuadro, cambiará
-                                            nuevamente a color blanco, indicando que el horario está disponible.
-                                        </p>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <p class="texto-secundario">
-                                Selecciona los bloques de tiempo en los que el docente no puede impartir clases.
-                            </p>
-
-                        </div>
-                    </div>
-
-                    <!-- REFERENCIA DE COLORES -->
-                    <div class="referencia-horarios">
-                        <div>
-                            <span class="referencia-disponible"></span>
-                            Disponible
-                        </div>
-
-                        <div>
-                            <span class="referencia-no-disponible"></span>
-                            No disponible
-                        </div>
-                    </div>
-
-                    <!-- CUADRÍCULA -->
-                    <div class="contenedor-cuadricula">
-
-                        <table class="tabla-horarios">
-
-                            <thead>
-                                <tr>
-                                    <th>Hora</th>
-                                    <th>Lunes</th>
-                                    <th>Martes</th>
-                                    <th>Miércoles</th>
-                                    <th>Jueves</th>
-                                    <th>Viernes</th>
-                                    <th>Sábado</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-
-                                @for ($hora = 7; $hora < 21; $hora++)
-
-                                    <tr>
-
-                                        <th>
-                                            {{ sprintf('%02d:00', $hora) }}
-                                            -
-                                            {{ sprintf('%02d:00', $hora + 1) }}
-                                        </th>
-
-                                        @for ($dia = 1; $dia <= 6; $dia++)
-
-                                            @if (!($dia == 6 && $hora >= 15))
-
-                                                @php
-                                                    $bloque = $dia . '-' . $hora;
-                                                    $seleccionado = in_array(
-                                                        $bloque,
-                                                        old('bloques_no_disponibles', [])
-                                                    );
-                                                @endphp
-
-                                                <td>
-                                                    <button
-                                                        type="button"
-                                                        class="bloque-horario {{ $seleccionado ? 'bloque-no-disponible' : '' }}"
-                                                        data-bloque="{{ $bloque }}"
-                                                        aria-pressed="{{ $seleccionado ? 'true' : 'false' }}"
-                                                        aria-label="Día {{ $dia }}, {{ $hora }}:00 a {{ $hora + 1 }}:00"
-                                                    >
-                                                        {{ $seleccionado ? 'No disponible' : 'Disponible' }}
-                                                    </button>
-                                                </td>
-
-                                            @endif
-
-                                        @endfor
-                                    </tr>
-
-                                @endfor
-
-                            </tbody>
-                        </table>
-
-                    </div>
-
-                    <!-- BLOQUES SELECCIONADOS -->
-                    <div id="bloques-seleccionados">
-
-                        @foreach (old('bloques_no_disponibles', []) as $bloque)
-                            <input
-                                type="hidden"
-                                name="bloques_no_disponibles[]"
-                                value="{{ $bloque }}"
-                                data-input-bloque="{{ $bloque }}"
-                            >
-                        @endforeach
-
-                    </div>
-
-                    <p class="texto-ayuda-horarios">
-                        Haz clic sobre un bloque para cambiar su estado. Los bloques marcados en color amarillo representan horarios en los que el docente no está disponible.
-                    </p>
-
-                </div>
-
-                <!-- ASIGNATURAS PREFERIDAS -->
-                <div class="encabezado-panel encabezado-asignaturas">
+    @if (in_array((int) auth()->user()->rol, [1, 3]))
+        <section class="panel-disponibilidad panel-registro-disponibilidad" id="registro-disponibilidad">
+            <div class="franja-institucional"></div>
+        
+            <div class="contenido-formulario">
+                <div class="encabezado-panel">
                     <div>
-                        <h2>Asignaturas <span class="obligatorio">*</span></h2>
+                        <h2>Registrar disponibilidad académica</h2>
 
                         <p class="texto-secundario">
-                            Selecciona las asignaturas que te gustaría impartir durante el periodo seleccionado.
+                            @if ((int) auth()->user()->rol === 3)
+                                Registra los días y horarios en los que no puedas impartir clases durante el periodo académico.
+                            @else
+                                Registra los días y horarios en los que el docente no puede impartir clases durante el periodo académico.
+                            @endif
                         </p>
                     </div>
                 </div>
 
-                <div class="contenedor-carreras-preferidas">
+                <!-- FORMULARIO -->
+                <form
+                    id="formulario-disponibilidad"
+                    action="{{ route('disponibilidad-academica.store') }}"
+                    method="POST"
+                    novalidate
+                >
+                    @csrf
 
-                    @forelse ($asignaturasPorCarrera as $grupoCarrera)
+                    <!-- INFORMACIÓN DEL REGISTRO -->
+                    <div class="informacion-registro">
 
-                        @php
-                            $carrera = $grupoCarrera['carrera'];
-                        @endphp
+                        <!-- DOCENTE -->
+                        <div class="campo">
+                            <label for="id_docente">Docente <span class="obligatorio">*</span></label>
 
-                        <details class="carrera-preferida">
+                            @if (in_array((int) auth()->user()->rol, [1, 2]))
 
-                            <summary class="encabezado-carrera-preferida">
-                                <span>
-                                    {{ $carrera->claveCarrera }} - {{ $carrera->nombreCarrera }}
-                                </span>
+                                <select name="id_docente" id="id_docente" autocomplete="off" required>
 
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </summary>
+                                    <option value="" {{ $docentePreseleccionado === '' || $docentePreseleccionado === null ? 'selected' : '' }}>
+                                        Selecciona un docente
+                                    </option>
 
-                            <div class="contenido-carrera-preferida">
 
-                                @foreach ($grupoCarrera['cuatrimestres'] as $grupoCuatrimestre)
+                                    @foreach ($docentesRegistrados as $usuario)
+                                        @if ($usuario->docente)
 
-                                    <div class="cuatrimestre-preferido">
+                                            @php
+                                                // Comprueba si el docente ya tiene disponibilidad en el periodo seleccionado.
+                                                $yaTieneDisponibilidad = $disponibilidadesRegistradas
+                                                    ->where('id_docente', $usuario->docente->id_docente)
+                                                    ->isNotEmpty();
+                                            @endphp
 
-                                        <h4>
-                                            {{ $grupoCuatrimestre['cuatrimestre'] }}°
-                                            cuatrimestre
-                                        </h4>
+                                            @if (!$yaTieneDisponibilidad)
+                                                <option
+                                                    value="{{ $usuario->docente->id_docente }}"
+                                                    {{ (string) $docentePreseleccionado === (string) $usuario->docente->id_docente ? 'selected' : '' }}
+                                                >
+                                                    {{ trim(
+                                                        $usuario->nombreUsuario . ' ' .
+                                                        ($usuario->apellidoPaterno ?? '') . ' ' .
+                                                        ($usuario->apellidoMaterno ?? '')
+                                                    ) }}
+                                                    - {{ $usuario->docente->matricula }}
+                                                </option>
+                                            @endif
 
-                                        <div class="lista-asignaturas-preferidas">
+                                        @endif
+                                    @endforeach
 
-                                            @foreach ($grupoCuatrimestre['asignaturas'] as $asignatura)
+                                </select>
 
-                                                <label class="opcion-asignatura-preferida">
+                            @else
 
-                                                    <input
-                                                        type="checkbox"
-                                                        name="asignaturas[]"
-                                                        value="{{ $asignatura->id_asignatura }}"
-                                                        @checked(
-                                                            in_array(
-                                                                $asignatura->id_asignatura,
-                                                                old('asignaturas', $asignaturasSeleccionadas ?? [])
-                                                            )
-                                                        )
-                                                    >
+                                <input
+                                    type="text"
+                                    value="{{ trim(
+                                        ($docentesRegistrados->first()->nombreUsuario ?? '') . ' ' .
+                                        ($docentesRegistrados->first()->apellidoPaterno ?? '') . ' ' .
+                                        ($docentesRegistrados->first()->apellidoMaterno ?? '')
+                                    ) }}"
+                                    readonly
+                                >
 
-                                                    <span>
-                                                        {{ $asignatura->nombreAsignatura }}
-                                                    </span>
+                            @endif
+                        </div>
 
-                                                </label>
+                        <!-- PERIODO ACADÉMICO -->
+                        <div class="campo">
+                            <label for="id_periodo">Periodo académico <span class="obligatorio">*</span></label>
 
-                                            @endforeach
+                            <select name="id_periodo" id="id_periodo" required>
+                                <option value="">Selecciona un periodo</option>
 
+                                @foreach ($periodosRegistrados as $periodo)
+                                    <option
+                                        value="{{ $periodo->id_periodo }}"
+                                        {{ old('id_periodo', $periodoSeleccionado) == $periodo->id_periodo ? 'selected' : '' }}
+                                    >
+                                        {{ $periodo->estacion }} {{ $periodo->anio }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <!-- CUADRÍCULA DE HORARIOS -->
+                    <div class="seccion-horarios-disponibilidad">
+
+                        <div class="encabezado-panel">
+                            <div class="titulo-horarios">
+
+                                <div class="titulo-con-ayuda">
+                                    <h2>
+                                        Registrar horarios no disponibles
+                                        <span class="obligatorio">*</span>
+                                    </h2>
+
+                                    <!-- INFORMACIÓN DE AYUDA -->
+                                    <div class="ayuda-horarios">
+
+                                        <i class="fa-solid fa-circle-info icono-ayuda-horarios"></i>
+
+                                        <div class="mensaje-ayuda-horarios">
+                                            <strong>¿Cómo registrar tu disponibilidad académica?</strong>
+
+                                            <p>
+                                                Haz clic sobre el cuadro correspondiente al día y la hora
+                                                en los que no puedes impartir clases. El cuadro cambiará
+                                                a color amarillo para indicar que ese horario no está disponible.
+                                            </p>
+
+                                            <p>
+                                                Si vuelves a hacer clic sobre el mismo cuadro, cambiará
+                                                nuevamente a color blanco, indicando que el horario está disponible.
+                                            </p>
                                         </div>
 
                                     </div>
+                                </div>
 
-                                @endforeach
+                                <p class="texto-secundario">
+                                    @if ((int) auth()->user()->rol === 3)
+                                        Selecciona los bloques de tiempo en los que no puedas impartir clases.
+                                    @else
+                                        Selecciona los bloques de tiempo en los que el docente no puede impartir clases.
+                                    @endif
+                                </p>
 
                             </div>
+                        </div>
 
-                        </details>
+                        <!-- REFERENCIA DE COLORES -->
+                        <div class="referencia-horarios">
+                            <div>
+                                <span class="referencia-disponible"></span>
+                                Disponible
+                            </div>
 
-                    @empty
+                            <div>
+                                <span class="referencia-no-disponible"></span>
+                                No disponible
+                            </div>
+                        </div>
 
-                        <p class="mensaje-sin-asignaturas">
-                            No hay asignaturas disponibles para las carreras y cuatrimestres
-                            registrados en el periodo seleccionado.
+                        <!-- CUADRÍCULA -->
+                        <div class="contenedor-cuadricula">
+
+                            <table class="tabla-horarios">
+
+                                <thead>
+                                    <tr>
+                                        <th>Hora</th>
+                                        <th>Lunes</th>
+                                        <th>Martes</th>
+                                        <th>Miércoles</th>
+                                        <th>Jueves</th>
+                                        <th>Viernes</th>
+                                        <th>Sábado</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    @for ($hora = 7; $hora < 21; $hora++)
+
+                                        <tr>
+
+                                            <th>
+                                                {{ sprintf('%02d:00', $hora) }}
+                                                -
+                                                {{ sprintf('%02d:00', $hora + 1) }}
+                                            </th>
+
+                                            @for ($dia = 1; $dia <= 6; $dia++)
+
+                                                @if (!($dia == 6 && $hora >= 15))
+
+                                                    @php
+                                                        $bloque = $dia . '-' . $hora;
+                                                        $seleccionado = in_array(
+                                                            $bloque,
+                                                            old('bloques_no_disponibles', [])
+                                                        );
+                                                    @endphp
+
+                                                    <td>
+                                                        <button
+                                                            type="button"
+                                                            class="bloque-horario {{ $seleccionado ? 'bloque-no-disponible' : '' }}"
+                                                            data-bloque="{{ $bloque }}"
+                                                            aria-pressed="{{ $seleccionado ? 'true' : 'false' }}"
+                                                            aria-label="Día {{ $dia }}, {{ $hora }}:00 a {{ $hora + 1 }}:00"
+                                                        >
+                                                            {{ $seleccionado ? 'No disponible' : 'Disponible' }}
+                                                        </button>
+                                                    </td>
+
+                                                @endif
+
+                                            @endfor
+                                        </tr>
+
+                                    @endfor
+
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <!-- BLOQUES SELECCIONADOS -->
+                        <div id="bloques-seleccionados">
+
+                            @foreach (old('bloques_no_disponibles', []) as $bloque)
+                                <input
+                                    type="hidden"
+                                    name="bloques_no_disponibles[]"
+                                    value="{{ $bloque }}"
+                                    data-input-bloque="{{ $bloque }}"
+                                >
+                            @endforeach
+
+                        </div>
+
+                        <p class="texto-ayuda-horarios">
+                            Haz clic sobre un bloque para cambiar su estado. Los bloques marcados en color amarillo representan horarios en los que el docente no está disponible.
                         </p>
 
-                    @endforelse
+                    </div>
 
-                </div>
+                    <!-- ASIGNATURAS PREFERIDAS -->
+                    <div class="encabezado-panel encabezado-asignaturas">
+                        <div>
+                            <h2>Asignaturas <span class="obligatorio">*</span></h2>
+
+                            <p class="texto-secundario">
+                                Selecciona las asignaturas que te gustaría impartir durante el periodo seleccionado.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="contenedor-carreras-preferidas">
+
+                        @forelse ($asignaturasPorCarrera as $grupoCarrera)
+
+                            @php
+                                $carrera = $grupoCarrera['carrera'];
+                            @endphp
+
+                            <details class="carrera-preferida">
+
+                                <summary class="encabezado-carrera-preferida">
+                                    <span>
+                                        {{ $carrera->claveCarrera }} - {{ $carrera->nombreCarrera }}
+                                    </span>
+
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </summary>
+
+                                <div class="contenido-carrera-preferida">
+
+                                    @foreach ($grupoCarrera['cuatrimestres'] as $grupoCuatrimestre)
+
+                                        <div class="cuatrimestre-preferido">
+
+                                            <h4>
+                                                {{ $grupoCuatrimestre['cuatrimestre'] }}°
+                                                cuatrimestre
+                                            </h4>
+
+                                            <div class="lista-asignaturas-preferidas">
+
+                                                @foreach ($grupoCuatrimestre['asignaturas'] as $asignatura)
+
+                                                    <label class="opcion-asignatura-preferida">
+
+                                                        <input
+                                                            type="checkbox"
+                                                            name="asignaturas[]"
+                                                            value="{{ $asignatura->id_asignatura }}"
+                                                            @checked(
+                                                                in_array(
+                                                                    $asignatura->id_asignatura,
+                                                                    old('asignaturas', $asignaturasSeleccionadas ?? [])
+                                                                )
+                                                            )
+                                                        >
+
+                                                        <span>
+                                                            {{ $asignatura->nombreAsignatura }}
+                                                        </span>
+
+                                                    </label>
+
+                                                @endforeach
+
+                                            </div>
+
+                                        </div>
+
+                                    @endforeach
+
+                                </div>
+
+                            </details>
+
+                        @empty
+
+                            <p class="mensaje-sin-asignaturas">
+                                No hay asignaturas disponibles para las carreras y cuatrimestres
+                                registrados en el periodo seleccionado.
+                            </p>
+
+                        @endforelse
+
+                    </div>
 
 
-                <!-- ACCIONES -->
-                <div class="acciones-disponibilidad">
+                    <!-- ACCIONES -->
+                    <div class="acciones-disponibilidad">
 
-                    <button
-                        type="reset"
-                        class="boton-secundario"
-                    >
-                        Limpiar formulario
-                    </button>
+                        <button
+                            type="reset"
+                            class="boton-secundario"
+                        >
+                            Limpiar formulario
+                        </button>
 
-                    <!--
-                    <button
-                        type="submit"
-                        name="accion"
-                        value="borrador"
-                        class="boton-guardar-borrador"
-                    >
-                        <i class="fa-solid fa-floppy-disk"></i>
-                        Guardar borrador
-                    </button> -->
+                        <!--
+                        <button
+                            type="submit"
+                            name="accion"
+                            value="borrador"
+                            class="boton-guardar-borrador"
+                        >
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            Guardar borrador
+                        </button> -->
 
-                    <button
-                        type="submit"
-                        name="accion"
-                        value="entregar"
-                        class="boton-entregar-disponibilidad"
-                    >
-                        <i class="fa-solid fa-check"></i>
-                        Entregar disponibilidad
-                    </button>
+                        <button
+                            type="submit"
+                            name="accion"
+                            value="entregar"
+                            class="boton-entregar-disponibilidad"
+                        >
+                            <i class="fa-solid fa-check"></i>
+                            Entregar disponibilidad
+                        </button>
 
-                </div>
+                    </div>
 
-            </form>
-        </div>
-    </section>
+                </form>
+            </div>
+        </section>
+    @endif
 
     <!-- PANEL PARA CONSULTAR DISPONIBILIDAD -->
     <section class="panel-disponibilidad panel-consulta-disponibilidad" id="panel-consulta">
