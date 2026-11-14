@@ -219,16 +219,27 @@
                                     </button>
 
                                     @if ($docente)
-                                        @if (in_array((int) auth()->user()->rol, [1, 2, 3], true))
-                                            <a href="{{ route('docentes.edit', ['idDocente' => $docente->id_docente]) }}" class="boton-accion boton-modificar"
-                                                title="Modificar información académica" aria-label="Modificar a {{ $nombreCompleto }}" >
-                                                <i class="fa-solid fa-edit"></i>
-                                                Modificar
-                                            </a>
+                                        @if ((int) $usuario->estado === 1)
+                                            @if (in_array((int) auth()->user()->rol, [1, 2, 3], true))
+                                                <a href="{{ route('docentes.edit', ['idDocente' => $docente->id_docente]) }}"
+                                                    class="boton-accion boton-modificar" title="Modificar información académica" aria-label="Modificar a {{ $nombreCompleto }}">
+                                                    <i class="fa-solid fa-edit"></i>
+                                                    Modificar
+                                                </a>
+                                            @endif
+                                        @else
+                                            <div class="estado-docente-inactivo">
+                                                <span class="icono-estado-inactivo">
+                                                    <i class="fa-solid fa-info"></i>
+                                                </span>
+
+                                                <span>Activa al docente para poder modificarlo.</span>
+                                            </div>
                                         @endif
+
                                     @elseif ((int) auth()->user()->rol === 1 && $cuentaActiva)
                                         <button type="button" class="boton-accion boton-agregar" data-agregar-docente="{{ $usuario->id_usuario }}"
-                                            title="Agregar información académica" aria-label="Agregar información académica de {{ $nombreCompleto }}" >
+                                            title="Agregar información académica" aria-label="Agregar información académica de {{ $nombreCompleto }}">
                                             <i class="fa-solid fa-plus"></i>
                                             Agregar
                                         </button>
@@ -265,6 +276,20 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+        <!-- PAGINACIÓN -->
+        <div class="paginacion-docentes">
+            <span id="informacion-pagina-docentes">Página 1 de 1</span>
+
+            <div class="controles-paginacion">
+                <button type="button" class="boton-pagina" id="pagina-anterior-docentes" aria-label="Página anterior" disabled >
+                    ‹
+                </button>
+
+                <button type="button" class="boton-pagina" id="pagina-siguiente-docentes" aria-label="Página siguiente" disabled >
+                    ›
+                </button>
+            </div>
         </div>
     </section>
 

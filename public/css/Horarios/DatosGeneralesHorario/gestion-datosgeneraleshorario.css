@@ -1212,3 +1212,51 @@
 #formulario-datos-generales {
     scroll-margin-top: 30px;
 }
+
+/* =========================================
+   PAGINACIÓN
+========================================= */
+
+.pagina-horarios .paginacion-horarios {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 20px;
+    color: #756982;
+    font-size: 13px;
+}
+
+.pagina-horarios .controles-paginacion {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pagina-horarios .boton-pagina {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 37px;
+    height: 37px;
+    padding: 0;
+    border: 1px solid #E1D5ED;
+    border-radius: 9px;
+    background: #FFFFFF;
+    color: #634581;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.pagina-horarios .boton-pagina:hover:not(:disabled) {
+    border-color: #C8B3DF;
+    background: #F3ECFA;
+}
+
+.pagina-horarios .boton-pagina:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}

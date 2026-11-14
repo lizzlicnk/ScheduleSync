@@ -6,26 +6,21 @@ class HorarioController extends Controller
 {
     /**
      * Descripción: Muestra la página principal del módulo de horarios.
-     *
      * Entradas: Ninguna.
-     *
      * Salidas: Vista principal con las opciones de gestión de horarios.
      */
     public function inicio()
     {
-        // Verificar que el usuario tenga permisos para acceder al módulo.
+        // Verificar Roles
         $this->verificarRol([1, 2]);
 
-        // Mostrar la página principal del módulo.
-        return view('horario.InicioHorarios');
+        return view('Horario.InicioHorarios');
     }
 
     /**
      * Descripción: Comprueba que el usuario autenticado tenga uno de los roles permitidos.
-     *
      * Entradas:
      * $rolesPermitidos: identificadores de los roles autorizados.
-     *
      * Salidas: No devuelve datos; genera un error 403 si no tiene permiso.
      */
     private function verificarRol(array $rolesPermitidos): void

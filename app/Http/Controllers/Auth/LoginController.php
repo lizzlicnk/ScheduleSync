@@ -28,16 +28,13 @@ class LoginController extends Controller
     }
 
     /**
-     * Descripción: Valida las credenciales del usuario, verifica que su cuenta
-     * esté activa e inicia la sesión correspondiente.
+     * Descripción: Valida las credenciales del usuario, verifica que su cuenta esté activa e inicia la sesión correspondiente.
      *
      * Entradas:
-     * $solicitud: contiene el correo electrónico y la contraseña ingresados
-     * en el formulario de inicio de sesión.
+     * $solicitud: contiene el correo electrónico y la contraseña ingresados en el formulario de inicio de sesión.
      *
-     * Salidas: Redirige al formulario con un mensaje de error si las
-     * credenciales no son válidas, al cambio obligatorio de contraseña
-     * si corresponde o a la página de inicio.
+     * Salidas: Redirige al formulario con un mensaje de error si las credenciales no son válidas, al cambio 
+     * obligatorio de contraseña si corresponde o a la página de inicio.
      */
     public function iniciarSesion(Request $solicitud)
     {
@@ -55,10 +52,7 @@ class LoginController extends Controller
         $usuarioEncontrado = Usuario::where('correo', $datosValidados['correo'])->first();
 
         // Verificar que exista y que su cuenta esté activa.
-        if (
-            !$usuarioEncontrado ||
-            (int) $usuarioEncontrado->estado !== 1
-        ) {
+        if ( !$usuarioEncontrado || (int) $usuarioEncontrado->estado !== 1 ) {
             // Mostrar un mensaje de error y conservar únicamente el correo ingresado.
             return back()
                 ->withErrors([
@@ -68,10 +62,7 @@ class LoginController extends Controller
         }
 
         // Comprobar la contraseña con el hash almacenado.
-        if (!Hash::check(
-            $datosValidados['password'],
-            $usuarioEncontrado->password
-        )) {
+        if (!Hash::check( $datosValidados['password'], $usuarioEncontrado->password )) {
             return back()
                 ->withErrors([
                     'correo' => 'Las credenciales son incorrectas o la cuenta está inactiva.',
@@ -109,19 +100,19 @@ class LoginController extends Controller
         // Redirige según el rol del usuario.
         switch ((int) $usuarioEncontrado->rol) {
             case 1:
-                // Administrador: destino temporal para las pruebas.
+                // Administrador
                 return redirect()->route('inicio');
 
             case 2:
-                // Personal administrativo: destino temporal para las pruebas.
+                // Personal administrativo
                 return redirect()->route('inicio');
 
             case 3:
-                // Docente: destino temporal para las pruebas.
+                // Docentes.
                 return redirect()->route('inicio');
 
             default:
-                // Cierra la sesión si el rol no es válido.
+                // Rol no es válido.
                 Auth::logout();
 
                 $solicitud->session()->invalidate();

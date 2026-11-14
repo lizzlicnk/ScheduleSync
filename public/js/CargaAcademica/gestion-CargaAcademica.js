@@ -29,14 +29,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const tarjetaDetalle = document.querySelector('.tarjeta-detalle-carga');
     const detalleVacio = document.querySelector('.detalle-vacio-carga');
 
+    
     // Guarda la página actual de la tabla.
     let paginaActual = 1;
 
     // cantidad de docentes que se muestran por página.
     const docentesPorPagina = 5;
 
-    // Filas reales y excluye las filas de mensajes.
-    const filasDocentes = cuerpoTabla ? Array.from(cuerpoTabla.querySelectorAll('tr[data-id-docente]')) : [];
+    // Obtiene las filas de usuarios y excluye las filas de mensajes.
+    const filasDocentes = cuerpoTabla ? Array.from(cuerpoTabla.querySelectorAll('tr[data-id-usuario]')) : [];
 
     //Resultados disponibles para consultar.
     const opcionesConsulta = resultadosConsulta ? Array.from(resultadosConsulta.querySelectorAll('[data-resultado-carga]')) : [];

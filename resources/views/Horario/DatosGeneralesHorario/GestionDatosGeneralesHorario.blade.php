@@ -14,7 +14,7 @@
     <header class="encabezado-modulo">
         <div>
             <p class="ruta-modulo">Inicio / Horarios / Datos generales</p>
-            <h1>Gestión de datos generales</h1>
+            <h1>Gestión de datos generales del horario</h1>
             <p class="descripcion-modulo">
                 Administra la información general de los horarios académicos registrados en Schedule-Sync.
             </p>
@@ -270,6 +270,21 @@
 
                 </tbody>
             </table>
+        </div>
+
+        <!-- PAGINACIÓN -->
+        <div class="paginacion-horarios">
+            <span id="informacion-pagina-horarios">Página 1 de 1</span>
+
+            <div class="controles-paginacion">
+                <button type="button" class="boton-pagina" id="pagina-anterior-horarios" aria-label="Página anterior" disabled >
+                    ‹
+                </button>
+
+                <button type="button" class="boton-pagina" id="pagina-siguiente-horarios" aria-label="Página siguiente" disabled >
+                    ›
+                </button>
+            </div>
         </div>
     </section>
 

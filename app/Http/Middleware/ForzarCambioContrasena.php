@@ -39,16 +39,11 @@ class ForzarCambioContrasena
         $usuario = Auth::user();
 
         // Generar la clave de caché asociada con el cambio obligatorio de contraseña.
-        $claveCambioObligatorio =
-            'usuario_debe_cambiar_contrasena_' . $usuario->id_usuario;
+        $claveCambioObligatorio = 'usuario_debe_cambiar_contrasena_' . $usuario->id_usuario;
 
         // Comprobar si el cambio es obligatorio y si la solicitud
         // corresponde a una ruta distinta del formulario y su actualización.
-        if (
-            Cache::store('file')->has($claveCambioObligatorio)
-            && !$solicitud->routeIs('contrasena.obligatoria')
-            && !$solicitud->routeIs('contrasena.obligatoria.actualizar')
-        ) {
+        if ( Cache::store('file')->has($claveCambioObligatorio) && !$solicitud->routeIs('contrasena.obligatoria') && !$solicitud->routeIs('contrasena.obligatoria.actualizar') ) {
             // Redirigir al formulario de cambio obligatorio de contraseña.
             return redirect()->route('contrasena.obligatoria');
         }

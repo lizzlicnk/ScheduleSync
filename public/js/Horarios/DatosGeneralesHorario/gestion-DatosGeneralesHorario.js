@@ -21,9 +21,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const filaSinFiltros = document.getElementById('fila-sin-filtros');
 
     // Obtiene las filas que contienen horarios registrados.
-    const filasHorarios = cuerpoTabla
-        ? Array.from(cuerpoTabla.querySelectorAll('tr[data-nombre]'))
-        : [];
+    const filasHorarios = cuerpoTabla ? Array.from(cuerpoTabla.querySelectorAll('tr[data-nombre]')): [];
+
+    // Obtiene los elementos de la paginación.
+    const informacionPagina = document.getElementById('informacion-pagina-horarios');
+    const botonAnterior = document.getElementById('pagina-anterior-horarios');
+    const botonSiguiente = document.getElementById('pagina-siguiente-horarios');
+
+    // Define la cantidad de horarios por página.
+    const filasPorPagina = 5;
+    let paginaActual = 1;
+    let horariosCoincidentes = [];
 
     /* CONSULTA DE HORARIOS */
 
@@ -66,99 +74,165 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /* FILTRAR HORARIOS */
 
-    // Aplica la búsqueda y los filtros seleccionados en la tabla.
+    // Aplica la búsqueda, los filtros y la paginación.
     function filtrarHorarios() {
 
-        const textoBusqueda = buscarHorario ? buscarHorario.value.trim().toLowerCase() : '';
-        const anioSeleccionado = filtroAnio ? filtroAnio.value : '';
-        const periodoSeleccionado = filtroPeriodo ? normalizarTexto(filtroPeriodo.value) : '';
-        const carreraSeleccionada = filtroCarrera ? filtroCarrera.value : '';
-        const grupoSeleccionado = filtroGrupo ? filtroGrupo.value : '';
-        const estadoSeleccionado = filtroEstado ? filtroEstado.value : '';
+        const textoBusqueda = normalizarTexto(buscarHorario?.value);
+        const anioSeleccionado = filtroAnio?.value || '';
+        const periodoSeleccionado = filtroPeriodo?.value || '';
+        const carreraSeleccionada = filtroCarrera?.value || '';
+        const grupoSeleccionado = filtroGrupo?.value || '';
+        const estadoSeleccionado = filtroEstado?.value || '';
 
-        let horariosVisibles = 0;
+        // Obtiene los horarios que coinciden con los filtros.
+        horariosCoincidentes = filasHorarios.filter(function (fila) {
 
-        filasHorarios.forEachfunction (fila) 
+            const nombre = normalizarTexto(fila.dataset.nombre);
+            const periodo = normalizarTexto(fila.dataset.periodo);
+            const carrera = normalizarTexto(fila.dataset.carrera);
+            const grupo = normalizarTexto(fila.dataset.grupo);
 
-            // Obtiene la información de cada horario.
-            const nombre = fila.dataset.nombre || '';
-            const periodo = fila.dataset.periodo || '';
-            const anio = fila.dataset.anio || '';
-            const idPeriodo = fila.dataset.idPeriodo || '';
-            const carrera = fila.dataset.carrera || '';
-            const idCarrera = fila.dataset.idCarrera || '';
-            const grupo = fila.dataset.grupo || '';
-            const idGrupo = fila.dataset.idGrupo || '';
-            const estado = fila.dataset.estado || '';
+            const coincideBusqueda =
+                nombre.includes(textoBusqueda) ||
+                periodo.includes(textoBusqueda) ||
+                carrera.includes(textoBusqueda) ||
+                grupo.includes(textoBusqueda);
 
-            // Comprueba si coincide con el texto de búsqueda.
-            const coincideBusqueda = nombre.includes(textoBusqueda) || periodo.includes(textoBusqueda) || carrera.includes(textoBusqueda) || grupo.includes(textoBusqueda);
+            const coincideAnio =
+                anioSeleccionado === '' || fila.dataset.anio === anioSeleccionado;
 
-            const coincideAnio = anioSeleccionado === '' || anio === anioSeleccionado;
-            const coincidePeriodo = periodoSeleccionado === '' || idPeriodo === periodoSeleccionado;
-            const coincideCarrera = carreraSeleccionada === '' || idCarrera === carreraSeleccionada;
-            const coincideGrupo = grupoSeleccionado === '' || idGrupo === grupoSeleccionado;
-            const coincideEstado = estadoSeleccionado === '' || estado === estadoSeleccionado;
+            const coincidePeriodo =
+                periodoSeleccionado === '' || fila.dataset.idPeriodo === periodoSeleccionado;
 
-            // Determina si la fila debe mostrarse.
-            const mostrarFila = coincideBusqueda && coincideAnio && coincidePeriodo && coincideCarrera && coincideGrupo && coincideEstado;
+            const coincideCarrera =
+                carreraSeleccionada === '' || fila.dataset.idCarrera === carreraSeleccionada;
 
-            fila.hidden = !mostrarFila;
+            const coincideGrupo =
+                grupoSeleccionado === '' || fila.dataset.idGrupo === grupoSeleccionado;
 
-            if (mostrarFila) {
-                horariosVisibles++;
-            }
+            const coincideEstado =
+                estadoSeleccionado === '' || fila.dataset.estado === estadoSeleccionado;
 
-        ;
-
-        // Actualiza el total de resultados visibles.
-        if (totalResultados) {
-            totalResultados.textContent = horariosVisibles;
-        }
-
-        // Muestra el mensaje únicamente cuando existen horarios registrados,
-        if (filaSinFiltros) {
-            filaSinFiltros.hidden =
-                filasHorarios.length === 0 || horariosVisibles !== 0;
-        }
-    }
-
-    /*  EVENTOS DE BÚSQUEDA Y FILTROS */
-
-    // Ejecuta la búsqueda mientras se escribe.
-    if (buscarHorario) {
-        buscarHorario.addEventListener('input', filtrarHorarios);
-    }
-
-    // Ejecuta el filtrado cuando cambia el año.
-    if (filtroAnio) {
-        filtroAnio.addEventListener('change', function () {
-
-            // Restablece el periodo si pertenece a otro año.
-            if (filtroPeriodo) {
-
-                const opcionPeriodo = filtroPeriodo.selectedOptions[0];
-
-                if ( opcionPeriodo && opcionPeriodo.dataset.anio && filtroAnio.value !== '' && opcionPeriodo.dataset.anio !== filtroAnio.value) {
-                    filtroPeriodo.value = '';
-                }
-
-            }
-
-            filtrarHorarios();
+            return coincideBusqueda && coincideAnio && coincidePeriodo &&
+                coincideCarrera && coincideGrupo && coincideEstado;
 
         });
+
+        // Calcula el total de páginas.
+        const totalPaginas = Math.max(
+            1,
+            Math.ceil(horariosCoincidentes.length / filasPorPagina)
+        );
+
+        // Ajusta la página actual si supera el total disponible.
+        if (paginaActual > totalPaginas) {
+            paginaActual = totalPaginas;
+        }
+
+        // Obtiene las filas correspondientes a la página actual.
+        const inicio = (paginaActual - 1) * filasPorPagina;
+        const fin = inicio + filasPorPagina;
+
+        const filasVisibles = new Set(
+            horariosCoincidentes.slice(inicio, fin)
+        );
+
+        // Muestra únicamente las filas de la página actual.
+        filasHorarios.forEach(function (fila) {
+            fila.hidden = !filasVisibles.has(fila);
+        });
+
+        const hayResultados = horariosCoincidentes.length > 0;
+
+        // Actualiza los mensajes de la tabla.
+        if (filaSinFiltros) {
+            filaSinFiltros.hidden = hayResultados || filasHorarios.length === 0;
+        }
+
+        // Actualiza el total de resultados.
+        if (totalResultados) {
+            totalResultados.textContent = horariosCoincidentes.length;
+        }
+
+        // Actualiza la información de la página.
+        if (informacionPagina) {
+            informacionPagina.textContent =
+                'Página ' + paginaActual + ' de ' + totalPaginas;
+        }
+
+        // Habilita o deshabilita los botones de paginación.
+        if (botonAnterior) {
+            botonAnterior.disabled = paginaActual <= 1;
+            botonAnterior.hidden = !hayResultados;
+        }
+
+        if (botonSiguiente) {
+            botonSiguiente.disabled = paginaActual >= totalPaginas;
+            botonSiguiente.hidden = !hayResultados;
+        }
+
     }
 
-    // Ejecuta el filtrado cuando cambia cualquier otro criterio.
-    [filtroPeriodo, filtroCarrera, filtroGrupo, filtroEstado].forEach(function (filtro) {
+    /* EVENTOS DE BÚSQUEDA Y FILTROS */
 
-        if (filtro) {
-            filtro.addEventListener('change', filtrarHorarios);
+    // Regresa a la primera página cuando cambia la búsqueda.
+    buscarHorario?.addEventListener('input', function () {
+        paginaActual = 1;
+        filtrarHorarios();
+    });
+
+    // Ejecuta los filtros y regresa a la primera página.
+    [filtroAnio, filtroPeriodo, filtroCarrera, filtroGrupo, filtroEstado]
+        .forEach(function (filtro) {
+
+            filtro?.addEventListener('change', function () {
+
+                // Restablece el periodo si pertenece a otro año.
+                if (filtro === filtroAnio && filtroPeriodo) {
+
+                    const opcionPeriodo = filtroPeriodo.selectedOptions[0];
+
+                    if (
+                        opcionPeriodo &&
+                        opcionPeriodo.dataset.anio &&
+                        filtroAnio.value !== '' &&
+                        opcionPeriodo.dataset.anio !== filtroAnio.value
+                    ) {
+                        filtroPeriodo.value = '';
+                    }
+
+                }
+
+                paginaActual = 1;
+                filtrarHorarios();
+
+            });
+
+        });
+
+    // Muestra la página anterior.
+    botonAnterior?.addEventListener('click', function () {
+
+        if (paginaActual > 1) {
+            paginaActual--;
+            filtrarHorarios();
         }
 
     });
 
+    // Muestra la página siguiente.
+    botonSiguiente?.addEventListener('click', function () {
+
+        const totalPaginas = Math.ceil(
+            horariosCoincidentes.length / filasPorPagina
+        );
+
+        if (paginaActual < totalPaginas) {
+            paginaActual++;
+            filtrarHorarios();
+        }
+
+    });
 
     /* LIMPIAR FILTROS */
 
@@ -174,12 +248,18 @@ document.addEventListener('DOMContentLoaded', function () {
             if (filtroEstado) filtroEstado.value = '';
             if (buscarHorario) buscarHorario.value = '';
 
-            // Vuelve a mostrar todos los horarios.
+            // Restablece la página actual.
+            paginaActual = 1;
+
+            // Aplica nuevamente los filtros.
             filtrarHorarios();
 
         });
 
     }
+
+    // Inicializa la tabla y la paginación al cargar la página.
+    filtrarHorarios();
 
     /*  CAMPOS DEPENDIENTES DEL FORMULARIO */
 
@@ -262,6 +342,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 campo.addEventListener('change', actualizarGrupos);
             }
         });
+
 
         // Ejecuta la actualización inicial.
         actualizarGrupos();

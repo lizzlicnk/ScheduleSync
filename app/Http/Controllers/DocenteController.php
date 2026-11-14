@@ -41,7 +41,7 @@ class DocenteController extends Controller
         }
 
         // Obtiene las cuentas ordenadas por nombre.
-        $usuariosDocentes = $consultaUsuarios->orderBy('nombreUsuario')->orderBy('apellidoPaterno')->get();
+        $usuariosDocentes = $consultaUsuarios->orderByDesc('id_usuario')->orderBy('apellidoPaterno')->get();
 
         $docentesRegistrados = $usuariosDocentes;
 
@@ -90,99 +90,6 @@ class DocenteController extends Controller
         // Envía los datos necesarios a la vista.
         return view( 'docentes.GestionDocentes', compact('docentesRegistrados', 'usuariosDisponibles'));
     }
-
-    /**
-     * Descripción: Registra la información académica de una cuenta docente existente.
-     *
-     * Entradas:
-     * $solicitud: datos enviados desde el formulario.
-     *
-     * Salidas: Redirección al listado con un mensaje de confirmación.
-     */
-    /*
-    public function store(Request $solicitud)
-    {
-        // Solo el administrador puede registrar docentes.
-        $this->verificarRol([1]);
-
-        // Valida que la cuenta seleccionada sea un docente activo
-        $datosValidados = $solicitud->validate([
-            'id_usuario' => [
-                'required',
-                'integer',
-                Rule::exists('usuario', 'id_usuario')
-                    ->where('rol', 3)
-                    ->where('estado', 1),
-                Rule::unique('docente', 'id_usuario'),
-            ],
-
-            'matricula' => [
-                'required',
-                'string',
-                'max:20',
-                Rule::unique('docente', 'matricula'),
-            ],
-
-            'especialidad' => [
-                'required',
-                'string',
-                'max:100',
-            ],
-
-            'tipoDocente' => [
-                'required',
-                'integer',
-                Rule::in([1, 2]),
-            ],
-
-            'cargaAcademica' => [
-                'required',
-                'numeric',
-                'min:0',
-                'max:20',
-            ],
-        ], [
-            'id_usuario.required' => 'Debes seleccionar una cuenta docente.',
-            'id_usuario.exists' => 'La cuenta seleccionada no está activa o no tiene el rol de docente.',
-            'id_usuario.unique' => 'Esta cuenta ya tiene información registrada como docente.',
-
-            'matricula.required' => 'La matrícula es obligatoria.',
-            'matricula.max' => 'La matrícula no puede superar los 20 caracteres.',
-            'matricula.unique' => 'Esta matrícula ya está registrada.',
-
-            'especialidad.required' => 'La especialidad es obligatoria.',
-            'especialidad.max' => 'La especialidad no puede superar los 100 caracteres.',
-
-            'tipoDocente.required' => 'Debes seleccionar el tipo de docente.',
-            'tipoDocente.in' => 'El tipo de docente seleccionado no es válido.',
-
-            'cargaAcademica.required' => 'La carga académica es obligatoria.',
-            'cargaAcademica.numeric' => 'La carga académica debe ser un número.',
-            'cargaAcademica.min' => 'La carga académica no puede ser negativa.',
-            'cargaAcademica.max' => 'La carga académica no puede superar las 20 horas.',
-        ]);
-
-        // Obtener la matrícula ingresada para comprobar si ya está registrada.
-        $matriculaDocente = trim($solicitud->input('matricula', ''));
-
-        // Comprobar si la matrícula ya está registrada.
-        if (
-            $matriculaDocente !== '' &&
-            Docente::where('matricula', $matriculaDocente)->exists()
-        ) {
-            return redirect()->back()->withInput()
-                ->with('tipo_modal_docente', 'error')
-                ->with('mensaje_modal_docente', 'No se puede registrar el docente porque esa matrícula ya está registrada.');
-        }
-
-        // Registra únicamente los datos académicos validados.
-        Docente::create($datosValidados);
-
-        // Regresa al listado con un mensaje de confirmación.
-        return redirect()->route('docentes.index')->with('docente_agregado', true);
-    }
-*/
-
 
     /**
      * Descripción: Registra la información académica de una cuenta docente existente.
@@ -257,10 +164,9 @@ class DocenteController extends Controller
         Docente::create($datosValidados);
 
         // Regresar al listado y mostrar el modal de éxito.
-        return redirect()
-            ->route('docentes.index')
-            ->with('tipo_modal_docente', 'registro')
-            ->with('mensaje_modal_docente', 'La información del docente se registró correctamente.');
+
+
+        return redirect()->route('docentes.index')->with('docente_agregado', true);
     }
 
     /**

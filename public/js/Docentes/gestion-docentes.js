@@ -32,15 +32,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalBajaDocente = document.getElementById('modal-baja-docente');
     const nombreDocenteBaja = document.getElementById('nombre-docente-baja');
 
+      // Obtiene los elementos de la paginación.
+    const informacionPagina = document.getElementById('informacion-pagina-docentes');
+    const botonPaginaAnterior = document.getElementById('pagina-anterior-docentes');
+    const botonPaginaSiguiente = document.getElementById('pagina-siguiente-docentes');
+
+    // Configuración de la paginación.
+    const docentesPorPagina = 5;
+    let paginaActual = 1;
+
     // Obtiene las filas reales de docentes y excluye los mensajes de la tabla.
-    const filasDocentes = cuerpoTabla
-        ? Array.from(cuerpoTabla.querySelectorAll('tr[data-id-usuario]'))
-        : [];
+    const filasDocentes = cuerpoTabla? Array.from(cuerpoTabla.querySelectorAll('tr[data-id-usuario]')): [];
 
     // Obtiene las opciones disponibles para consultar.
-    const opcionesConsulta = resultadosConsulta
-        ? Array.from(resultadosConsulta.querySelectorAll('[data-resultado-usuario]'))
-        : [];
+    const opcionesConsulta = resultadosConsulta? Array.from(resultadosConsulta.querySelectorAll('[data-resultado-usuario]')): [];
 
     // Normaliza los textos para que la búsqueda ignore mayúsculas y acentos.
     function normalizarTexto(texto) {
@@ -70,13 +75,20 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Filtra la tabla por texto, tipo y estado de la cuenta.
-    function aplicarFiltros() {
+    function aplicarFiltros(restablecerPagina = true) {
+
         const texto = normalizarTexto(buscarDocente?.value);
         const tipoSeleccionado = filtroTipo?.value || '';
         const estadoSeleccionado = filtroEstado?.value || '';
-        let cantidadVisible = 0;
 
-        filasDocentes.forEach(function (fila) {
+        // Reinicia la paginación cuando se modifican los filtros.
+        if (restablecerPagina) {
+            paginaActual = 1;
+        }
+
+        // Obtiene únicamente los docentes que coinciden con los filtros.
+        const docentesFiltrados = filasDocentes.filter(function (fila) {
+
             const nombre = normalizarTexto(fila.dataset.nombre);
             const correo = normalizarTexto(fila.dataset.correo);
             const matricula = normalizarTexto(fila.dataset.matricula);
@@ -85,37 +97,76 @@ document.addEventListener('DOMContentLoaded', function () {
             const estado = fila.dataset.estado || '0';
 
             // Busca coincidencias en nombre, correo, matrícula y especialidad.
-            const coincideTexto = !texto ||
-                nombre.includes(texto) ||
-                correo.includes(texto) ||
-                matricula.includes(texto) ||
-                especialidad.includes(texto);
+            const coincideTexto = !texto || nombre.includes(texto) || correo.includes(texto) || matricula.includes(texto) || especialidad.includes(texto);
 
             // Comprueba si coincide el tipo seleccionado.
-            const coincideTipo = !tipoSeleccionado ||
-                tipo === tipoSeleccionado;
+            const coincideTipo = !tipoSeleccionado || tipo === tipoSeleccionado;
 
             // Comprueba si coincide el estado seleccionado.
-            const coincideEstado = !estadoSeleccionado ||
-                estado === estadoSeleccionado;
+            const coincideEstado = !estadoSeleccionado || estado === estadoSeleccionado;
 
-            // Muestra únicamente las filas que cumplen todos los criterios.
-            const mostrar = coincideTexto && coincideTipo && coincideEstado;
-
-            fila.hidden = !mostrar;
-
-            if (mostrar) {
-                cantidadVisible++;
-            }
+            return coincideTexto && coincideTipo && coincideEstado;
         });
 
-        // Actualiza el contador y el mensaje de tabla vacía.
+        // Obtiene la cantidad de docentes que coinciden con los filtros.
+        const cantidadVisible = docentesFiltrados.length;
+
+        // Calcula la cantidad total de páginas.
+        const totalPaginas = Math.ceil(cantidadVisible / docentesPorPagina);
+
+        // Evita permanecer en una página que ya no existe.
+        if (totalPaginas === 0) {
+            paginaActual = 1;
+        } else if (paginaActual > totalPaginas) {
+            paginaActual = totalPaginas;
+        }
+
+        // Calcula los índices de los docentes que se mostrarán.
+        const indiceInicial = (paginaActual - 1) * docentesPorPagina;
+        const indiceFinal = indiceInicial + docentesPorPagina;
+
+        // Obtiene los docentes correspondientes a la página actual.
+        const docentesPagina = docentesFiltrados.slice(
+            indiceInicial,
+            indiceFinal
+        );
+
+        // Oculta inicialmente todas las filas de docentes.
+        filasDocentes.forEach(function (fila) {
+            fila.hidden = true;
+        });
+
+        // Muestra únicamente los docentes de la página actual.
+        docentesPagina.forEach(function (fila) {
+            fila.hidden = false;
+        });
+
+        // Actualiza el contador de resultados.
         if (totalResultados) {
             totalResultados.textContent = cantidadVisible;
         }
 
+        // Muestra el mensaje cuando existen docentes, pero ninguno coincide.
         if (filaSinFiltros) {
-            filaSinFiltros.hidden = cantidadVisible > 0;
+            filaSinFiltros.hidden =
+                cantidadVisible > 0 || filasDocentes.length === 0;
+        }
+
+        // Actualiza la información de la página actual.
+        if (informacionPagina) {
+            informacionPagina.textContent =
+                `Página ${paginaActual} de ${totalPaginas}`;
+        }
+
+        // Controla el estado de los botones de navegación.
+        if (botonPaginaAnterior) {
+            botonPaginaAnterior.disabled =
+                paginaActual === 1 || totalPaginas === 0;
+        }
+
+        if (botonPaginaSiguiente) {
+            botonPaginaSiguiente.disabled =
+                paginaActual === totalPaginas || totalPaginas === 0;
         }
     }
 
@@ -131,6 +182,22 @@ document.addEventListener('DOMContentLoaded', function () {
         if (filtroEstado) filtroEstado.value = '';
 
         aplicarFiltros();
+    });
+
+    // Regresa a la página anterior.
+    botonPaginaAnterior?.addEventListener('click', function () {
+
+        if (paginaActual > 1) {
+            paginaActual--;
+            aplicarFiltros(false);
+        }
+    });
+
+    // Avanza a la página siguiente.
+    botonPaginaSiguiente?.addEventListener('click', function () {
+
+        paginaActual++;
+        aplicarFiltros(false);
     });
 
     // Abre el formulario y opcionalmente selecciona una cuenta de usuario.
@@ -160,6 +227,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         selectorUsuario?.focus({ preventScroll: true });
     }
+
 
     // Abre el formulario desde el botón Nuevo docente.
     botonNuevoDocente?.addEventListener('click', function () {

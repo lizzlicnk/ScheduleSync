@@ -9,8 +9,123 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalValidacion = document.getElementById('modal-validacion');
     const botonCerrarModal = document.getElementById('cerrar-modal-validacion');
 
+    // Obtiene los elementos de la tabla.
+    const cuerpoTablaDisponibilidad = document.getElementById('cuerpo-tabla-disponibilidad');
+    const informacionPagina = document.getElementById('informacion-pagina');
+    const botonPaginaAnterior = document.getElementById('pagina-anterior');
+    const botonPaginaSiguiente = document.getElementById('pagina-siguiente');
+    const totalResultados = document.getElementById('total-resultados');
+    const buscarDisponibilidad = document.getElementById('buscar-disponibilidad');
+    const filaSinResultados = document.getElementById('fila-sin-resultados');
+
+    // Obtiene el botón y la sección de registro.
+    const botonIrRegistro = document.getElementById('boton-ir-registro');
+
     // Comprueba que el archivo JavaScript se haya cargado.
     console.log('JavaScript de registro de disponibilidad cargado.');
+
+    // filas correspondientes a docentes.
+    const filasDisponibilidad = cuerpoTablaDisponibilidad ? Array.from(cuerpoTablaDisponibilidad.querySelectorAll('tr[data-id-docente]')) : [];
+
+    // cantidad de docentes por página.
+    const docentesPorPagina = 5;
+
+    let paginaActual = 1;
+
+    // Aplica la búsqueda y actualiza la paginación.
+    function aplicarPaginacionDisponibilidad() {
+
+        // Obtiene el texto de búsqueda.
+        const busqueda = buscarDisponibilidad?.value.trim().toLowerCase() ?? '';
+
+        // Filtra los docentes por nombre o matrícula.
+        const filasFiltradas = filasDisponibilidad.filter(function (fila) {
+
+            const nombre = fila.dataset.nombre ?? '';
+            const matricula = fila.dataset.matricula ?? '';
+
+            return nombre.includes(busqueda) || matricula.includes(busqueda);
+
+        });
+
+        // Calcula la cantidad total de páginas.
+        const totalPaginas = Math.max(
+            1,
+            Math.ceil(filasFiltradas.length / docentesPorPagina)
+        );
+
+        // Comprueba que la página actual sea válida.
+        if (paginaActual > totalPaginas) {
+            paginaActual = totalPaginas;
+        }
+
+        // Calcula los índices de las filas que se mostrarán.
+        const indiceInicial = (paginaActual - 1) * docentesPorPagina;
+        const indiceFinal = indiceInicial + docentesPorPagina;
+
+        // Oculta todas las filas de docentes.
+        filasDisponibilidad.forEach(function (fila) {
+            fila.hidden = true;
+        });
+
+        // Muestra únicamente las filas de la página actual.
+        filasFiltradas.slice(indiceInicial, indiceFinal).forEach(function (fila) {
+            fila.hidden = false;
+        });
+
+        // Actualiza la cantidad de resultados.
+        if (totalResultados) {
+            totalResultados.textContent = filasFiltradas.length;
+        }
+
+        // Muestra u oculta el mensaje cuando no hay resultados.
+        if (filaSinResultados) {
+            filaSinResultados.hidden = filasFiltradas.length !== 0;
+        }
+
+        // Actualiza la información de la página.
+        if (informacionPagina) {
+            informacionPagina.textContent = `Página ${paginaActual} de ${totalPaginas}`;
+        }
+
+        // Controla el estado del botón anterior.
+        if (botonPaginaAnterior) {
+            botonPaginaAnterior.disabled = paginaActual === 1;
+        }
+
+        // Controla el estado del botón siguiente.
+        if (botonPaginaSiguiente) {
+            botonPaginaSiguiente.disabled = paginaActual === totalPaginas;
+        }
+
+    }
+
+    // Detecta los cambios en el campo de búsqueda.
+    buscarDisponibilidad?.addEventListener('input', function () {
+        // Regresa a la primera página al realizar una nueva búsqueda.
+        paginaActual = 1;
+        aplicarPaginacionDisponibilidad();
+    });
+
+    // Avanza a la página siguiente.
+    botonPaginaSiguiente?.addEventListener('click', function () {
+        paginaActual++;
+        aplicarPaginacionDisponibilidad();
+    });
+
+    // Regresa a la página anterior.
+    botonPaginaAnterior?.addEventListener('click', function () {
+
+        if (paginaActual > 1) {
+            paginaActual--;
+        }
+
+        aplicarPaginacionDisponibilidad();
+
+    });
+
+    // Muestra los primeros docentes al cargar la página.
+    aplicarPaginacionDisponibilidad();
 
     // Obtiene los bloques registrados inicialmente.
     const botonesHorario = document.querySelectorAll('.bloque-horario');
@@ -358,4 +473,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 
+        // BOTÓN PARA IR AL REGISTRO DE DISPONIBILIDAD
+
+    // Desplaza la pantalla hasta el formulario de registro.
+    botonIrRegistro?.addEventListener('click', function () {
+
+        panelRegistro?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+
+    });
 });

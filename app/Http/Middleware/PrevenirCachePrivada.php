@@ -14,8 +14,7 @@ class PrevenirCachePrivada
      *
      * Entradas:
      * $solicitud: contiene la información de la solicitud HTTP recibida.
-     * $siguiente: permite continuar con la ejecución de los siguientes
-     * middleware o del controlador 
+     * $siguiente: permite continuar con la ejecución de los siguientes middleware o del controlador 
      *
      * Salida: Respuesta con encabezados que impiden guardar la página en caché.
      */
@@ -24,10 +23,7 @@ class PrevenirCachePrivada
         $respuesta = $siguiente($solicitud);
 
         // Evitar que el navegador almacene páginas privadas.
-        $respuesta->headers->set(
-            'Cache-Control',
-            'no-store, no-cache, must-revalidate, private'
-        );
+        $respuesta->headers->set( 'Cache-Control', 'no-store, no-cache, must-revalidate, private' );
 
         // Indicar que no se debe utilizar una copia almacenada.
         $respuesta->headers->set('Pragma', 'no-cache');

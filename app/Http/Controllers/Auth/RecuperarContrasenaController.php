@@ -59,9 +59,7 @@ class RecuperarContrasenaController extends Controller
         ]);
 
         // Busca el correo en la tabla usuario.
-        $usuario = Usuario::where('correo', $correoUsuario)
-            ->where('estado', 1)
-            ->first();
+        $usuario = Usuario::where('correo', $correoUsuario)->where('estado', 1)->first();
 
         // Identifica los datos temporales sin guardar el correo en la clave.
         $identificadorCorreo = hash('sha256', $correoUsuario);
@@ -172,9 +170,7 @@ class RecuperarContrasenaController extends Controller
     public function verificarPin(Request $solicitud)
     {
         // Validar que el PIN contenga exactamente seis dígitos.
-        $datosValidados = $solicitud->validate([
-            'pin' => ['required', 'digits:6'],
-        ]);
+        $datosValidados = $solicitud->validate([ 'pin' => ['required', 'digits:6'], ]);
 
         $correoUsuario = $solicitud->session()->get('correo_recuperacion');
 
@@ -206,9 +202,7 @@ class RecuperarContrasenaController extends Controller
 
             return redirect()
                 ->route('contrasena.correo')
-                ->withErrors([
-                    'pin' => 'Se alcanzó el límite de intentos. Solicita un PIN nuevo.',
-                ]);
+                ->withErrors([ 'pin' => 'Se alcanzó el límite de intentos. Solicita un PIN nuevo.', ]);
         }
 
         // Comparar el PIN ingresado con el hash almacenado.
@@ -216,17 +210,10 @@ class RecuperarContrasenaController extends Controller
             $datosPin['intentos']++;
 
             // Calcular el tiempo que le queda al PIN antes de vencer.
-            $segundosRestantes = max(
-                1,
-                $datosPin['expira_en'] - now()->timestamp
-            );
+            $segundosRestantes = max( 1, $datosPin['expira_en'] - now()->timestamp );
 
              // Actualizar los datos del PIN sin extender su vigencia original.
-            Cache::put(
-                $clavePin,
-                $datosPin,
-                now()->addSeconds($segundosRestantes)
-            );
+            Cache::put( $clavePin, $datosPin, now()->addSeconds($segundosRestantes) );
 
             return back()->withErrors(['pin' => 'El PIN ingresado es incorrecto.',]);
         }
@@ -238,17 +225,10 @@ class RecuperarContrasenaController extends Controller
         $tokenVerificacion = Str::random(64);
 
         // Guardar el token de autorización durante cinco minutos.
-        Cache::put(
-            $claveVerificacion,
-            $tokenVerificacion,
-            now()->addMinutes(5)
-        );
+        Cache::put( $claveVerificacion, $tokenVerificacion, now()->addMinutes(5) );
 
         // Guardar el token en la sesión para validar las siguientes solicitudes.
-        $solicitud->session()->put(
-            'token_recuperacion_verificada',
-            $tokenVerificacion
-        );
+        $solicitud->session()->put('token_recuperacion_verificada', $tokenVerificacion);
 
         return redirect()
             ->route('contrasena.formulario-nueva')
@@ -271,9 +251,7 @@ class RecuperarContrasenaController extends Controller
         if (!$this->recuperacionVerificada($solicitud)) {
             return redirect()
                 ->route('contrasena.correo')
-                ->withErrors([
-                    'pin' => 'Primero debes verificar tu PIN.',
-                ]);
+                ->withErrors([ 'pin' => 'Primero debes verificar tu PIN.', ]);
         }
 
         return view('auth.nuevaContrasena');
@@ -367,8 +345,7 @@ class RecuperarContrasenaController extends Controller
         }
 
         // Generar la clave para consultar el token almacenado en caché.
-        $claveVerificacion = 'recuperacion_verificada:'
-            . hash('sha256', $correoUsuario);
+        $claveVerificacion = 'recuperacion_verificada:' . hash('sha256', $correoUsuario);
 
         $tokenAlmacenado = Cache::get($claveVerificacion);
 

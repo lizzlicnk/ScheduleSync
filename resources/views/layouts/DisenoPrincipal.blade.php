@@ -24,6 +24,8 @@
      <!-- Permite agregar estilos específicos desde cada vista. -->
     @stack('estilos')
     
+    <!-- Permite agregar scripts y estilos específicos desde cada vista. -->
+    @stack('scripts')
 </head>
 <body>
     <!-- Agrupa el menú lateral y el contenido principal de la aplicación. -->
@@ -51,5 +53,9 @@
 
     <!-- Componente global de alertas -->
     <x-alertas.sweet-alert />
+
+    <!-- Scripts específicos de cada vista -->
+    @stack('scripts')
+    
 </body>
 </html>

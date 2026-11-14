@@ -34,10 +34,7 @@ class CambiarContrasenaObligatoriaController extends Controller
         $claveCambioObligatorio = 'usuario_debe_cambiar_contrasena_' . $usuario->id_usuario;
 
         // Permitir mostrar el formulario si existe el mensaje de éxito.
-        if (
-            !Cache::store('file')->has($claveCambioObligatorio)
-            && !session()->has('mensaje_contrasena')
-        ) {
+        if ( !Cache::store('file')->has($claveCambioObligatorio) && !session()->has('mensaje_contrasena') ) {
             return redirect()->route('inicio');
         }
 
@@ -85,20 +82,14 @@ class CambiarContrasenaObligatoriaController extends Controller
         $usuario = Auth::user();
 
         // Comprobar que la contraseña actual ingresada coincida con la almacenada.
-        if (!Hash::check(
-            $datosValidados['password_actual'],
-            $usuario->password
-        )) {
+        if (!Hash::check( $datosValidados['password_actual'], $usuario->password )) {
             return back()->withErrors([
                 'password_actual' => 'La contraseña actual es incorrecta.',
             ]);
         }
 
          // Verificar que la nueva contraseña sea diferente de la actual.
-        if (Hash::check(
-            $datosValidados['password'],
-            $usuario->password
-        )) {
+        if (Hash::check( $datosValidados['password'], $usuario->password )) {
             return back()->withErrors([
                 'password' =>
                     'La nueva contraseña debe ser diferente de la actual.',
@@ -108,8 +99,7 @@ class CambiarContrasenaObligatoriaController extends Controller
         $usuario->password = Hash::make($datosValidados['password']);
         $usuario->save();
 
-        $claveCambioObligatorio =
-            'usuario_debe_cambiar_contrasena_' . $usuario->id_usuario;
+        $claveCambioObligatorio = 'usuario_debe_cambiar_contrasena_' . $usuario->id_usuario;
 
         // Eliminar la indicación de cambio obligatorio.
         Cache::store('file')->forget($claveCambioObligatorio);
@@ -118,10 +108,7 @@ class CambiarContrasenaObligatoriaController extends Controller
         $solicitud->session()->regenerate();
 
         return redirect()->route('contrasena.obligatoria')
-            ->with(
-                'mensaje_contrasena',
-                'Tu contraseña se cambió correctamente.'
-            );
+            ->with( 'mensaje_contrasena', 'Tu contraseña se cambió correctamente.' );
     }
 }
 

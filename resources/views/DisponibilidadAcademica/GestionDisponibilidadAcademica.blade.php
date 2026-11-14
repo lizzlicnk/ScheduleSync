@@ -105,6 +105,10 @@
                     Filtros
                 </button>
 
+                <button type="button" class="boton-entregar-disponibilidad" id="boton-ir-registro">
+                    <span aria-hidden="true">＋</span>
+                    Registrar disponibilidad
+                </button>
             </div>
 
             <div class="busqueda-tabla campo">
@@ -691,10 +695,7 @@
                     <!-- ACCIONES -->
                     <div class="acciones-disponibilidad">
 
-                        <button
-                            type="reset"
-                            class="boton-secundario"
-                        >
+                        <button type="reset" class="boton-secundario" >
                             Limpiar formulario
                         </button>
 
@@ -709,12 +710,7 @@
                             Guardar borrador
                         </button> -->
 
-                        <button
-                            type="submit"
-                            name="accion"
-                            value="entregar"
-                            class="boton-entregar-disponibilidad"
-                        >
+                        <button type="submit" name="accion" value="entregar" class="boton-entregar-disponibilidad" >
                             <i class="fa-solid fa-check"></i>
                             Entregar disponibilidad
                         </button>

@@ -79,6 +79,7 @@
                         Filtros
                     </button>
                 @endif
+     
             </div>
 
             <div class="busqueda-tabla campo">
@@ -247,8 +248,7 @@
     </section>
 
     <!-- PANEL PARA CONSULTAR LA CARGA ACADÉMICA -->
-    <section class="panel-carga-academica panel-consulta-carga-academica"
-        id="panel-consulta">
+    <section class="panel-carga-academica panel-consulta-carga-academica" id="panel-consulta">
 
         <div class="encabezado-panel">
             <div>

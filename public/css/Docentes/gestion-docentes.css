@@ -1250,7 +1250,9 @@
     }
 }
 
-/*   MODAL DE CONFIRMACIÓN (agregar / modificar docente) */
+/* =========================================
+   MODAL DE CONFIRMACIÓN (agregar / modificar docente)
+========================================= */
 
 .modal-confirmacion {
     position: fixed;
@@ -1260,26 +1262,40 @@
     align-items: center;
     justify-content: center;
     padding: 20px;
+    overflow-y: auto;
     background: rgba(24, 20, 35, 0.60);
     backdrop-filter: blur(5px);
+}
+
+.modal-confirmacion * {
+    box-sizing: border-box;
 }
 
 .modal-confirmacion[hidden] {
     display: none !important;
 }
 
+.modal-confirmacion button {
+    -webkit-tap-highlight-color: transparent;
+}
+
 .modal-confirmacion-contenido {
+    position: relative;
     width: 100%;
     max-width: 400px;
+    max-height: calc(100vh - 40px);
     padding: 35px 30px 30px;
-    background: #FFFFFF;
+    overflow-y: auto;
     border-radius: 16px;
+    background: #FFFFFF;
+    color: #30263B;
     text-align: center;
     box-shadow: 0 15px 40px rgba(48, 38, 59, 0.20);
     animation: aparecerModalDocente 0.25s ease;
 }
 
-/* Palomita verde, igual que en usuarios */
+/* Palomita verde */
+
 .modal-confirmacion-icono {
     display: flex;
     align-items: center;
@@ -1287,50 +1303,69 @@
     width: 70px;
     height: 70px;
     margin: 0 auto 20px;
-    border: 3px solid #23964B;
     border-radius: 50%;
     background: #E6F7EC;
     color: #23964B;
     font-size: 30px;
 }
 
+/* Mensaje de confirmación */
+
 .modal-confirmacion-mensaje h3 {
-    margin: 0 0 8px;
-    color: #30263B;
-    font-size: 20px;
+    margin: 0 0 15px;
+    color: #30213F;
+    font-size: 23px;
     font-weight: 700;
 }
 
 .modal-confirmacion-mensaje p {
-    margin: 0 0 25px;
-    color: #706778;
+    margin: 0 0 22px;
+    color: #5B5166;
     font-size: 14px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
 }
 
-/* Botón Aceptar morado */
+/* Botón de confirmación */
+
 .boton-confirmar {
-    min-width: 110px;
-    padding: 10px 22px;
-    border: 1px solid #5A3E7D;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-width: 120px;
+    min-height: 42px;
+    margin-top: 22px;
+    padding: 11px 22px;
+    border: 1px solid #E3B400;
     border-radius: 8px;
-    background: #5A3E7D;
-    color: #FFFFFF;
+    background: #FFD43B;
+    color: #30263B;
     font-family: inherit;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.2s ease;
+    transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .boton-confirmar:hover {
-    background: #472D68;
-    border-color: #472D68;
+    border-color: #D4A900;
+    background: #F5C518;
     transform: translateY(-1px);
 }
 
+/* Animación de entrada */
+
 @keyframes aparecerModalDocente {
-    from { opacity: 0; transform: scale(0.95); }
-    to   { opacity: 1; transform: scale(1); }
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 #modal-baja-docente {
@@ -1530,4 +1565,32 @@
         width: 100%;
         max-width: none;
     }
+}
+
+/*  AVISO DE DOCENTE INACTIVO */
+.estado-docente-inactivo {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background-color: #FFF4DF;
+    color: #986515;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+/* Icono de información */
+.icono-estado-inactivo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #F2C94C;
+    color: #805B0B;
+    font-size: 11px;
 }

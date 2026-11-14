@@ -13,8 +13,7 @@ class VerificarAdministrador
      *
      * Entradas:
      * $solicitud: contiene la información de la solicitud HTTP recibida.
-     * $siguiente: permite continuar con la ejecución de los siguientes
-     * middleware o del controlador correspondiente.
+     * $siguiente: permite continuar con la ejecución de los siguientes middleware o del controlador correspondiente.
      * 
      * Salida: Permite el acceso al administrador o lo rechaza.
      */
@@ -23,14 +22,9 @@ class VerificarAdministrador
         $usuarioAutenticado = auth()->user();
 
         // Comprobar que el usuario tenga el rol de administrador.
-        if (
-            !$usuarioAutenticado ||
-            (int) $usuarioAutenticado->rol !== 1
-        ) {
+        if ( !$usuarioAutenticado || (int) $usuarioAutenticado->rol !== 1 ) {
             // Rechazar el acceso y mostrar el aviso de permisos.
-            return redirect()
-                ->route('inicio')
-                ->with('modal_sin_permisos', true);
+            return redirect()->route('inicio')->with('modal_sin_permisos', true);
         }
 
         // Permitir que el administrador continúe.
