@@ -23,7 +23,10 @@
 
      <!-- Permite agregar estilos específicos desde cada vista. -->
     @stack('estilos')
-    
+   
+    <!-- Carga los archivos JavaScript mediante Vite. -->
+    @vite(['resources/js/app.js'])
+
     <!-- Permite agregar scripts y estilos específicos desde cada vista. -->
     @stack('scripts')
 </head>

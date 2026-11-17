@@ -1066,6 +1066,54 @@
     box-shadow: 0 0 0 3px rgba(90, 62, 125, 0.12);
 }
 
+/* =========================================
+   PERSONALIZACIÓN DEL CALENDARIO
+   ========================================= */
+
+/* Color principal del calendario */
+#calendario-horarios {
+    --fc-monarch-primary: #5A3E7D;
+    --fc-monarch-primary-hover: #654282;
+    --fc-monarch-background: #FFFFFF;
+}
+
+/* Encabezados de los días */
+#calendario-horarios .fc-col-header-cell {
+    background-color: #F5F0FA;
+    color: #51346F;
+    font-weight: 600;
+}
+
+/* Nombres de los días */
+#calendario-horarios .fc-col-header-cell-cushion {
+    color: #51346F;
+    text-decoration: none;
+    text-transform: capitalize;
+}
+
+/* Columna de las horas */
+#calendario-horarios .fc-timegrid-slot-label {
+    color: #654282;
+}
+
+/* Líneas divisorias */
+#calendario-horarios .fc-timegrid-slot {
+    border-color: #EAE3F1;
+}
+
+/* Fondo del calendario */
+#calendario-horarios .fc-timegrid {
+    background-color: #FFFFFF;
+}
+
+.nombre-asignatura-tarjeta {
+    cursor: grab;
+}
+
+.nombre-asignatura-tarjeta:active {
+    cursor: grabbing;
+}
+
 
 /*  RESPONSIVE: TABLET */
 

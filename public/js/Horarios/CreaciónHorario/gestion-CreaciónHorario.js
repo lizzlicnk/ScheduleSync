@@ -227,30 +227,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Mostrar el apartado de registro.
-    botonMostrarRegistro.addEventListener('click', function () {
-
-        contenedorRegistro.hidden = false;
-
-        botonMostrarRegistro.setAttribute('aria-expanded', 'true');
-
-        contenedorRegistro.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-        });
-
-    });
-
-    // Ocultar el apartado de registro.
-    botonCancelarRegistro.addEventListener('click', function () {
-
-        contenedorRegistro.hidden = true;
-
-        botonMostrarRegistro.setAttribute('aria-expanded', 'false');
-
-    });
-
-
+    
     // ========================================
     // CONSULTA DE ASIGNATURAS POR HORARIO
     // ========================================
@@ -407,11 +384,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         tarjeta.classList.add('tarjeta-asignatura-disponible');
 
-        // Guardar el identificador de la asignatura.
+        // Guardar los datos de la asignatura en la tarjeta.
         tarjeta.dataset.idAsignatura = asignatura.id_asignatura;
-
-        // Permitir arrastrar la tarjeta.
-        tarjeta.setAttribute('draggable', 'true');
+        tarjeta.dataset.cantidadHoras = asignatura.cantidadHoras;
 
         // ========================================
         // NOMBRE DE LA ASIGNATURA
@@ -447,6 +422,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // SELECCIÓN DEL DOCENTE
         // ========================================
 
+        
         const contenedorDocente = document.createElement('div');
 
         contenedorDocente.classList.add('campo-tarjeta-asignatura');
@@ -552,60 +528,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // VALIDAR SELECCIONES ANTES DE ARRASTRAR
         // ========================================
 
-        // Evento que se ejecuta al comenzar a arrastrar la asignatura.
-        tarjeta.addEventListener('dragstart', function (evento) {
-
-            // Obtener los valores seleccionados.
-            const idDocente = selectorDocente.value;
-            const espacio = selectorEspacio.value;
-
-            // Verificar que se haya seleccionado un docente.
-            if (!idDocente) {
-
-                // Cancelar el arrastre.
-                evento.preventDefault();
-
-                // Mostrar alerta de advertencia.
-                mostrarAdvertencia(
-                    'Selecciona un docente antes de arrastrar la asignatura.',
-                    '¡Selecciona un docente!'
-                );
-
-                return;
-            }
-
-            // Verificar que se haya seleccionado un espacio.
-            if (!espacio) {
-
-                // Cancelar el arrastre.
-                evento.preventDefault();
-
-                // Mostrar alerta de advertencia.
-                mostrarAdvertencia(
-                    'Selecciona un espacio antes de arrastrar la asignatura.',
-                    '¡Selecciona un espacio!'
-                );
-
-                return;
-            }
-
-            // Preparar los datos de la asignatura para el arrastre.
-            const datosAsignatura = {
-                id_asignatura: asignatura.id_asignatura,
-                id_docente: idDocente,
-                aula: espacio,
-                nombreAsignatura: asignatura.nombreAsignatura,
-                cantidadHoras: asignatura.cantidadHoras
-            };
-
-            // Transferir los datos al calendario.
-            evento.dataTransfer.setData(
-                'application/json',
-                JSON.stringify(datosAsignatura)
-            );
-
-            evento.dataTransfer.effectAllowed = 'copy';
-        });
+    
 
         return tarjeta;
     }
