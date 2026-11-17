@@ -1,0 +1,1270 @@
+
+/* =========================================================
+   CONFIGURACIÓN GENERAL
+========================================================= */
+
+.pagina-creacion-horarios {
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+    color: #30263B;
+}
+
+.pagina-creacion-horarios * {
+    box-sizing: border-box;
+}
+
+.pagina-creacion-horarios [hidden] {
+    display: none !important;
+}
+
+.pagina-creacion-horarios button,
+.pagina-creacion-horarios a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+/* =========================================================
+   ENCABEZADO DEL MÓDULO
+========================================================= */
+
+.pagina-creacion-horarios .encabezado-modulo {
+    margin-bottom: 27px;
+}
+
+.pagina-creacion-horarios .ruta-modulo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 9px;
+    color: #7047A3;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.pagina-creacion-horarios .ruta-modulo::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #8A63B5;
+}
+
+.pagina-creacion-horarios .encabezado-modulo h1 {
+    margin: 0;
+    color: #30213F;
+    font-size: clamp(27px, 3vw, 34px);
+    font-weight: 750;
+    letter-spacing: -0.8px;
+    line-height: 1.25;
+}
+
+.pagina-creacion-horarios .descripcion-modulo {
+    margin: 10px 0 0;
+    color: #797181;
+    font-size: 15px;
+    line-height: 1.65;
+}
+
+
+/* =========================================================
+   MENSAJES DEL SISTEMA
+========================================================= */
+
+.pagina-creacion-horarios .alerta-horarios {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin-bottom: 20px;
+    padding: 14px 17px;
+    border: 1px solid;
+    border-radius: 9px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.pagina-creacion-horarios .alerta-exito {
+    border-color: #D5EFDF;
+    background: #ECF8F0;
+    color: #218452;
+}
+
+.pagina-creacion-horarios .alerta-error {
+    border-color: #F5D9D9;
+    background: #FFF0F0;
+    color: #B94048;
+}
+
+.pagina-creacion-horarios .alerta-horarios i {
+    flex-shrink: 0;
+    font-size: 17px;
+}
+
+
+/* =========================================================
+   PANELES
+========================================================= */
+
+.pagina-creacion-horarios .panel-horarios {
+    min-width: 0;
+    margin-bottom: 25px;
+    padding: 26px;
+    overflow: hidden;
+    border: 1px solid #EAE3F1;
+    border-radius: 14px;
+    background: #FFFFFF;
+    box-shadow: 0 4px 17px rgba(45, 30, 60, 0.04);
+}
+
+.pagina-creacion-horarios .encabezado-panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.pagina-creacion-horarios .encabezado-panel h2 {
+    margin: 0;
+    color: #352641;
+    font-size: 20px;
+    font-weight: 750;
+    letter-spacing: -0.3px;
+    line-height: 1.4;
+}
+
+.pagina-creacion-horarios .encabezado-panel p {
+    margin: 6px 0 0;
+}
+
+.pagina-creacion-horarios .texto-secundario {
+    color: #797181;
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+/* ESPACIO INFERIOR DEL BOTÓN DE SÁBADO */
+/* BOTÓN DE SÁBADO */
+.espacio-inferior-calendario {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+}
+
+/* =========================================================
+   BOTONES
+========================================================= */
+
+.pagina-creacion-horarios .boton-principal,
+.pagina-creacion-horarios .boton-secundario {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 45px;
+    padding: 10px 18px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+        background 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
+}
+
+.pagina-creacion-horarios .boton-principal {
+    border-color: #5A3E7D;
+    background: #5A3E7D;
+    color: #FFFFFF;
+}
+
+.pagina-creacion-horarios .boton-principal:hover {
+    border-color: #472D68;
+    background: #472D68;
+    box-shadow: 0 4px 10px rgba(90, 62, 125, 0.16);
+}
+
+.pagina-creacion-horarios .boton-secundario {
+    border-color: #DDD2E9;
+    background: #FFFFFF;
+    color: #5A3E7D;
+}
+
+.pagina-creacion-horarios .boton-secundario:hover {
+    border-color: #BFAAD7;
+    background: #F8F5FC;
+}
+
+.pagina-creacion-horarios button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.pagina-creacion-horarios .boton-principal:focus-visible,
+.pagina-creacion-horarios .boton-secundario:focus-visible,
+.pagina-creacion-horarios .boton-pagina:focus-visible,
+.pagina-creacion-horarios .boton-consultar:focus-visible {
+    outline: 3px solid rgba(90, 62, 125, 0.2);
+    outline-offset: 2px;
+}
+
+
+/* =========================================================
+   FILTROS DE GRUPOS Y HORARIOS
+========================================================= */
+
+.pagina-creacion-horarios .panel-filtros {
+    margin-bottom: 25px;
+}
+
+.pagina-creacion-horarios .panel-filtros .encabezado-panel {
+    align-items: center;
+}
+
+.pagina-creacion-horarios .filtros-horarios {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+/* Botón de filtros cuando el panel está activo */
+.pagina-creacion-horarios #boton-filtros.boton-activo {
+    color: #5A3E7D;
+    border-color: #5A3E7D;
+    font-weight: 500;
+}
+
+/* Mantiene el estilo activo aunque el cursor salga o pase sobre el botón */
+.pagina-creacion-horarios #boton-filtros.boton-activo:hover,
+.pagina-creacion-horarios #boton-filtros.boton-activo:focus {
+    color: #5A3E7D;
+    border-color: #5A3E7D;
+    box-shadow: 0 0 0 0.2rem rgba(90, 62, 125, 0.25);
+    outline: none;
+}
+
+
+/* =========================================================
+   CAMPOS Y ETIQUETAS
+========================================================= */
+
+.pagina-creacion-horarios .campo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.pagina-creacion-horarios .campo label {
+    color: #45364F;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.pagina-creacion-horarios .campo select,
+.pagina-creacion-horarios .campo input {
+    width: 100%;
+    min-width: 0;
+    min-height: 46px;
+    padding: 11px 13px;
+    border: 1px solid #DED5E8;
+    border-radius: 9px;
+    outline: none;
+    background: #FFFFFF;
+    color: #30263B;
+    font-family: inherit;
+    font-size: 14px;
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+}
+
+.pagina-creacion-horarios .campo select:focus,
+.pagina-creacion-horarios .campo input:focus {
+    border-color: #8A63B5;
+    box-shadow: 0 0 0 3px rgba(112, 71, 163, 0.12);
+}
+
+
+/* =========================================================
+   ENCABEZADO DE TABLA
+========================================================= */
+
+.pagina-creacion-horarios .encabezado-tabla {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr)
+        auto
+        minmax(240px, 350px);
+    grid-template-areas: "titulo botones busqueda";
+    align-items: end;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.pagina-creacion-horarios .titulo-tabla {
+    grid-area: titulo;
+    min-width: 0;
+}
+
+.pagina-creacion-horarios .botones-encabezado {
+    grid-area: botones;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.pagina-creacion-horarios .busqueda-tabla {
+    grid-area: busqueda;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+}
+
+.pagina-creacion-horarios .busqueda-tabla label {
+    color: #45364F;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   BUSCADOR
+========================================================= */
+
+.pagina-creacion-horarios .entrada-busqueda {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 44px;
+    padding: 0 13px;
+    border: 1px solid #DED5E8;
+    border-radius: 9px;
+    background: #FFFFFF;
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+}
+
+.pagina-creacion-horarios .entrada-busqueda:focus-within {
+    border-color: #8A63B5;
+    box-shadow: 0 0 0 3px rgba(112, 71, 163, 0.11);
+}
+
+.pagina-creacion-horarios .entrada-busqueda i {
+    flex-shrink: 0;
+    color: #8967AD;
+    font-size: 15px;
+}
+
+.pagina-creacion-horarios .entrada-busqueda input {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+    padding: 8px 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    box-shadow: none;
+    color: #30263B;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.pagina-creacion-horarios .entrada-busqueda input::placeholder {
+    color: #A49AAE;
+}
+
+
+/* =========================================================
+   CONTENEDOR Y TABLA DE HORARIOS
+========================================================= */
+
+.pagina-creacion-horarios .tabla-contenedor {
+    width: 100%;
+    margin-top: 20px;
+    overflow-x: auto;
+    border: 1px solid #EAE3F1;
+    border-radius: 11px;
+}
+
+.pagina-creacion-horarios .tabla-horarios {
+    width: 100%;
+    min-width: 1050px;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #FFFFFF;
+    text-align: left;
+}
+
+.pagina-creacion-horarios .tabla-horarios thead th {
+    padding: 16px 17px;
+    border-bottom: 1px solid #EAE3F1;
+    background: #F8F5FC;
+    color: #6B5A7B;
+    font-size: 12px;
+    font-weight: 750;
+    letter-spacing: 0.35px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.pagina-creacion-horarios .tabla-horarios tbody td {
+    padding: 16px 17px;
+    border-bottom: 1px solid #F0ECF4;
+    color: #494052;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.pagina-creacion-horarios .tabla-horarios tbody tr {
+    transition: background-color 0.18s;
+}
+
+.pagina-creacion-horarios .tabla-horarios tbody tr:hover {
+    background: #FCFAFE;
+}
+
+.pagina-creacion-horarios .tabla-horarios tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =========================================================
+   INFORMACIÓN DE GRUPOS Y HORARIOS EN TABLA
+========================================================= */
+
+.pagina-creacion-horarios .informacion-horario-tabla {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 140px;
+}
+
+.pagina-creacion-horarios .informacion-horario-tabla strong {
+    color: #352941;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   ESTADOS DE GRUPOS Y HORARIOS
+========================================================= */
+
+.pagina-creacion-horarios .estado-horario {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 11px;
+    border: 1px solid transparent;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.pagina-creacion-horarios .estado-horario::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.pagina-creacion-horarios .estado-activo {
+    border-color: #D5EFDF;
+    background: #ECF8F0;
+    color: #218452;
+}
+
+.pagina-creacion-horarios .estado-inactivo {
+    border-color: #F5D9D9;
+    background: #FFF0F0;
+    color: #B94048;
+}
+
+
+/* =========================================================
+   ACCIONES DE TABLA
+========================================================= */
+
+.pagina-creacion-horarios .acciones-tabla {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.pagina-creacion-horarios .boton-consultar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 35px;
+    padding: 8px 11px;
+    border: 1px solid #E1D5ED;
+    border-radius: 8px;
+    background: #FFFFFF;
+    color: #654984;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+        background 0.2s,
+        border-color 0.2s;
+}
+
+.pagina-creacion-horarios .boton-consultar:hover {
+    border-color: #C8B3DF;
+    background: #F4EFF9;
+    color: #654984;
+}
+
+
+/* =========================================================
+   TABLA VACÍA
+========================================================= */
+
+.pagina-creacion-horarios .tabla-vacia {
+    padding: 38px 18px !important;
+    color: #766A82 !important;
+    font-size: 14px !important;
+    text-align: center;
+}
+
+.pagina-creacion-horarios .tabla-vacia i {
+    display: block;
+    margin-bottom: 10px;
+    color: #A48BBC;
+    font-size: 27px;
+}
+
+.pagina-creacion-horarios .tabla-vacia strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #51405F;
+    font-size: 14px;
+}
+
+.pagina-creacion-horarios .tabla-vacia span {
+    display: block;
+    color: #8A8094;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   PAGINACIÓN
+========================================================= */
+
+.pagina-creacion-horarios .paginacion-horarios {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 20px;
+    color: #756982;
+    font-size: 13px;
+}
+
+.pagina-creacion-horarios .controles-paginacion {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pagina-creacion-horarios .boton-pagina {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 37px;
+    height: 37px;
+    border: 1px solid #E1D5ED;
+    border-radius: 9px;
+    background: #FFFFFF;
+    color: #634581;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+        background 0.2s,
+        border-color 0.2s;
+}
+
+.pagina-creacion-horarios .boton-pagina:hover:not(:disabled) {
+    border-color: #C8B3DF;
+    background: #F3ECFA;
+}
+
+                                                                        /*HORAIO*/
+/* =========================================================
+   SELECCIÓN DEL HORARIO
+========================================================= */
+
+.pagina-creacion-horarios .formulario-seleccion {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 18px;
+}
+
+/* FRANJA INSTITUCIONAL: borde a borde */
+.pagina-creacion-horarios .panel-registro-horario {
+    padding: 0 !important;
+    overflow: hidden;
+}
+
+.pagina-creacion-horarios .panel-registro-horario > .franja-institucional {
+    display: block !important;
+    width: 100% !important;
+    height: 6px !important;
+    background: linear-gradient(
+        90deg,
+        #4C1D95 0%,
+        #7E22CE 42%,
+        #A78BFA 72%,
+        #E9D5FF 100%
+    ) !important;
+}
+
+.pagina-creacion-horarios .panel-registro-horario .contenido-formulario {
+    padding: 27px;
+}
+
+/* =========================================================
+   INFORMACIÓN DEL HORARIO SELECCIONADO
+========================================================= */
+
+.pagina-creacion-horarios .resumen-horario {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+    margin-bottom: 22px;
+    padding: 18px;
+    border: 1px solid #E6D9F2;
+    border-radius: 11px;
+    background: #FAF7FD;
+}
+
+.pagina-creacion-horarios .dato-resumen {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.pagina-creacion-horarios .dato-resumen span {
+    color: #796D85;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.pagina-creacion-horarios .dato-resumen strong {
+    color: #49345F;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   DISTRIBUCIÓN DEL HORARIO
+ */
+
+.pagina-creacion-horarios .distribucion-contenedor {
+    display: grid;
+    grid-template-columns: minmax(250px, 0.32fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 22px;
+}
+
+.pagina-creacion-horarios .panel-asignaturas,
+.pagina-creacion-horarios .panel-calendario {
+    min-width: 0;
+    padding: 20px;
+    border: 1px solid #EAE3F1;
+    border-radius: 12px;
+    background: #FFFFFF;
+}
+
+.pagina-creacion-horarios .panel-asignaturas h3,
+.pagina-creacion-horarios .panel-calendario h3 {
+    margin: 0;
+    color: #49345F;
+    font-size: 17px;
+    font-weight: 750;
+}
+
+.pagina-creacion-horarios .descripcion-panel {
+    margin: 7px 0 17px;
+    color: #797181;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   TARJETAS DE ASIGNATURAS */
+
+.pagina-creacion-horarios .lista-asignaturas {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 650px;
+    padding: 2px;
+    overflow-y: auto;
+}
+
+.pagina-creacion-horarios .tarjeta-asignatura {
+    padding: 14px;
+    border: 1px solid #E5D9EF;
+    border-left: 4px solid #8A63B5;
+    border-radius: 9px;
+    background: #FAF7FD;
+    cursor: grab;
+    transition:
+        border-color 0.2s,
+        background 0.2s,
+        box-shadow 0.2s,
+        transform 0.2s;
+}
+
+.pagina-creacion-horarios .tarjeta-asignatura:hover {
+    border-color: #C8B3DF;
+    background: #F5EFFB;
+    box-shadow: 0 3px 10px rgba(90, 62, 125, 0.08);
+    transform: translateY(-1px);
+}
+
+.pagina-creacion-horarios .tarjeta-asignatura:active {
+    cursor: grabbing;
+}
+
+.pagina-creacion-horarios .tarjeta-asignatura strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #49345F;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.pagina-creacion-horarios .tarjeta-asignatura .clave-asignatura {
+    display: block;
+    margin-bottom: 8px;
+    color: #806B96;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.pagina-creacion-horarios .informacion-asignatura {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    color: #796D85;
+    font-size: 12px;
+}
+
+.pagina-creacion-horarios .configuracion-asignatura {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin-top: 12px;
+    padding-top: 11px;
+    border-top: 1px solid #EAE1F1;
+}
+
+.pagina-creacion-horarios .configuracion-asignatura label {
+    color: #5B4B69;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.pagina-creacion-horarios .configuracion-asignatura select,
+.pagina-creacion-horarios .configuracion-asignatura input {
+    width: 100%;
+    min-width: 0;
+    min-height: 37px;
+    padding: 8px 10px;
+    border: 1px solid #DED5E8;
+    border-radius: 7px;
+    outline: none;
+    background: #FFFFFF;
+    color: #30263B;
+    font-family: inherit;
+    font-size: 12px;
+}
+
+.pagina-creacion-horarios .configuracion-asignatura select:focus,
+.pagina-creacion-horarios .configuracion-asignatura input:focus {
+    border-color: #8A63B5;
+    box-shadow: 0 0 0 3px rgba(112, 71, 163, 0.10);
+}
+
+
+/* =========================================================
+   INDICACIONES DE ARRASTRAR Y SOLTAR
+========================================================= */
+
+.pagina-creacion-horarios .indicacion-arrastrar {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 17px;
+    padding: 13px 15px;
+    border: 1px solid #E5D9EF;
+    border-radius: 9px;
+    background: #F8F4FC;
+    color: #675477;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.pagina-creacion-horarios .indicacion-arrastrar i {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: #8057A8;
+    font-size: 16px;
+}
+
+
+/* =========================================================
+   ÁREA DEL CALENDARIO
+========================================================= */
+
+.pagina-creacion-horarios .contenedor-calendario {
+    width: 100%;
+    min-width: 0;
+    min-height: 500px;
+    overflow: hidden;
+    border: 1px dashed #CDBBDD;
+    border-radius: 10px;
+    background: #FCFAFE;
+}
+
+.pagina-creacion-horarios .calendario-vacio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 500px;
+    padding: 25px;
+    color: #8A8094;
+    text-align: center;
+}
+
+.pagina-creacion-horarios .calendario-vacio i {
+    margin-bottom: 14px;
+    color: #A48BBC;
+    font-size: 35px;
+}
+
+.pagina-creacion-horarios .calendario-vacio strong {
+    margin-bottom: 7px;
+    color: #51405F;
+    font-size: 15px;
+}
+
+.pagina-creacion-horarios .calendario-vacio span {
+    max-width: 360px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+
+/* ACCIONES DE DISTRIBUCIÓN */
+
+.pagina-creacion-horarios .acciones-distribucion {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 11px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #F0EAF5;
+}
+
+
+/* CONSULTA DE DETALLES */
+
+.pagina-creacion-horarios .tabla-detalles {
+    width: 100%;
+    min-width: 750px;
+    border-collapse: separate;
+    border-spacing: 0;
+    text-align: left;
+}
+
+.pagina-creacion-horarios .tabla-detalles thead th {
+    padding: 14px 15px;
+    border-bottom: 1px solid #EAE3F1;
+    background: #F8F5FC;
+    color: #6B5A7B;
+    font-size: 12px;
+    font-weight: 750;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.pagina-creacion-horarios .tabla-detalles tbody td {
+    padding: 14px 15px;
+    border-bottom: 1px solid #F0ECF4;
+    color: #494052;
+    font-size: 13px;
+}
+
+.pagina-creacion-horarios .tabla-detalles tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/*  MENSAJE SIN HORARIO SELECCIONADO */
+
+.pagina-creacion-horarios .estado-sin-seleccion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 190px;
+    padding: 30px;
+    border: 1px dashed #D9CBE6;
+    border-radius: 11px;
+    background: #FCFAFE;
+    text-align: center;
+}
+
+.pagina-creacion-horarios .estado-sin-seleccion i {
+    margin-bottom: 13px;
+    color: #A48BBC;
+    font-size: 32px;
+}
+
+.pagina-creacion-horarios .estado-sin-seleccion h3 {
+    margin: 0;
+    color: #49345F;
+    font-size: 17px;
+}
+
+.pagina-creacion-horarios .estado-sin-seleccion p {
+    max-width: 430px;
+    margin: 8px 0 0;
+    color: #797181;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+
+/* SELECCIÓN DEL HORARIO REGISTRADO */
+
+.pagina-creacion-horarios .campo-completo {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+}
+
+
+.pagina-creacion-horarios .datos-generales-registro {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+
+
+/* ========================================
+   TARJETAS DE ASIGNATURAS DISPONIBLES
+======================================== */
+
+.tarjeta-asignatura-disponible {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    margin-bottom: 14px;
+    background-color: #ffffff;
+    border: 1px solid #ded5e8;
+    border-left: 4px solid #5A3E7D;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    cursor: grab;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.tarjeta-asignatura-disponible:hover {
+    box-shadow: 0 4px 12px rgba(81, 52, 111, 0.15);
+    transform: translateY(-2px);
+}
+
+.tarjeta-asignatura-disponible:active {
+    cursor: grabbing;
+}
+
+.nombre-asignatura-tarjeta {
+    margin: 0;
+    color: #51346F;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.informacion-asignatura {
+    color: #555;
+    font-size: 14px;
+}
+
+.informacion-asignatura strong {
+    color: #333;
+}
+
+.campo-tarjeta-asignatura {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.campo-tarjeta-asignatura label {
+    color: #51346F;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.campo-tarjeta-asignatura select {
+    width: 100%;
+    min-height: 40px;
+    padding: 8px 10px;
+    color: #444;
+    background-color: #ffffff;
+    border: 1px solid #d8cde2;
+    border-radius: 7px;
+    outline: none;
+    font-size: 13px;
+}
+
+.campo-tarjeta-asignatura select:focus {
+    border-color: #5A3E7D;
+    box-shadow: 0 0 0 3px rgba(90, 62, 125, 0.12);
+}
+
+
+/*  RESPONSIVE: TABLET */
+
+@media (max-width: 1000px) {
+
+    .pagina-creacion-horarios .filtros-horarios {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .pagina-creacion-horarios .encabezado-tabla {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "titulo botones"
+            "busqueda busqueda";
+    }
+
+    .pagina-creacion-horarios .distribucion-contenedor {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .pagina-creacion-horarios .lista-asignaturas {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        max-height: none;
+    }
+}
+
+
+/*   RESPONSIVE: CELULARES */
+
+@media (max-width: 700px) {
+
+    .pagina-creacion-horarios .panel-horarios {
+        padding: 18px;
+        border-radius: 11px;
+    }
+
+    .pagina-creacion-horarios .encabezado-panel {
+        align-items: flex-start;
+    }
+
+    .pagina-creacion-horarios .filtros-horarios {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .pagina-creacion-horarios .encabezado-tabla {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "titulo"
+            "botones"
+            "busqueda";
+    }
+
+    .pagina-creacion-horarios .botones-encabezado {
+        justify-content: flex-start;
+    }
+
+    .pagina-creacion-horarios .botones-encabezado button {
+        width: 100%;
+    }
+
+    .pagina-creacion-horarios .formulario-seleccion {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .pagina-creacion-horarios .formulario-seleccion button {
+        width: 100%;
+    }
+
+    .pagina-creacion-horarios .resumen-horario {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .pagina-creacion-horarios .lista-asignaturas {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .pagina-creacion-horarios .acciones-distribucion {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .pagina-creacion-horarios .acciones-distribucion button {
+        width: 100%;
+    }
+
+    .pagina-creacion-horarios .paginacion-horarios {
+        align-items: flex-start;
+    }
+}
+
+                                                                                                /*CHECAR*/
+
+/* DISTRIBUCIÓN DEL HORARIO */
+.pagina-creacion-horarios .area-distribucion-horario {
+    display: grid;
+    grid-template-columns: minmax(250px, 0.32fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 22px;
+}
+
+/* PANELES DE ASIGNATURAS Y CALENDARIO */
+.pagina-creacion-horarios .panel-asignaturas-disponibles,
+.pagina-creacion-horarios .panel-calendario-horario {
+    min-width: 0;
+    padding: 20px;
+    border: 1px solid #EAE3F1;
+    border-radius: 12px;
+    background: #FFFFFF;
+}
+
+/* TÍTULOS DE LOS PANELES */
+.pagina-creacion-horarios .panel-asignaturas-disponibles h3,
+.pagina-creacion-horarios .panel-calendario-horario h3 {
+    margin: 0;
+    color: #49345F;
+    font-size: 17px;
+    font-weight: 750;
+}
+
+/* LISTA DE ASIGNATURAS */
+.pagina-creacion-horarios .lista-asignaturas {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 650px;
+    padding: 2px;
+    overflow-y: auto;
+}
+
+/* CONTENEDOR DEL CALENDARIO */
+.pagina-creacion-horarios .contenedor-calendario {
+    width: 100%;
+    min-width: 0;
+    min-height: 500px;
+    overflow: hidden;
+    border: 1px dashed #CDBBDD;
+    border-radius: 10px;
+    background: #FCFAFE;
+}
+
+/* CALENDARIO FULLCALENDAR */
+.pagina-creacion-horarios #calendario-horarios {
+    width: 100%;
+    min-height: 500px;
+}
+
+/* DATOS GENERALES DEL REGISTRO */
+.pagina-creacion-horarios .datos-generales-registro {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+/* ACCIONES DEL REGISTRO */
+.pagina-creacion-horarios .acciones-registro-horario {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 11px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #F0EAF5;
+}
+
+/* RESPONSIVE: TABLET */
+@media (max-width: 1000px) {
+
+    .pagina-creacion-horarios .area-distribucion-horario {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .pagina-creacion-horarios .lista-asignaturas {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        max-height: none;
+    }
+}
+
+/* RESPONSIVE: CELULARES */
+@media (max-width: 700px) {
+
+    .pagina-creacion-horarios .datos-generales-registro {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .pagina-creacion-horarios .lista-asignaturas {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .pagina-creacion-horarios .acciones-registro-horario {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .pagina-creacion-horarios .acciones-registro-horario button {
+        width: 100%;
+    }
+}
+

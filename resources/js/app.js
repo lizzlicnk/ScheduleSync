@@ -1,3 +1,4 @@
 import './bootstrap';
 
-// MÓDULO DE GESTIÓN DE HORARIOS import './Horario/gestion-horario.js';
+// Importar la configuración del calendario de horarios.
+import './Horario/fullcalendar-horarios';

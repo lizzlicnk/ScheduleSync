@@ -14,8 +14,9 @@ use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\AsignaturaController;
 use App\Http\Controllers\CargaAcademicaController;
 use App\Http\Controllers\DisponibilidadProfesorController;
-use App\Http\Controllers\DatosGeneralesController;
 use App\Http\Controllers\HorarioController;
+use App\Http\Controllers\DatosGeneralesController;
+use App\Http\Controllers\CreacionHorarioController;
 
                     /* Rutas de inicio de sesión */
 
@@ -523,6 +524,47 @@ Route::middleware(['auth', \App\Http\Middleware\PrevenirCachePrivada::class, For
         ->name('datos-generales.activar');
 
                             /* Rutas para la gestión de horarios académicos */
+
+
+    // Mostrar la creación de los horarios registrados.
+    Route::get('/horarios/creacion-horario', [
+        CreacionHorarioController::class,
+        'index'
+    ])->name('creacion-horario.index');
+
+    // Mostrar la pantalla para crear el horario de un grupo.
+    /*
+    Route::get('/horarios/creacion-horario/crear/{idGrupo}', [
+        CreacionHorarioController::class,
+        'create'
+    ])->name('creacion-horario.create');
+
+    // Registrar el horario y sus asignaciones.
+    Route::post('/horarios/creacion-horario', [
+        CreacionHorarioController::class,
+        'store'
+    ])->name('creacion-horario.store'); */
+
+    Route::post('/horarios', [
+        CreacionHorarioController::class,
+        'store'
+    ])->name('horarios.store');
+
+    Route::put('/horarios/{idHorario}', [
+        CreacionHorarioController::class,
+        'update'
+    ])->name('horarios.update');
+
+    Route::delete('/horarios/{idHorario}', [
+        CreacionHorarioController::class,
+        'destroy'
+    ])->name('horarios.destroy');
+
+    // Consultar las asignaturas correspondientes al horario seleccionado.
+    Route::get(
+        '/horarios/{idHorario}/asignaturas',
+        [CreacionHorarioController::class, 'obtenerAsignaturas']
+    )->name('horarios.asignaturas');
 
 });
 

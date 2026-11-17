@@ -64,4 +64,18 @@ class Asignatura extends Model
             'id_asignatura'
         );
     }
+
+    /**
+     * Descripción: Obtiene las asignaciones de horario correspondientes a la asignatura.
+     * Entradas: No recibe parámetros.
+     * Salidas: Retorna los registros relacionados con la asignatura en la tabla detalle_horario.
+     */
+    public function detallesHorario(): HasMany
+    {
+        return $this->hasMany(
+            DetalleHorario::class,
+            'id_asignatura',
+            'id_asignatura'
+        );
+    }
 }

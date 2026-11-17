@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Horario;
 
 class Grupo extends Model
 {
@@ -65,6 +67,20 @@ class Grupo extends Model
             Carrera::class,
             'id_carrera',
             'id_carrera'
+        );
+    }
+
+    /**
+     * Descripción: Obtiene los horarios académicos asociados al grupo.
+     * Entradas: No recibe parámetros.
+     * Salidas: Retorna los horarios registrados para el grupo.
+     */
+    public function horarios(): HasMany
+    {
+        return $this->hasMany(
+            Horario::class,
+            'id_grupo',
+            'id_grupo'
         );
     }
 }

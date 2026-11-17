@@ -195,7 +195,7 @@
     <!-- FORMULARIO PARA REGISTRAR CARRERAS -->
     @if ((int) auth()->user()->rol === 1)
     <section class="panel-carreras panel-formulario-carrera" id="formulario-carrera">
-            <div class="franja-institucional"></div>
+        <div class="franja-institucional"></div>
 
         <div class="contenido-formulario">
             <div class="encabezado-panel encabezado-formulario">

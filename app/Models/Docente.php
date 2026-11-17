@@ -63,4 +63,18 @@ class Docente extends Model
             'id_docente'
         );
     }
+
+    /**
+     * Descripción: Obtiene las asignaciones de horario correspondientes al docente.
+     * Entradas: No recibe parámetros.
+     * Salidas: Retorna los registros relacionados con el docente en la tabla detalle_horario.
+     */
+    public function detallesHorario(): HasMany
+    {
+        return $this->hasMany(
+            DetalleHorario::class,
+            'id_docente',
+            'id_docente'
+        );
+    }
 }

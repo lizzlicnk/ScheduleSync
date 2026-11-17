@@ -46,8 +46,8 @@
 
         </a>
 
-        <!-- OPCIÓN DE CREAR HORARIO  route('horarios.create') }} -->
-        <a href="" class="tarjeta-opcion-horarios">
+        <!-- OPCIÓN DE CREAR HORARIO -->
+        <a href="{{ route('creacion-horario.index') }}" class="tarjeta-opcion-horarios">
 
             <div class="icono-opcion-horarios">
                 <i class="fa-solid fa-calendar-plus"></i>
