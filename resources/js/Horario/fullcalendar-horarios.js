@@ -208,6 +208,138 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // =========================================
+    // VALIDAR DISPONIBILIDAD DEL DOCENTE
+    // =========================================
+
+    /**
+     * Descripción:
+     * Comprueba que el docente tenga disponibilidad confirmada
+     * durante todo el horario del evento.
+     *
+     * Entradas:
+     * Recibe el evento que se desea validar.
+     *
+     * Salidas:
+     * Devuelve true si el docente está disponible y false si no.
+     */
+    /**
+     * Descripción:
+     * Comprueba si el docente tiene algún bloque de indisponibilidad
+     * confirmado que coincida con el horario del evento.
+     *
+     * Entradas:
+     * - evento: Evento de FullCalendar que se desea validar.
+     *
+     * Salidas:
+     * - true: No existe un bloque de indisponibilidad coincidente.
+     * - false: Existe un bloque coincidente o faltan datos para validar.
+     */
+    function docenteDisponible(evento) {
+
+        // Obtener los datos adicionales del evento.
+        const datos = evento.extendedProps;
+
+        // Comprobar que el evento tenga docente y fechas.
+        if (
+            !datos ||
+            !datos.id_docente ||
+            !evento.start ||
+            !evento.end
+        ) {
+            console.error('No se encontraron los datos del docente o del evento.');
+            return false;
+        }
+
+        // Comprobar que las indisponibilidades se hayan cargado desde Blade.
+        if (!Array.isArray(window.disponibilidadesDocentes)) {
+
+            console.error(
+                'No se cargaron las indisponibilidades de los docentes.'
+            );
+
+            return false;
+        }
+
+        // Obtener los bloques de indisponibilidad del periodo seleccionado.
+        const indisponibilidades = window.disponibilidadesDocentes;
+
+        // Obtener el día de la semana.
+        // 1 = lunes, 2 = martes ... 6 = sábado.
+        const dia = evento.start.getDay() === 0
+            ? 7
+            : evento.start.getDay();
+
+        // Convertir el inicio y fin del evento a minutos.
+        const horaInicio =
+            evento.start.getHours() * 60 +
+            evento.start.getMinutes();
+
+        const horaFin =
+            evento.end.getHours() * 60 +
+            evento.end.getMinutes();
+
+        // Buscar si existe un bloque de indisponibilidad coincidente.
+        const tieneIndisponibilidad = indisponibilidades.some(function (bloque) {
+
+            // Comprobar que pertenezca al mismo docente,
+            // al mismo día y que esté confirmado.
+            if (
+                String(bloque.id_docente) !== String(datos.id_docente) ||
+                Number(bloque.dia) !== dia ||
+                Number(bloque.estadoConfirmacion) !== 1
+            ) {
+                return false;
+            }
+
+            // Convertir las horas del registro a minutos.
+            const inicioBloque = convertirHoraAMinutos(bloque.hora_inicio);
+            const finBloque = convertirHoraAMinutos(bloque.hora_fin);
+
+            // Comprobar si el evento se cruza con el bloque no disponible.
+            return (
+                horaInicio < finBloque &&
+                horaFin > inicioBloque
+            );
+        });
+
+        // Mostrar información para comprobar la validación.
+        console.log('Validación de disponibilidad:', {
+            idDocente: datos.id_docente,
+            dia: dia,
+            horaInicio: horaInicio,
+            horaFin: horaFin,
+            bloquesEncontrados: indisponibilidades.length,
+            tieneIndisponibilidad: tieneIndisponibilidad
+        });
+
+        // El docente está disponible si no existe ningún cruce.
+        return !tieneIndisponibilidad;
+    }
+
+
+    /**
+     * Descripción:
+     * Convierte una hora en formato HH:mm o HH:mm:ss a minutos.
+     *
+     * Entradas:
+     * - hora: Hora que se desea convertir.
+     *
+     * Salidas:
+     * - Cantidad de minutos transcurridos desde las 00:00.
+     */
+    function convertirHoraAMinutos(hora) {
+
+        // Separar las horas y los minutos.
+        const partes = String(hora).split(':');
+
+        return (
+            Number(partes[0]) * 60 +
+            Number(partes[1])
+        );
+    }
+
+
+    // =========================================
     // CREAR EL CALENDARIO
     // =========================================
 
@@ -460,6 +592,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
+            // Validar la disponibilidad académica del docente.
+            if (!docenteDisponible(info.event)) {
+
+                info.event.remove();
+
+                mostrarAdvertencia(
+                    'El docente no está disponible en ese horario. Verifica su disponibilidad académica.',
+                    'Docente no disponible'
+                );
+
+                return;
+            }
+            
+
             // Validar que no se exceda el horario permitido.
             if (excedeLimiteHorario(info.event)) {
 
@@ -545,6 +691,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
         eventDrop: async function (info) {
 
+            // Validar la disponibilidad académica del docente.
+            if (!docenteDisponible(info.event)) {
+
+                info.revert();
+
+                mostrarAdvertencia(
+                    'El docente no está disponible en ese horario. Verifica su disponibilidad académica.',
+                    'Docente no disponible'
+                );
+
+                return;
+            }
+
             // Comprobar los límites del horario.
             if (excedeLimiteHorario(info.event)) {
 
@@ -613,14 +772,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            // Validar los límites del horario.
-            if (excedeLimiteHorario(info.event)) {
+            // Validar la disponibilidad académica del docente.
+            if (!docenteDisponible(info.event)) {
 
                 info.revert();
 
                 mostrarAdvertencia(
-                    'No puedes modificar la asignatura fuera del horario permitido.',
-                    'Horario no permitido'
+                    'El docente no está disponible durante todo ese horario. Verifica su disponibilidad académica.',
+                    'Docente no disponible'
                 );
 
                 return;

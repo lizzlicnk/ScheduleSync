@@ -63,6 +63,7 @@ class CreacionHorarioController extends Controller
         $asignaturasDisponibles = collect();
         $docentesDisponibles = collect();
 
+
         // Comprobar si se seleccionó un horario.
         if ($solicitud->filled('consultar')) {
 
@@ -112,6 +113,23 @@ class CreacionHorarioController extends Controller
                 ->with('usuario')
                 ->orderBy('matricula')
                 ->get();
+
+
+            // Consultar las disponibilidades confirmadas de los docentes
+            // correspondientes al periodo del horario seleccionado.
+            $disponibilidadesDocentes = DisponibilidadProfesor::where(
+                'id_periodo',
+                $horarioConsultado->id_periodo
+            )
+                ->where('estadoConfirmacion', 1)
+                ->get([
+                    'id_docente',
+                    'dia',
+                    'hora_inicio',
+                    'hora_fin',
+                    'estadoConfirmacion'
+                ]);
+                
         }
 
         // Retornar la vista con la información necesaria.
@@ -380,6 +398,7 @@ class CreacionHorarioController extends Controller
      * Salidas:
      * No devuelve datos; genera un error si no existe disponibilidad.
      */
+    /*
     private function validarDisponibilidadDocente(
         array $detalle,
         int $idPeriodo,
@@ -405,7 +424,53 @@ class CreacionHorarioController extends Controller
                 "detalles.$indice.id_docente" => 'El docente no tiene disponibilidad confirmada durante todo el bloque seleccionado.'
             ]);
         }
+    }*/
+
+    /**
+     * Descripción:
+     * Comprueba que el docente no tenga registrado un bloque
+     * de indisponibilidad que coincida con el horario asignado.
+     *
+     * Entradas:
+     * $detalle: Bloque que se desea asignar.
+     * $idPeriodo: Periodo escolar seleccionado.
+     * $indice: Posición del bloque en la solicitud.
+     *
+     * Salidas:
+     * No devuelve datos; genera un error si el docente
+     * no puede impartir clases durante ese horario.
+     */
+    private function validarDisponibilidadDocente(
+        array $detalle,
+        int $idPeriodo,
+        int $indice
+    ): void {
+
+        // Obtener el número correspondiente al día.
+        $numeroDia = $this->obtenerNumeroDia($detalle['dia']);
+
+        // Buscar si existe algún bloque de indisponibilidad
+        // que se cruce con el horario que se desea asignar.
+        $tieneIndisponibilidad = DisponibilidadProfesor::where(
+            'id_docente',
+            $detalle['id_docente']
+        )
+            ->where('id_periodo', $idPeriodo)
+            ->where('dia', $numeroDia)
+            ->where('estadoConfirmacion', 1)
+            ->where('hora_inicio', '<', $detalle['hora_fin'])
+            ->where('hora_fin', '>', $detalle['hora_inicio'])
+            ->exists();
+
+        // Impedir la asignación si existe un cruce.
+        if ($tieneIndisponibilidad) {
+            throw ValidationException::withMessages([
+                "detalles.$indice.id_docente" =>
+                    'El docente no está disponible durante ese horario. Selecciona otro bloque o docente.'
+            ]);
+        }
     }
+
 
     /**
      * Descripción: Comprueba que los bloques no se empalmen entre sí
@@ -626,6 +691,22 @@ class CreacionHorarioController extends Controller
         // Obtener el grupo relacionado con el horario.
         $grupo = $horario->grupo;
 
+        
+        // Consultar las disponibilidades confirmadas de los docentes
+        // correspondientes al periodo del horario seleccionado.
+        $disponibilidadesDocentes = DisponibilidadProfesor::where(
+            'id_periodo',
+            $horario->id_periodo
+        )
+            ->where('estadoConfirmacion', 1)
+            ->get([
+                'id_docente',
+                'dia',
+                'hora_inicio',
+                'hora_fin',
+                'estadoConfirmacion'
+            ]);
+
         // Verificar que el grupo esté activo.
         if (!$grupo || (int) $grupo->estado !== 1) {
             return response()->json([
@@ -696,9 +777,11 @@ class CreacionHorarioController extends Controller
             ];
         });
 
-        // Retornar las asignaturas en formato JSON.
+        // Retornar las asignaturas y las disponibilidades confirmadas
+        // correspondientes al periodo del horario seleccionado.
         return response()->json([
-            'asignaturas' => $asignaturas
+            'asignaturas' => $asignaturas,
+            'disponibilidadesDocentes' => $disponibilidadesDocentes
         ]);
     }
 

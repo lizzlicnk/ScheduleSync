@@ -455,6 +455,12 @@
 
 </main>
 
+<script>
+    // Enviar al JavaScript los bloques de indisponibilidad
+    // confirmados correspondientes al periodo seleccionado.
+    window.disponibilidadesDocentes = @json($disponibilidadesDocentes ?? []);
+</script>
+
 
 <!-- JAVASCRIPT DE LA GESTIÓN DE HORARIOS -->
 <script src="{{ asset('js/Horarios/CreaciónHorario/gestion-CreaciónHorario.js') }}"></script>

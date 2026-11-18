@@ -263,6 +263,9 @@ document.addEventListener('DOMContentLoaded', function () {
             // Limpiar los detalles anteriores.
             detallesHorario.innerHTML = '';
 
+            // Limpiar las disponibilidades del horario anterior.
+            window.disponibilidadesDocentes = [];
+
             // Deshabilitar el botón de guardar.
             botonGuardarHorario.disabled = true;
 
@@ -314,6 +317,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     );
                 }
 
+                // Actualizar las disponibilidades confirmadas del periodo
+                // correspondiente al horario seleccionado.
+                window.disponibilidadesDocentes =
+                    datos.disponibilidadesDocentes || [];
+
                 // Comprobar si existen asignaturas disponibles.
                 if (!datos.asignaturas || datos.asignaturas.length === 0) {
 
@@ -363,6 +371,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     'Error al consultar asignaturas:',
                     error
                 );
+
+                // Limpiar las disponibilidades si ocurre un error.
+window.disponibilidadesDocentes = [];
+
             }
         });
     }
