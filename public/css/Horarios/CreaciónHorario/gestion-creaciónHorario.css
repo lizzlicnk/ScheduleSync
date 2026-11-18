@@ -1066,55 +1066,6 @@
     box-shadow: 0 0 0 3px rgba(90, 62, 125, 0.12);
 }
 
-/* =========================================
-   PERSONALIZACIÓN DEL CALENDARIO
-   ========================================= */
-
-/* Color principal del calendario */
-#calendario-horarios {
-    --fc-monarch-primary: #5A3E7D;
-    --fc-monarch-primary-hover: #654282;
-    --fc-monarch-background: #FFFFFF;
-}
-
-/* Encabezados de los días */
-#calendario-horarios .fc-col-header-cell {
-    background-color: #F5F0FA;
-    color: #51346F;
-    font-weight: 600;
-}
-
-/* Nombres de los días */
-#calendario-horarios .fc-col-header-cell-cushion {
-    color: #51346F;
-    text-decoration: none;
-    text-transform: capitalize;
-}
-
-/* Columna de las horas */
-#calendario-horarios .fc-timegrid-slot-label {
-    color: #654282;
-}
-
-/* Líneas divisorias */
-#calendario-horarios .fc-timegrid-slot {
-    border-color: #EAE3F1;
-}
-
-/* Fondo del calendario */
-#calendario-horarios .fc-timegrid {
-    background-color: #FFFFFF;
-}
-
-.nombre-asignatura-tarjeta {
-    cursor: grab;
-}
-
-.nombre-asignatura-tarjeta:active {
-    cursor: grabbing;
-}
-
-
 /*  RESPONSIVE: TABLET */
 
 @media (max-width: 1000px) {
@@ -1316,3 +1267,178 @@
     }
 }
 
+
+
+/* =========================================
+   TARJETAS DE ASIGNATURAS DEL CALENDARIO
+========================================= */
+
+.contenido-evento-horario {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 3px 5px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    color: #FFFFFF;
+    font-size: 11px;
+    line-height: 1.3;
+}
+
+/* Nombre de la asignatura. */
+.nombre-evento-asignatura {
+    font-size: 12px;
+    font-weight: 700;
+    overflow-wrap: break-word;
+}
+
+/* Nombre del docente y espacio. */
+.detalle-evento-horario {
+    font-size: 10px;
+    font-weight: 400;
+    overflow-wrap: break-word;
+}
+
+/* Horario de la asignatura. */
+.horario-evento-horario {
+    margin-top: 2px;
+    padding-top: 3px;
+    border-top: 1px solid rgba(255, 255, 255, 0.35);
+    font-size: 10px;
+    font-weight: 600;
+}
+
+/* =========================================================
+   CALENDARIO FULLCALENDAR - SCHEDULESYNC (ESTILO DEFINITIVO)
+========================================================= */
+
+/* CONTENEDOR GENERAL */
+.pagina-creacion-horarios .contenedor-calendario {
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    padding: 8px;
+    overflow: hidden;
+    border: 1px solid #E5D9EF;
+    border-radius: 13px;
+    background: #FFFFFF;
+    box-shadow: 0 3px 12px rgba(81, 52, 111, 0.06);
+}
+
+.pagina-creacion-horarios #calendario-horarios {
+    width: 100%;
+    min-width: 0;
+    color: #49345F;
+    font-family: inherit;
+}
+
+/* TABLA Y BORDES */
+.pagina-creacion-horarios #calendario-horarios .fc-scrollgrid,
+.pagina-creacion-horarios #calendario-horarios .fc-scrollgrid table {
+    border-color: #E8DFF0 !important;
+}
+
+.pagina-creacion-horarios #calendario-horarios .fc-scrollgrid {
+    overflow: hidden;
+    border: 1px solid #E8DFF0 !important;
+    border-radius: 10px;
+}
+
+.pagina-creacion-horarios #calendario-horarios .fc-theme-standard td,
+.pagina-creacion-horarios #calendario-horarios .fc-theme-standard th {
+    border-color: #E9E2EF !important;
+}
+
+/* ENCABEZADOS DE LOS DÍAS (LUNES, MARTES, ETC.) */
+.pagina-creacion-horarios #calendario-horarios .fc-col-header,
+.pagina-creacion-horarios #calendario-horarios .fc-col-header-cell {
+    background-color: #EDE5F5 !important;
+    background: #EDE5F5 !important;
+}
+
+.pagina-creacion-horarios #calendario-horarios .fc-col-header-cell {
+    height: 48px;
+    border-color: #DDD0E9 !important;
+}
+
+.pagina-creacion-horarios #calendario-horarios .fc-col-header-cell-cushion {
+    display: block !important;
+    padding: 14px 8px !important;
+    color: #5A3E7D !important;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none !important;
+    text-transform: capitalize;
+}
+
+/* COLUMNA IZQUIERDA Y ETIQUETAS DE LAS HORAS */
+.pagina-creacion-horarios #calendario-horarios .fc-timegrid-axis {
+    background-color: #EDE5F5 !important;
+    background: #EDE5F5 !important;
+    border-color: #DDD0E9 !important;
+}
+
+/* Celda superior izquierda ("Hora") */
+.pagina-creacion-horarios #calendario-horarios .fc-timegrid-axis-cushion::before {
+    content: "Hora";
+    color: #5A3E7D;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.pagina-creacion-horarios #calendario-horarios .fc-timegrid-axis-cushion {
+    color: transparent;
+    font-size: 0;
+}
+
+/* Franjas de las horas (07:00, 08:00, etc.) */
+.pagina-creacion-horarios #calendario-horarios .fc-timegrid-slot-label {
+    background-color: #F3EDF8 !important;
+    background: #F3EDF8 !important;
+    border-color: #E5DCEC !important;
+}
+
+.pagina-creacion-horarios #calendario-horarios .fc-timegrid-slot-label-cushion {
+    display: block !important;
+    padding: 5px 8px !important;
+    color: #654282 !important;
+    font-size: 12px;
+    font-weight: 650;
+    text-decoration: none !important;
+    text-align: center;
+}
+
+/* CELDAS DEL CALENDARIO */
+.pagina-creacion-horarios #calendario-horarios .fc-timegrid-col {
+    background: #FFFFFF !important;
+}
+
+.pagina-creacion-horarios #calendario-horarios .fc-timegrid-slot {
+    height: 48px;
+    background: #FFFFFF !important;
+}
+
+.pagina-creacion-horarios #calendario-horarios .fc-timegrid-slot-minor {
+    border-top: 1px dashed #F0EAF5 !important;
+}
+
+.pagina-creacion-horarios #calendario-horarios .fc-timegrid-col:hover {
+    background: #FCFAFE !important;
+}
+
+.pagina-creacion-horarios .etiqueta-hora-horario {
+    display: inline-block;
+    white-space: nowrap;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* =========================================
+   ALTURA UNIFORME DE LAS HORAS
+========================================= */
+
+#calendario-horarios .fc-timegrid-slot {
+    height: 800px !important;
+    min-height: 800px !important;
+}
