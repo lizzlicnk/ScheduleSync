@@ -1,21 +1,13 @@
 
-// =========================================
-// IMPORTACIONES DE FULLCALENDAR
-// =========================================
+ // =========================================
+ // IMPORTACIONES DE FULLCALENDAR
+ // =========================================
 
-// Importar FullCalendar.
 import { Calendar } from 'fullcalendar';
-
-// Importar el tema Monarch.
 import themePlugin from 'fullcalendar/themes/monarch';
-
-// Importar la vista semanal.
 import timeGridPlugin from 'fullcalendar/timegrid';
-
-// Importar la funcionalidad de selección y arrastre.
 import interactionPlugin, { Draggable } from 'fullcalendar/interaction';
 
-// Importar los estilos de FullCalendar.
 import 'fullcalendar/skeleton.css';
 import 'fullcalendar/themes/monarch/theme.css';
 import 'fullcalendar/themes/monarch/palettes/purple.css';
@@ -47,6 +39,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Indica si el sábado está visible.
     let sabadoVisible = false;
+
+    // Guardar las tarjetas originales para poder recuperarlas.
+    const tarjetasOriginales = new Map();
+
+    // Contador para identificar cada bloque del calendario.
+    let contadorEventos = 0;
 
 
     // =========================================
@@ -90,10 +88,10 @@ document.addEventListener('DOMContentLoaded', function () {
         // Intervalos de una hora.
         slotDuration: '01:00:00',
 
-        // La selección se ajusta a intervalos de una hora.
+        // La selección y el redimensionamiento se ajustan a intervalos de una hora.
         snapDuration: '01:00:00',
 
-        // Horario visible provisional.
+        // Horario visible.
         slotMinTime: '07:00:00',
         slotMaxTime: '22:00:00',
 
@@ -116,14 +114,17 @@ document.addEventListener('DOMContentLoaded', function () {
         // Permitir recibir tarjetas externas.
         droppable: true,
 
-        // Permitir mover las asignaturas dentro del calendario.
+        // Permitir mover y modificar las asignaturas.
         editable: true,
 
         // Permitir cambiar el horario de inicio.
         eventStartEditable: true,
 
-        // Evitar modificar la duración de las asignaturas.
-        eventDurationEditable: false,
+        // Permitir modificar la duración de las asignaturas.
+        eventDurationEditable: true,
+
+        // Permitir cambiar la duración desde el borde inferior.
+        eventResizableFromStart: false,
 
 
         // =========================================
@@ -194,7 +195,6 @@ document.addEventListener('DOMContentLoaded', function () {
             // Validar que se haya seleccionado un docente.
             if (!datos.id_docente) {
 
-                // Eliminar el evento del calendario.
                 info.event.remove();
 
                 mostrarAdvertencia(
@@ -208,7 +208,6 @@ document.addEventListener('DOMContentLoaded', function () {
             // Validar que se haya seleccionado un espacio.
             if (!datos.aula) {
 
-                // Eliminar el evento del calendario.
                 info.event.remove();
 
                 mostrarAdvertencia(
@@ -224,11 +223,50 @@ document.addEventListener('DOMContentLoaded', function () {
             info.event.setProp('borderColor', '#5A3E7D');
             info.event.setProp('textColor', '#FFFFFF');
 
+            // Actualizar las horas disponibles de la tarjeta.
+            actualizarTarjetaDisponible(datos.id_asignatura);
+
             // Actualizar los campos del formulario.
             actualizarDetallesHorario();
 
             // Mostrar los datos recibidos.
             console.log('Asignatura colocada:', info.event);
+        },
+
+
+        // =========================================
+        // REGRESAR ASIGNATURAS A DISPONIBLES
+        // =========================================
+
+        eventDragStop: function (info) {
+
+            // Verificar que exista el contenedor de asignaturas.
+            if (!listaAsignaturas || !info.jsEvent) {
+                return;
+            }
+
+            // Obtener la posición donde terminó el arrastre.
+            const elementoDestino = document.elementFromPoint(
+                info.jsEvent.clientX,
+                info.jsEvent.clientY
+            );
+
+            // Comprobar si se soltó dentro del contenedor.
+            if (
+                !elementoDestino ||
+                !listaAsignaturas.contains(elementoDestino)
+            ) {
+                return;
+            }
+
+            // Eliminar el evento del calendario.
+            // eventRemove se encargará de recuperar las horas.
+            info.event.remove();
+
+            console.log(
+                'Asignatura regresada a disponibles:',
+                info.event.title
+            );
         },
 
 
@@ -251,10 +289,120 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         // =========================================
+        // DETECTAR CAMBIOS EN LA DURACIÓN
+        // =========================================
+
+        eventResize: function (info) {
+
+            // Obtener los datos adicionales de la asignatura.
+            const datos = info.event.extendedProps;
+
+            // Obtener las horas totales originales.
+            const horasTotales = Number(datos.totalHoras);
+
+            // Evitar errores si el evento no tiene fechas.
+            if (!info.event.start || !info.event.end) {
+                info.revert();
+                return;
+            }
+
+            // Validar que exista una cantidad total de horas válida.
+            if (!horasTotales || horasTotales <= 0) {
+
+                info.revert();
+
+                mostrarAdvertencia(
+                    'No se encontró una cantidad máxima de horas válida.'
+                );
+
+                return;
+            }
+
+            // Calcular la duración del bloque modificado.
+            const duracionHoras = (
+                info.event.end.getTime() - info.event.start.getTime()
+            ) / (1000 * 60 * 60);
+
+            // Validar que dure al menos una hora.
+            if (duracionHoras < 1) {
+
+                info.revert();
+
+                mostrarAdvertencia(
+                    'Una asignatura debe durar al menos una hora.'
+                );
+
+                return;
+            }
+
+            // Obtener los demás eventos de la misma asignatura.
+            const otrosEventos = calendario.getEvents().filter(function (evento) {
+
+                return (
+                    evento.id !== info.event.id &&
+                    String(evento.extendedProps.id_asignatura) ===
+                    String(datos.id_asignatura)
+                );
+
+            });
+
+            // Calcular las horas ocupadas por los demás bloques.
+            const horasOcupadas = otrosEventos.reduce(function (total, evento) {
+
+                if (!evento.start || !evento.end) {
+                    return total;
+                }
+
+                const horas = (
+                    evento.end.getTime() - evento.start.getTime()
+                ) / (1000 * 60 * 60);
+
+                return total + horas;
+
+            }, 0);
+
+            // Calcular las horas máximas que puede utilizar este bloque.
+            const horasMaximas = horasTotales - horasOcupadas;
+
+            // Validar que no se excedan las horas totales.
+            if (duracionHoras > horasMaximas) {
+
+                info.revert();
+
+                mostrarAdvertencia(
+                    `Solo puedes utilizar ${horasMaximas} hora(s) adicionales para esta asignatura.`
+                );
+
+                return;
+            }
+
+            // Actualizar las horas disponibles de la tarjeta.
+            actualizarTarjetaDisponible(datos.id_asignatura);
+
+            // Actualizar los campos del formulario.
+            actualizarDetallesHorario();
+
+            // Mostrar los datos de la duración actualizada.
+            console.log('Duración actualizada:', {
+                asignatura: info.event.title,
+                horasDelBloque: duracionHoras,
+                horasOcupadas: horasOcupadas + duracionHoras,
+                horasTotales: horasTotales
+            });
+        },
+
+
+        // =========================================
         // DETECTAR ELIMINACIÓN DE ASIGNATURAS
         // =========================================
 
-        eventRemove: function () {
+        eventRemove: function (info) {
+
+            // Obtener el identificador de la asignatura.
+            const idAsignatura = info.event.extendedProps.id_asignatura;
+
+            // Actualizar las horas disponibles de la tarjeta.
+            actualizarTarjetaDisponible(idAsignatura);
 
             // Actualizar los campos del formulario.
             actualizarDetallesHorario();
@@ -271,6 +419,129 @@ document.addEventListener('DOMContentLoaded', function () {
         allDayMaintainDuration: true
 
     });
+
+
+    // =========================================
+    // CALCULAR HORAS OCUPADAS DE UNA ASIGNATURA
+    // =========================================
+
+    /**
+     * Descripción: Calcula las horas utilizadas por una asignatura en el calendario.
+     * Entradas: Recibe el identificador de la asignatura.
+     * Salidas: Devuelve la cantidad de horas ocupadas.
+     */
+    function obtenerHorasOcupadas(idAsignatura) {
+
+        // Obtener los eventos correspondientes a la asignatura.
+        const eventosAsignatura = calendario.getEvents().filter(function (evento) {
+
+            return (
+                String(evento.extendedProps.id_asignatura) ===
+                String(idAsignatura)
+            );
+
+        });
+
+        // Sumar la duración de todos sus bloques.
+        return eventosAsignatura.reduce(function (total, evento) {
+
+            // Evitar errores si el evento no tiene fechas.
+            if (!evento.start || !evento.end) {
+                return total;
+            }
+
+            // Calcular la duración del evento.
+            const horas = (
+                evento.end.getTime() - evento.start.getTime()
+            ) / (1000 * 60 * 60);
+
+            return total + horas;
+
+        }, 0);
+    }
+
+
+    // =========================================
+    // ACTUALIZAR TARJETA DE ASIGNATURA
+    // =========================================
+
+    /**
+     * Descripción: Actualiza las horas disponibles de una asignatura.
+     * Entradas: Recibe el identificador de la asignatura.
+     * Salidas: Actualiza la tarjeta o la elimina cuando ya no quedan horas.
+     */
+    function actualizarTarjetaDisponible(idAsignatura) {
+
+        // Obtener la tarjeta original.
+        const tarjeta = tarjetasOriginales.get(String(idAsignatura));
+
+        // Verificar que exista la tarjeta.
+        if (!tarjeta) {
+            return;
+        }
+
+        // Obtener las horas totales originales.
+        const horasTotales = Number(tarjeta.dataset.horasTotales);
+
+        // Obtener las horas que ya están ocupadas.
+        const horasOcupadas = obtenerHorasOcupadas(idAsignatura);
+
+        // Calcular las horas restantes.
+        const horasRestantes = Math.max(
+            0,
+            horasTotales - horasOcupadas
+        );
+
+        // Actualizar el valor de horas disponibles.
+        tarjeta.dataset.cantidadHoras = horasRestantes;
+
+        // Obtener el elemento que muestra las horas.
+        const etiquetaHoras = tarjeta.querySelector(
+            '.informacion-asignatura span'
+        );
+
+        // Actualizar el texto de las horas disponibles.
+        if (etiquetaHoras) {
+            etiquetaHoras.textContent = `${horasRestantes} horas`;
+        }
+
+        // Si todavía existen horas disponibles.
+        if (horasRestantes > 0) {
+
+            // Recuperar la tarjeta si no está en la lista.
+            if (
+                listaAsignaturas &&
+                !listaAsignaturas.contains(tarjeta)
+            ) {
+
+                // Quitar mensajes anteriores de la lista.
+                const mensajeLista = listaAsignaturas.querySelector(
+                    '.texto-secundario'
+                );
+
+                if (mensajeLista) {
+                    mensajeLista.remove();
+                }
+
+                // Agregar nuevamente la tarjeta.
+                listaAsignaturas.appendChild(tarjeta);
+            }
+
+        } else {
+
+            // Si ya se ocuparon todas las horas, quitar la tarjeta.
+            // La referencia se conserva en el Map para poder recuperarla.
+            tarjeta.remove();
+        }
+
+        // Mostrar información en consola.
+        console.log('Horas de asignatura actualizadas:', {
+            idAsignatura: idAsignatura,
+            horasTotales: horasTotales,
+            horasOcupadas: horasOcupadas,
+            horasRestantes: horasRestantes
+        });
+    }
 
 
     // =========================================
@@ -364,7 +635,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    // Dibujar el calendario.
+    // =========================================
+    // DIBUJAR EL CALENDARIO
+    // =========================================
+
     calendario.render();
 
 
@@ -417,19 +691,36 @@ document.addEventListener('DOMContentLoaded', function () {
                     '.nombre-asignatura-tarjeta'
                 )?.textContent.trim() || '';
 
-                // Obtener la cantidad total de horas.
+                // Obtener las horas disponibles.
                 const cantidadHoras = Number(
                     tarjeta.dataset.cantidadHoras
                 );
+
+                // Obtener las horas totales originales.
+                const horasTotales = Number(
+                    tarjeta.dataset.horasTotales
+                );
+
 
                 // =========================================
                 // VALIDAR LOS DATOS DE LA TARJETA
                 // =========================================
 
-                // Validar la cantidad de horas.
+                // Validar la cantidad de horas disponibles.
                 if (!cantidadHoras || cantidadHoras <= 0) {
+
                     mostrarAdvertencia(
-                        'La asignatura no tiene una cantidad de horas válida.'
+                        'La asignatura no tiene una cantidad de horas disponible válida.'
+                    );
+
+                    return { create: false };
+                }
+
+                // Validar las horas totales.
+                if (!horasTotales || horasTotales <= 0) {
+
+                    mostrarAdvertencia(
+                        'No se encontró la cantidad total de horas de la asignatura.'
                     );
 
                     return { create: false };
@@ -437,6 +728,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Validar el identificador de la asignatura.
                 if (!tarjeta.dataset.idAsignatura) {
+
                     mostrarAdvertencia(
                         'No se encontró el identificador de la asignatura.'
                     );
@@ -446,6 +738,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Validar el nombre de la asignatura.
                 if (!nombreAsignatura) {
+
                     mostrarAdvertencia(
                         'No se encontró el nombre de la asignatura.'
                     );
@@ -453,16 +746,32 @@ document.addEventListener('DOMContentLoaded', function () {
                     return { create: false };
                 }
 
+
+                // =========================================
+                // GUARDAR LA TARJETA ORIGINAL
+                // =========================================
+
+                // Conservar la referencia de la tarjeta.
+                // No se elimina del Map aunque desaparezca de la lista.
+                tarjetasOriginales.set(
+                    String(tarjeta.dataset.idAsignatura),
+                    tarjeta
+                );
+
+
                 // =========================================
                 // DEVOLVER LOS DATOS DEL EVENTO
                 // =========================================
 
                 return {
 
+                    // Identificador único para cada bloque.
+                    id: `bloque-${++contadorEventos}`,
+
                     // Nombre que aparecerá en el calendario.
                     title: nombreAsignatura,
 
-                    // Duración total de la asignatura.
+                    // Duración inicial según las horas disponibles.
                     duration: {
                         hours: cantidadHoras
                     },
@@ -471,12 +780,25 @@ document.addEventListener('DOMContentLoaded', function () {
                     extendedProps: {
                         id_asignatura: tarjeta.dataset.idAsignatura,
                         id_docente: idDocente,
+                        nombreDocente: selectorDocente.options[
+                            selectorDocente.selectedIndex
+                        ].textContent,
                         aula: espacio,
+
+                        // Conservar las horas totales originales.
+                        totalHoras: horasTotales,
+
+                        // Guardar las horas disponibles al momento del arrastre.
                         cantidadHoras: cantidadHoras
                     }
                 };
             }
         });
+
+
+        // =========================================
+        // EVITAR QUE LOS SELECTORES INICIEN EL ARRASTRE
+        // =========================================
 
         // Evitar que los selectores inicien el arrastre.
         listaAsignaturas.addEventListener('mousedown', function (evento) {
@@ -490,6 +812,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         }, true);
 
+
         listaAsignaturas.addEventListener('pointerdown', function (evento) {
 
             if (
@@ -500,6 +823,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
         }, true);
+
 
         listaAsignaturas.addEventListener('touchstart', function (evento) {
 

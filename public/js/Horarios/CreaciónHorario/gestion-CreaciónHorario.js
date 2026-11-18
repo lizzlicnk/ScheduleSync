@@ -386,7 +386,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Guardar los datos de la asignatura en la tarjeta.
         tarjeta.dataset.idAsignatura = asignatura.id_asignatura;
+
+        // Guardar las horas que quedan disponibles.
         tarjeta.dataset.cantidadHoras = asignatura.cantidadHoras;
+
+        // Conservar las horas totales originales.
+        tarjeta.dataset.horasTotales = asignatura.cantidadHoras;
 
         // ========================================
         // NOMBRE DE LA ASIGNATURA
@@ -408,7 +413,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const etiquetaHoras = document.createElement('strong');
 
-        etiquetaHoras.textContent = 'Total de horas: ';
+        etiquetaHoras.textContent = 'Horas disponibles: ';
 
         const cantidadHoras = document.createElement('span');
 
