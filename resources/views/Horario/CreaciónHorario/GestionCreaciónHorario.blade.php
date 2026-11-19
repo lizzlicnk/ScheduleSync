@@ -218,9 +218,16 @@
                             $carrera = $grupo->carrera;
                             $periodo = $grupo->periodo;
                             $horario = $grupo->horarios->first();
+
                             $horarioCreado = $horario !== null;
+
                             $horarioActivo = $horarioCreado
                                 && (int) $horario->estado === 1;
+
+                            // Comprobar si el horario ya tiene asignaturas registradas.
+                            $horarioTieneAsignaciones = $horarioCreado
+                            && $horario->detalles->isNotEmpty();
+
                         @endphp
 
                         <tr
@@ -285,30 +292,55 @@
                                 @endif
                             </td>
 
-                            <!-- ACCIONES -->
-                            <td>
-                                <div class="acciones-tabla">
-                                    @if ($horarioCreado && $horarioActivo)
-                                        <a href="{{ route('creacion-horario.index', ['agregar' => $horario->id_horario]) }}#contenedor-registro-horario"
-                                            class="boton-accion boton-secundario"
-                                            title="Agregar asignaturas al horario"
-                                            aria-label="Agregar asignaturas al horario del grupo {{ $grupo->nombreGrupo }}">
+                     <!-- ACCIONES -->
+                    <td>
+                        <div class="acciones-tabla">
 
-                                            <i class="fa-solid fa-plus" aria-hidden="true"></i>
-                                            Agregar
-                                        </a>
-                                    @elseif ($horarioCreado)
-                                        <span class="texto-secundario">
-                                            Horario inactivo
-                                        </span>
-                                    @else
-                                        <span class="texto-secundario">
-                                            Pendiente
-                                        </span>
-                                    @endif
-                                </div>
-                            </td>
-                        </tr>
+                            @if ($horarioCreado && $horarioActivo && !$horarioTieneAsignaciones)
+
+                                <!-- AGREGAR ASIGNATURAS -->
+                                <a href="{{ route('creacion-horario.index', ['agregar' => $horario->id_horario]) }}#contenedor-registro-horario"
+                                    class="boton-accion boton-secundario"
+                                    title="Agregar asignaturas al horario"
+                                    aria-label="Agregar asignaturas al horario del grupo {{ $grupo->nombreGrupo }}">
+                                    <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                                    Agregar
+                                </a>
+
+                            @elseif ($horarioCreado)
+
+                                <!-- CONSULTAR HORARIO -->
+                                <a href="{{ route('creacion-horario.index', ['consultar' => $horario->id_horario]) }}#panel-consulta"
+                                    class="boton-accion boton-secundario" title="Consultar horario" aria-label="Consultar el horario del grupo {{ $grupo->nombreGrupo }}">
+                                    <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                                    Consultar
+                                </a>
+
+                                <!-- ELIMINAR HORARIO -->
+                                <!-- ELIMINAR HORARIO -->
+                                <form action="{{ route('horarios.destroy', $horario->id_horario) }}"
+                                    method="POST"
+                                    class="formulario-desactivar-horario"
+                                    data-nombre="{{ $horario->nombreHorario }}"
+                                    data-tiene-detalles="{{ $horario->detalles->isNotEmpty() ? 'true' : 'false' }}">
+
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button type="submit"
+                                        class="boton-accion boton-eliminar"
+                                        title="Eliminar horario"
+                                        aria-label="Eliminar el horario del grupo {{ $grupo->nombreGrupo }}">
+                                        <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                                        Eliminar
+                                    </button>
+                                </form>
+
+                            @else
+                                <span class="texto-secundario">Pendiente</span>
+                            @endif
+                        </div>
+                    </td>       
                     @empty
                         <tr id="fila-sin-horarios">
                             <td colspan="8" class="tabla-vacia">
@@ -349,21 +381,15 @@
 
     <!-- REGISTRO DE HORARIO ACADÉMICO -->
     <section class="panel-horarios panel-registro-horario" id="contenedor-registro-horario" >
-        <!-- FRANJA INSTITUCIONAL -->
         <div class="franja-institucional"></div>
 
         <!-- CONTENIDO DEL PANEL -->
         <div class="contenido-formulario">
-
-            <!-- ENCABEZADO DEL REGISTRO -->
             <div class="encabezado-panel">
-
                 <div>
                     <h2>Registro de horario académico</h2>
-
                     <p class="texto-secundario">
-                        Selecciona un grupo y distribuye sus asignaturas
-                        dentro de la cuadrícula semanal.
+                        Selecciona un grupo y distribuye sus asignaturas dentro de la cuadrícula semanal.
                     </p>
                 </div>
 
@@ -371,41 +397,30 @@
 
             <!-- FORMULARIO DE REGISTRO -->
             <form id="formulario-registro-horario" action="{{ route('horarios.store') }}" method="POST">
-
                 @csrf
                 
                 <!-- DATOS GENERALES - SELECCIÓN DEL HORARIO REGISTRADO -->
                 <div class="datos-generales-registro">
-
                     <div class="campo campo-completo">
                         <label for="horario-registro">
                             Nombre del horario académico
                         </label>
 
                         <select name="id_horario" id="horario-registro" data-url="{{ route('horarios.asignaturas', ['idHorario' => 'HORARIO_ID']) }}" required>
-                            <option value="">
-                                Selecciona un horario registrado
-                            </option>
-
+                            <option value=""> Selecciona un horario registrado </option>
 
                             @foreach ($horariosDisponibles as $horario)
-                            <option
-                                value="{{ $horario->id_horario }}"
-                                @selected((string) $idHorarioAgregar === (string) $horario->id_horario)
-                            >
+                            <option value="{{ $horario->id_horario }}" @selected((string) $idHorarioAgregar === (string) $horario->id_horario) >
                                 {{ $horario->nombreHorario }}
                             </option>
                         @endforeach
 
                         </select>
-
                     </div>
-
                 </div>
 
                 <!-- ÁREA DE DISTRIBUCIÓN DE ASIGNATURAS -->
                 <div class="area-distribucion-horario">
-
                     <!-- ASIGNATURAS DISPONIBLES -->
                     <div class="panel-asignaturas-disponibles">
 
@@ -418,11 +433,7 @@
                         </div>
 
                         <div class="lista-asignaturas" id="lista-asignaturas-disponibles">
-
-                            <p class="texto-secundario">
-                                Selecciona un grupo para consultar sus asignaturas.
-                            </p>
-
+                            <p class="texto-secundario"> Selecciona un grupo para consultar sus asignaturas. </p>
                         </div>
 
                     </div>
@@ -433,11 +444,7 @@
                         <div class="encabezado-panel">
                             <div>
                                 <h3>Distribución semanal</h3>
-
-                                <p class="texto-secundario">
-                                    Organiza las asignaturas en bloques de horas consecutivas.
-                                </p>
-                                
+                                <p class="texto-secundario"> Organiza las asignaturas en bloques de horas consecutivas. </p>       
                             </div>
 
                             <!-- BOTÓN PARA MOSTRAR U OCULTAR EL SÁBADO -->
@@ -454,7 +461,6 @@
                         </div>
 
                     </div>
-
                 </div>
 
                 <!-- CONTENEDOR DE LOS DETALLES QUE SE ENVIARÁN AL CONTROLADOR -->
@@ -473,9 +479,256 @@
                     </button>
 
                 </div>
-
             </form>
         </div> 
+    </section>
+
+
+    <!--  PANEL PARA CONSULTAR HORARIOS -->
+    <section class="panel-horarios panel-consulta-horarios" id="panel-consulta">
+        <div class="encabezado-panel">
+            <div>
+                <h2>Consultar horario</h2>
+                <p class="texto-secundario">
+                    Selecciona un horario para consultar sus datos generales y asignaciones.
+                </p>
+            </div>
+        </div>
+
+        <div class="consulta-grid">
+
+            <!-- COLUMNA IZQUIERDA: BUSCADOR Y RESULTADOS -->
+            <div class="buscador-consulta">
+
+                <div class="campo">
+                    <label for="buscar-consulta">Nombre del horario</label>
+
+                    <div class="entrada-busqueda">
+                        <span aria-hidden="true">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </span>
+
+                        <input type="search" id="buscar-consulta" placeholder="Escribe el nombre de un horario..." autocomplete="off" >
+                    </div>
+                </div>
+
+                <div class="resultados-consulta">
+                    <h3>Resultados</h3>
+
+                    <div id="resultados-consulta">
+
+                        @forelse ($horariosRegistrados as $horario)
+
+                            <button type="button" class="resultado-consulta-item" data-resultado-horario="{{ $horario->id_horario }}" data-nombre-consulta="{{ mb_strtolower($horario->nombreHorario) }}" >
+                                <span class="texto-resultado">
+                                    <strong>{{ $horario->nombreHorario }}</strong>
+
+                                    <small>
+                                        {{ $horario->grupo?->carrera?->nombreCarrera ?? '-' }}
+                                        ·
+                                        {{ $horario->grupo?->nombreGrupo ?? '-' }}
+                                    </small>
+                                </span>
+
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        @empty
+                            <p class="texto-secundario mensaje-sin-resultados">
+                                No hay horarios registrados para consultar.
+                            </p>
+                        @endforelse
+
+                        <p class="texto-secundario mensaje-sin-resultados" id="sin-resultados-consulta" hidden >
+                            No se encontraron horarios con ese nombre.
+                        </p>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- COLUMNA DERECHA: DETALLE DEL HORARIO -->
+            <div class="tarjeta-detalle" id="tarjeta-detalle">
+
+                <!-- MENSAJE INICIAL -->
+                <div class="detalle-vacio" id="detalle-vacio">
+
+                    <div class="icono-detalle">
+                        <i class="fa-solid fa-calendar-days"></i>
+                    </div>
+
+                    <h3>Información del horario</h3>
+                    <p class="texto-secundario"> Selecciona un horario de los resultados para visualizar su información. </p>
+
+                </div>
+
+                <!-- INFORMACIÓN DE CADA HORARIO -->
+                @foreach ($horariosRegistrados as $horario)
+                    <div class="contenido-detalle-horario" data-detalle-horario="{{ $horario->id_horario }}" hidden >
+                        <div class="encabezado-detalle">
+
+                            <div class="icono-detalle">
+                                <i class="fa-solid fa-calendar-days"></i>
+                            </div>
+
+                            <div>
+                                <h3>{{ $horario->nombreHorario }}</h3>
+
+                                <p class="correo-detalle">
+                                    {{ $horario->grupo?->carrera?->nombreCarrera ?? '-' }}
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <!-- DATOS GENERALES -->
+                        <div class="lista-detalle">
+
+                            <div class="fila-detalle">
+                                <span>Nombre del horario</span>
+                                <strong>{{ $horario->nombreHorario }}</strong>
+                            </div>
+
+                            <div class="fila-detalle">
+                                <span>Periodo escolar</span>
+                                <strong>
+                                    {{ $horario->periodo?->estacion ?? '-' }}
+                                    {{ $horario->periodo?->anio ?? '' }}
+                                </strong>
+                            </div>
+
+                            <div class="fila-detalle">
+                                <span>Carrera</span>
+                                <strong>
+                                    {{ $horario->grupo?->carrera?->nombreCarrera ?? '-' }}
+                                </strong>
+                            </div>
+
+                            <div class="fila-detalle">
+                                <span>Grupo</span>
+                                <strong>
+                                    {{ $horario->grupo?->nombreGrupo ?? '-' }}
+                                </strong>
+                            </div>
+
+                            <div class="fila-detalle">
+                                <span>Cuatrimestre</span>
+                                <strong>
+                                    {{ $horario->grupo?->cuatrimestre
+                                        ? $horario->grupo->cuatrimestre . '°'
+                                        : '-' }}
+                                </strong>
+                            </div>
+
+                            <div class="fila-detalle">
+                                <span>Estado</span>
+
+                                <strong class="{{ (int) $horario->estado === 1
+                                    ? 'texto-estado-activo'
+                                    : 'texto-estado-inactivo' }}">
+                                    {{ (int) $horario->estado === 1 ? 'Activo' : 'Inactivo' }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                        <!-- ASIGNACIONES REGISTRADAS -->
+                        <div class="asignaciones-consulta">
+
+                            <h4>Asignaturas registradas</h4>
+
+                            @php
+                                // Definir los días que se mostrarán en la consulta.
+                                $diasSemana = [
+                                    'Lunes',
+                                    'Martes',
+                                    'Miércoles',
+                                    'Jueves',
+                                    'Viernes',
+                                    'Sábado'
+                                ];
+
+                                // Organizar las asignaciones del horario por día.
+                                $asignacionesPorDia = $horario->detalles->sortBy('hora_inicio')->groupBy('dia');
+                            @endphp
+
+                            <div class="lista-dias-consulta">
+
+                                @foreach ($diasSemana as $dia)
+
+                                    <div class="grupo-dia-consulta">
+
+                                        {{-- Nombre del día --}}
+                                        <h5 class="titulo-dia-consulta">
+                                            {{ $dia }}
+                                        </h5>
+
+                                        @php
+                                            // Obtener las asignaturas correspondientes al día.
+                                            $asignacionesDia = $asignacionesPorDia->get(
+                                                $dia,
+                                                collect()
+                                            );
+                                        @endphp
+
+                                        @if ($asignacionesDia->isNotEmpty())
+
+                                            <div class="lista-asignaturas-consulta">
+
+                                                @foreach ($asignacionesDia as $detalle)
+
+                                                    <div class="tarjeta-asignatura-consulta">
+
+                                                        <!-- Nombre de la asignatura -->
+                                                        <strong>
+                                                            {{ $detalle->asignatura?->nombreAsignatura ?? 'Asignatura no disponible' }}
+                                                        </strong>
+
+                                                        <!-- Horario de la asignatura -->
+                                                        <div class="detalle-asignatura-consulta">
+                                                            <span>Horario</span>
+
+                                                            <strong>
+                                                                {{ \Carbon\Carbon::parse($detalle->hora_inicio)->format('H:i') }}
+                                                                -
+                                                                {{ \Carbon\Carbon::parse($detalle->hora_fin)->format('H:i') }}
+                                                            </strong>
+                                                        </div>
+
+                                                        <!-- Nombre del docente -->
+                                                        <div class="detalle-asignatura-consulta">
+                                                            <span>Docente</span>
+
+                                                            <strong>
+                                                                @if ($detalle->docente?->usuario)
+                                                                    {{ trim(
+                                                                        $detalle->docente->usuario->nombreUsuario . ' ' .
+                                                                        $detalle->docente->usuario->apellidoPaterno . ' ' .
+                                                                        $detalle->docente->usuario->apellidoMaterno
+                                                                    ) }}
+                                                                @else
+                                                                    No disponible
+                                                                @endif
+                                                            </strong>
+                                                        </div>
+                                                    </div>
+
+                                                @endforeach
+                                            </div>
+
+                                        @else
+                                            <!-- Mensaje cuando no hay  ese día -->
+                                            <p class="texto-secundario dia-sin-asignaturas"> Sin asignaturas asignadas </p>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
     </section>
 
 </main>

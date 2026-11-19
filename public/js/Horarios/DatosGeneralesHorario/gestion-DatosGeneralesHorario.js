@@ -495,30 +495,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /* CONFIRMAR DESACTIVACIÓN DE HORARIO */
 
-    // Obtener los formularios para desactivar horarios.
-    const formulariosDesactivar = document.querySelectorAll(
-        '.formulario-desactivar-horario'
-    );
-
-    formulariosDesactivar.forEach(function (formulario) {
+    document.querySelectorAll('.formulario-desactivar-horario').forEach(function (formulario) {
 
         formulario.addEventListener('submit', async function (evento) {
 
-            // Evitar que el formulario se envíe inmediatamente.
+            // Evitar el envío inmediato del formulario.
             evento.preventDefault();
 
+            // Obtener los datos del horario.
             const nombreHorario = formulario.dataset.nombre;
+            const tieneDetalles = formulario.dataset.tieneDetalles === 'true';
 
-            // Solicitar confirmación antes de desactivar.
-            const confirmado = await confirmarDesactivarHorario(nombreHorario);
+            // Solicitar confirmación.
+            const confirmar = await confirmarDesactivarHorario(
+                nombreHorario,
+                tieneDetalles
+            );
 
-            // Enviar el formulario solamente si se confirma.
-            if (confirmado) {
+            // Enviar el formulario si se confirma.
+            if (confirmar) {
                 formulario.submit();
             }
 
         });
 
     });
+
 
 });

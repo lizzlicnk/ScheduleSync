@@ -532,18 +532,6 @@ Route::middleware(['auth', \App\Http\Middleware\PrevenirCachePrivada::class, For
         'index'
     ])->name('creacion-horario.index');
 
-    // Mostrar la pantalla para crear el horario de un grupo.
-    /*
-    Route::get('/horarios/creacion-horario/crear/{idGrupo}', [
-        CreacionHorarioController::class,
-        'create'
-    ])->name('creacion-horario.create');
-
-    // Registrar el horario y sus asignaciones.
-    Route::post('/horarios/creacion-horario', [
-        CreacionHorarioController::class,
-        'store'
-    ])->name('creacion-horario.store'); */
 
     Route::post('/horarios', [
         CreacionHorarioController::class,
@@ -555,6 +543,7 @@ Route::middleware(['auth', \App\Http\Middleware\PrevenirCachePrivada::class, For
         'update'
     ])->name('horarios.update');
 
+    // Eliminar lógicamente un horario.
     Route::delete('/horarios/{idHorario}', [
         CreacionHorarioController::class,
         'destroy'

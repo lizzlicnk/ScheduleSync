@@ -195,13 +195,20 @@ async function confirmarEntregaDisponibilidad() {
 
 /**
  * Descripción: Solicita confirmación antes de desactivar un horario.
- * Entradas: nombreHorario: Nombre del horario.
+ * Entradas:
+ * nombreHorario: Nombre del horario.
+ * tieneDetalles: Indica si el horario cuenta con asignaturas registradas.
  * Salida: true si se confirma, false si se cancela.
  */
-async function confirmarDesactivarHorario(nombreHorario) {
+async function confirmarDesactivarHorario(nombreHorario, tieneDetalles) {
 
     const nombreSeguro = document.createElement('span');
     nombreSeguro.textContent = nombreHorario;
+
+    // Definir el mensaje según los detalles registrados.
+    const mensajeDetalles = tieneDetalles
+    ? 'Este horario ya cuenta con asignaturas y horarios registrados. Al desactivarlo, toda su información se conservará en el historial.'
+    : 'El horario se conservará en el historial como inactivo.';
 
     const resultado = await Swal.fire({
         customClass: {
@@ -213,9 +220,9 @@ async function confirmarDesactivarHorario(nombreHorario) {
         title: '¿Deseas desactivar este horario?',
         html: `
             <div class="mensaje-eliminar-carga">
-                <p> Estás a punto de desactivar el horario: </p>
+                <p>Estás a punto de desactivar el horario:</p>
                 <strong class="nombre-docente-alerta">${nombreSeguro.innerHTML}</strong>
-                <p class="nota-eliminar-carga"> El horario se conservará en el historial como inactivo. </p>
+                <p class="nota-eliminar-carga">${mensajeDetalles}</p>
             </div>
         `,
         showCancelButton: true,

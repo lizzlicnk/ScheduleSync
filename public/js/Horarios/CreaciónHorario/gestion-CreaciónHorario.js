@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function () {
 
     // ========================================
@@ -731,5 +730,343 @@ document.addEventListener('DOMContentLoaded', function () {
         return tarjeta;
     }
 
+    // ========================================
+    // CONSULTA DE HORARIOS REGISTRADOS
+    // ========================================
 
+    // ========================================
+    // ELEMENTOS PRINCIPALES
+    // ========================================
+
+    // Campo para buscar horarios.
+    const buscarConsulta = document.getElementById('buscar-consulta');
+
+    // Contenedor de resultados.
+    const resultadosConsulta = document.getElementById('resultados-consulta');
+
+    // Mensaje cuando no existen resultados.
+    const sinResultadosConsulta = document.getElementById(
+        'sin-resultados-consulta'
+    );
+
+    // Mensaje inicial del panel derecho.
+    const detalleVacioConsulta = document.getElementById('detalle-vacio');
+
+    // Botones de los horarios registrados.
+    const botonesConsulta = document.querySelectorAll(
+        '[data-resultado-horario]'
+    );
+
+    // Paneles que contienen los detalles de cada horario.
+    const panelesDetalleConsulta = document.querySelectorAll(
+        '[data-detalle-horario]'
+    );
+
+    // Identificador del horario seleccionado.
+    let horarioSeleccionadoConsulta = null;
+
+
+    // ========================================
+    // MOSTRAR INFORMACIÓN DEL HORARIO
+    // ========================================
+
+    /**
+     * Descripción:
+     * Muestra la información del horario seleccionado
+     * en el panel derecho de consulta.
+     *
+     * Entradas:
+     * - idHorario: Identificador del horario.
+     * - botonSeleccionado: Botón del horario seleccionado.
+     *
+     * Salidas:
+     * - Muestra el panel correspondiente al horario.
+     */
+
+    function consultarHorario(idHorario, botonSeleccionado) {
+
+        // Ocultar todos los detalles.
+        panelesDetalleConsulta.forEach(function (panel) {
+            panel.hidden = true;
+        });
+
+        // Buscar el panel correspondiente al horario.
+        const detalleSeleccionado = Array.from(
+            panelesDetalleConsulta
+        ).find(function (panel) {
+
+            return panel.dataset.detalleHorario === String(idHorario);
+
+        });
+
+        // Comprobar que exista la información.
+        if (!detalleSeleccionado) {
+
+            if (detalleVacioConsulta) {
+                detalleVacioConsulta.hidden = false;
+            }
+
+            horarioSeleccionadoConsulta = null;
+
+            console.warn(
+                'No se encontró la información del horario:',
+                idHorario
+            );
+
+            return;
+        }
+
+        // Ocultar el mensaje inicial.
+        if (detalleVacioConsulta) {
+            detalleVacioConsulta.hidden = true;
+        }
+
+        // Mostrar el cuadro de información.
+        detalleSeleccionado.hidden = false;
+
+        // Guardar el horario seleccionado.
+        horarioSeleccionadoConsulta = String(idHorario);
+
+        // Quitar la selección de los demás resultados.
+        botonesConsulta.forEach(function (boton) {
+
+            boton.classList.remove('seleccionado');
+
+        });
+
+        // Marcar el resultado seleccionado.
+        botonSeleccionado.classList.add('seleccionado');
+    }
+
+
+    // ========================================
+    // SELECCIONAR HORARIO
+    // ========================================
+
+    // Agregar el evento a cada resultado.
+    botonesConsulta.forEach(function (boton) {
+
+        boton.addEventListener('click', function () {
+
+            // Obtener el identificador del horario.
+            const idHorario = this.dataset.resultadoHorario;
+
+            // Mostrar sus datos.
+            consultarHorario(idHorario, this);
+
+        });
+
+    });
+
+
+
+   // ========================================
+   // BUSCAR HORARIOS
+   // ========================================
+
+   /**
+    * Descripción:
+    * Filtra los horarios registrados según el texto
+    * introducido por el usuario.
+    *
+    * Entradas:
+    * - Texto introducido en el campo de búsqueda.
+    *
+    * Salidas:
+    * - Muestra únicamente los horarios coincidentes.
+    * - Oculta los resultados cuando el campo está vacío.
+    */
+   if (buscarConsulta) {
+
+       buscarConsulta.addEventListener('input', function () {
+
+           // Obtener y normalizar el texto de búsqueda.
+           const textoBusqueda = normalizarTexto(this.value);
+
+           // Contabilizar coincidencias.
+           let coincidencias = 0;
+
+           // Recorrer los horarios registrados.
+           botonesConsulta.forEach(function (boton) {
+
+               // Obtener el nombre del horario.
+               const nombreHorario = normalizarTexto(
+                   boton.dataset.nombreConsulta
+               );
+
+               // Obtener el contenido del resultado.
+               const textoResultado = normalizarTexto(
+                   boton.textContent
+               );
+
+               // Comprobar si coincide con la búsqueda.
+               const coincide =
+                   textoBusqueda !== '' &&
+                   (
+                       nombreHorario.includes(textoBusqueda) ||
+                       textoResultado.includes(textoBusqueda)
+                   );
+
+               // Mostrar únicamente los resultados coincidentes.
+               boton.hidden = !coincide;
+
+               // Contabilizar las coincidencias.
+               if (coincide) {
+                   coincidencias++;
+               }
+
+           });
+
+           // ========================================
+           // MOSTRAR MENSAJE SIN RESULTADOS
+           // ========================================
+
+           if (sinResultadosConsulta) {
+
+               // Mostrar el mensaje únicamente cuando
+               // existe una búsqueda sin coincidencias.
+               sinResultadosConsulta.hidden =
+                   textoBusqueda === '' || coincidencias > 0;
+
+           }
+
+           // ========================================
+           // LIMPIAR DETALLE SELECCIONADO
+           // ========================================
+
+           // Ocultar los detalles anteriores.
+           panelesDetalleConsulta.forEach(function (panel) {
+               panel.hidden = true;
+           });
+
+           // Quitar la selección de los resultados.
+           botonesConsulta.forEach(function (boton) {
+               boton.classList.remove('seleccionado');
+           });
+
+           // Mostrar el mensaje inicial del panel derecho.
+           if (detalleVacioConsulta) {
+               detalleVacioConsulta.hidden = false;
+           }
+
+           // Restablecer el horario seleccionado.
+           horarioSeleccionadoConsulta = null;
+
+       });
+
+   }
+
+
+   // ========================================
+   // INICIALIZAR CONSULTA
+   // ========================================
+
+   // Ocultar todos los horarios registrados al cargar la página.
+   botonesConsulta.forEach(function (boton) {
+
+       boton.hidden = true;
+
+       boton.classList.remove('seleccionado');
+
+   });
+
+   // Ocultar todos los detalles de los horarios.
+   panelesDetalleConsulta.forEach(function (panel) {
+
+       panel.hidden = true;
+
+   });
+
+   // Mostrar el mensaje inicial del panel de detalles.
+   if (detalleVacioConsulta) {
+
+       detalleVacioConsulta.hidden = false;
+
+   }
+
+   // Ocultar el mensaje de resultados vacíos.
+   if (sinResultadosConsulta) {
+
+       sinResultadosConsulta.hidden = true;
+
+   }
+
+   // Restablecer el horario seleccionado.
+   horarioSeleccionadoConsulta = null;
+
+
+   
+   // ========================================
+   // CONSULTAR HORARIO DESDE OTRO MÓDULO
+   // ========================================
+
+   // Obtener el identificador enviado mediante la URL.
+   const parametrosURL = new URLSearchParams(window.location.search);
+
+   const idHorarioConsultar = parametrosURL.get('consultar');
+
+   // Comprobar si se solicitó consultar un horario.
+   if (idHorarioConsultar) {
+
+       // Buscar el resultado correspondiente al identificador.
+       const botonHorario = Array.from(botonesConsulta).find(
+           function (boton) {
+
+               return boton.dataset.resultadoHorario ===
+                   String(idHorarioConsultar);
+
+           }
+       );
+
+       // Comprobar que exista el horario solicitado.
+       if (botonHorario) {
+
+           // Colocar el nombre del horario en el buscador.
+           if (buscarConsulta) {
+
+               buscarConsulta.value =
+                   botonHorario.dataset.nombreConsulta;
+
+               // Ejecutar la búsqueda automáticamente.
+               buscarConsulta.dispatchEvent(
+                   new Event('input')
+               );
+
+           }
+
+           // Mostrar directamente la información del horario.
+           consultarHorario(
+               idHorarioConsultar,
+               botonHorario
+           );
+
+       }
+
+   }
+
+    // CONFIRMAR DESACTIVACIÓN DE HORARIOS
+    document.querySelectorAll('.formulario-desactivar-horario').forEach(function (formulario) {
+
+        formulario.addEventListener('submit', async function (evento) {
+
+            evento.preventDefault();
+
+            // Obtener los datos del horario.
+            const nombreHorario = formulario.dataset.nombre;
+            const tieneDetalles = formulario.dataset.tieneDetalles === 'true';
+
+            // Solicitar confirmación.
+            const confirmar = await confirmarDesactivarHorario(
+                nombreHorario,
+                tieneDetalles
+            );
+
+            // Enviar el formulario si se confirma.
+            if (confirmar) {
+                formulario.submit();
+            }
+
+        });
+
+    });
 });

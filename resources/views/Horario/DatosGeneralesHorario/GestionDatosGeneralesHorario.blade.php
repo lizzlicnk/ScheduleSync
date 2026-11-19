@@ -225,26 +225,17 @@
 
                                     @if ((int) auth()->user()->rol === 1)
                                         @if ($horarioActivo)
-
                                             <form action="{{ route('datos-generales.destroy', $horario->id_horario) }}"
-                                                method="POST"
-                                                class="formulario-desactivar-horario"
-                                                data-nombre="{{ $horario->nombreHorario }}">
-
+                                                method="POST" class="formulario-desactivar-horario" data-nombre="{{ $horario->nombreHorario }}"
+                                                data-tiene-detalles="{{ $horario->detalles->isNotEmpty() ? 'true' : 'false' }}">
                                                 @csrf
                                                 @method('DELETE')
 
-                                                <button type="submit"
-                                                        class="boton-accion boton-eliminar"
-                                                        title="Desactivar horario">
-
+                                                <button type="submit" class="boton-accion boton-eliminar" title="Desactivar horario">
                                                     <i class="fa-solid fa-trash" aria-hidden="true"></i>
                                                     Desactivar
-
                                                 </button>
-
                                             </form>
-
                                         @endif
                                     @endif
 
