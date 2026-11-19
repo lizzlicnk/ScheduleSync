@@ -35,9 +35,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const horarioRegistro = document.getElementById('horario-registro');
 
     // Obtener el formulario de registro del horario.
-    const formularioRegistro = document.getElementById(
-        'formulario-registro-horario'
-    );
+    const formularioRegistro = document.getElementById( 'formulario-registro-horario' );
+
+    // Identificar si el formulario corresponde a la edición de un horario.
+    const modoEdicion = formularioRegistro?.dataset.modo === 'editar';
 
     // Evitar errores si esta vista no contiene el calendario.
     if (!elementoCalendario) {
@@ -360,6 +361,73 @@ document.addEventListener('DOMContentLoaded', function () {
         }) || null;
     }
 
+    // =========================================
+    // VALIDAR EMPALMES DEL MISMO DOCENTE
+    // =========================================
+
+    /**
+     * Descripción:
+     * Comprueba si el docente de un evento tiene otra asignatura
+     * colocada en el mismo día y en un horario que se empalma.
+     *
+     * Entradas:
+     * - evento: Evento que se está moviendo o modificando.
+     *
+     * Salidas:
+     * - Devuelve el evento del mismo docente con el que existe conflicto.
+     * - Devuelve null cuando no existe ningún conflicto.
+     */
+    function obtenerConflictoDocenteMismoHorario(evento) {
+
+        const datos = evento.extendedProps;
+
+        if (
+            !datos ||
+            !datos.id_docente ||
+            !evento.start ||
+            !evento.end
+        ) {
+            return null;
+        }
+
+        const otrosEventos = calendario.getEvents();
+
+        return otrosEventos.find(function (otroEvento) {
+
+            // Excluir el mismo evento que se está modificando.
+            if (otroEvento.id === evento.id) {
+                return false;
+            }
+
+            if (!otroEvento.start || !otroEvento.end) {
+                return false;
+            }
+
+            // Comprobar que sea el mismo docente.
+            if (
+                String(otroEvento.extendedProps.id_docente) !==
+                String(datos.id_docente)
+            ) {
+                return false;
+            }
+
+            // Comprobar que ambos eventos sean del mismo día.
+            if (
+                evento.start.toDateString() !==
+                otroEvento.start.toDateString()
+            ) {
+                return false;
+            }
+
+            // Comprobar si existe un empalme de horario.
+            return (
+                evento.start < otroEvento.end &&
+                evento.end > otroEvento.start
+            );
+
+        }) || null;
+    }
+
 
     // =========================================
     // CREAR EL CALENDARIO
@@ -611,6 +679,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
+
+            // =====================================
+            // VALIDAR EMPALMES EN OTROS HORARIOS
+            // =====================================
+
+            const conflictoOtroHorario = obtenerConflictoDocenteOtroHorario(
+                info.event
+            );
+
+            if (conflictoOtroHorario) {
+
+                info.revert();
+
+                mostrarAdvertencia(
+                    'No puedes ampliar esta asignatura porque el docente está dando clases en otro horario durante ese horario.',
+                    'Conflicto de horario'
+                );
+
+                return;
+            }
 
             // Obtener la duración original del evento.
             const horasSolicitadas = (
@@ -866,6 +954,51 @@ document.addEventListener('DOMContentLoaded', function () {
 
         eventDrop: async function (info) {
 
+            // =====================================
+            // VALIDAR EMPALMES EN OTROS HORARIOS
+            // =====================================
+
+            const conflictoOtroHorario = obtenerConflictoDocenteOtroHorario(
+                info.event
+            );
+
+            if (conflictoOtroHorario) {
+
+                info.revert();
+
+                mostrarAdvertencia(
+                    'No puedes mover esta asignatura porque el docente está dando clases en otro horario durante ese horario.',
+                    'Conflicto de horario'
+                );
+
+                return;
+            }
+
+            // =====================================
+            // VALIDAR EMPALMES DEL MISMO DOCENTE
+            // =====================================
+
+            const conflictoDocente = obtenerConflictoDocenteMismoHorario(
+                info.event
+            );
+
+            if (conflictoDocente) {
+
+                info.revert();
+
+                mostrarAdvertencia(
+                    `No puedes mover esta asignatura porque el docente ya tiene clase con "${conflictoDocente.title}" durante ese horario.`,
+                    'Conflicto de horario del docente'
+                );
+
+                return;
+            }
+
+
+            // =====================================
+            // VALIDAR EMPALMES CON OTRAS ASIGNATURAS
+            // =====================================
+
             const eventoEmpalmado = obtenerEventoEmpalmado(info.event);
 
             if (eventoEmpalmado) {
@@ -879,6 +1012,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 return;
             }
+            
 
             if (!docenteDisponible(info.event)) {
 
@@ -953,6 +1087,25 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
+            // =====================================
+            // VALIDAR EMPALMES DEL MISMO DOCENTE
+            // =====================================
+
+            const conflictoDocente = obtenerConflictoDocenteMismoHorario(
+                info.event
+            );
+
+            if (conflictoDocente) {
+
+                info.revert();
+
+                mostrarAdvertencia(
+                    `No puedes ampliar esta asignatura porque el docente ya tiene clase con "${conflictoDocente.title}" durante ese horario.`,
+                    'Conflicto de horario del docente'
+                );
+
+                return;
+            }
 
             // =====================================
             // VALIDAR EMPALMES CON OTRAS ASIGNATURAS
@@ -1434,9 +1587,7 @@ function guardarHorario(tipoGuardado) {
     }
 
     // Obtener el selector del horario.
-    const horarioRegistro = document.getElementById(
-        'horario-registro'
-    );
+    const horarioRegistro = document.getElementById( 'horario-registro' );
 
     // Validar únicamente que se haya seleccionado un horario.
     if (!horarioRegistro || !horarioRegistro.checkValidity()) {
@@ -1445,7 +1596,7 @@ function guardarHorario(tipoGuardado) {
 
         return;
     }
-
+    
     // Obtener los eventos registrados en el calendario.
     const eventos = calendario.getEvents();
 
@@ -1463,24 +1614,29 @@ function guardarHorario(tipoGuardado) {
     // Actualizar los campos ocultos con los detalles del calendario.
     actualizarDetallesHorario();
 
-    // Buscar un campo anterior que indique el tipo de guardado.
-    let campoBorrador = formularioRegistro.querySelector(
-        'input[name="borrador"]'
-    );
+    // En la edición no se modifica el estado del horario.
+    // El horario conserva su condición de finalizado.
+    if (!modoEdicion) {
 
-    // Crear el campo si todavía no existe.
-    if (!campoBorrador) {
+        // Buscar un campo anterior que indique el tipo de guardado.
+        let campoBorrador = formularioRegistro.querySelector(
+            'input[name="borrador"]'
+        );
 
-        campoBorrador = document.createElement('input');
+        // Crear el campo si todavía no existe.
+        if (!campoBorrador) {
 
-        campoBorrador.type = 'hidden';
-        campoBorrador.name = 'borrador';
+            campoBorrador = document.createElement('input');
 
-        formularioRegistro.appendChild(campoBorrador);
+            campoBorrador.type = 'hidden';
+            campoBorrador.name = 'borrador';
+
+            formularioRegistro.appendChild(campoBorrador);
+        }
+
+        // Establecer el tipo de guardado solicitado.
+        campoBorrador.value = tipoGuardado;
     }
-
-    // Establecer el tipo de guardado solicitado.
-    campoBorrador.value = tipoGuardado;
 
     // Enviar el formulario al controlador.
     formularioRegistro.requestSubmit();
@@ -1778,6 +1934,35 @@ function guardarHorario(tipoGuardado) {
 
 
                 // =====================================
+                // MOSTRAR EL SÁBADO SI TIENE ASIGNACIONES
+                // =====================================
+
+                const tieneAsignacionesSabado = calendario.getEvents().some(
+                    function (evento) {
+
+                        return (
+                            evento.start &&
+                            evento.start.getDay() === 6
+                        );
+                    }
+                );
+
+                if (tieneAsignacionesSabado) {
+
+                    sabadoVisible = true;
+
+                    calendario.setOption('hiddenDays', [0]);
+
+                    if (botonSabado) {
+
+                        botonSabado.innerHTML =
+                            '<i class="fa-solid fa-minus"></i> Ocultar sábado';
+
+                        botonSabado.setAttribute('aria-expanded', 'true');
+                    }
+                }
+
+                // =====================================
                 // ACTUALIZAR LAS HORAS DISPONIBLES
                 // =====================================
 
@@ -1811,6 +1996,18 @@ function guardarHorario(tipoGuardado) {
                 );
             }
         });
+
+        // =========================================
+        // RECUPERAR AUTOMÁTICAMENTE EL HORARIO EN EDICIÓN
+        // =========================================
+
+        if ( modoEdicion && horarioRegistro && horarioRegistro.value ) {
+
+            horarioRegistro.dispatchEvent(
+                new Event('change')
+            );
+        }
+
     }
 
     // =========================================

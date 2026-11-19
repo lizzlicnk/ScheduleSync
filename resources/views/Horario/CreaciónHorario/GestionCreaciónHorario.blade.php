@@ -309,6 +309,16 @@
 
                             @elseif ($horarioCreado)
 
+                                <!-- EDITAR HORARIO FINALIZADO -->
+                                @if ($horarioActivo && (int) $horario->borrador === 1)
+                                    <a href="{{ route('horarios.edit', ['idHorario' => $horario->id_horario]) }}"
+                                        class="boton-accion boton-secundario" title="Editar horario"
+                                        aria-label="Editar el horario del grupo {{ $grupo->nombreGrupo }}">
+                                        <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                                        Editar
+                                    </a>
+                                @endif
+
                                 <!-- CONSULTAR HORARIO -->
                                 <a href="{{ route('creacion-horario.index', ['consultar' => $horario->id_horario]) }}#panel-consulta"
                                     class="boton-accion boton-secundario" title="Consultar horario" aria-label="Consultar el horario del grupo {{ $grupo->nombreGrupo }}">
@@ -317,20 +327,13 @@
                                 </a>
 
                                 <!-- ELIMINAR HORARIO -->
-                                <!-- ELIMINAR HORARIO -->
                                 <form action="{{ route('horarios.destroy', $horario->id_horario) }}"
-                                    method="POST"
-                                    class="formulario-desactivar-horario"
-                                    data-nombre="{{ $horario->nombreHorario }}"
+                                    method="POST" class="formulario-desactivar-horario" data-nombre="{{ $horario->nombreHorario }}"
                                     data-tiene-detalles="{{ $horario->detalles->isNotEmpty() ? 'true' : 'false' }}">
-
                                     @csrf
                                     @method('DELETE')
 
-                                    <button type="submit"
-                                        class="boton-accion boton-eliminar"
-                                        title="Eliminar horario"
-                                        aria-label="Eliminar el horario del grupo {{ $grupo->nombreGrupo }}">
+                                    <button type="submit" class="boton-accion boton-eliminar" title="Eliminar horario" aria-label="Eliminar el horario del grupo {{ $grupo->nombreGrupo }}">
                                         <i class="fa-solid fa-trash" aria-hidden="true"></i>
                                         Eliminar
                                     </button>

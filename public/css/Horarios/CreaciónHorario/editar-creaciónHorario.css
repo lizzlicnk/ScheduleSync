@@ -1,0 +1,241 @@
+/* ========================================
+   PÁGINA DE EDICIÓN DE HORARIOS
+======================================== */
+
+.pagina-editar-horario {
+    width: 100%;
+    padding: 25px;
+    color: #333;
+    font-family: inherit;
+}
+
+/* ========================================
+   ENCABEZADO
+======================================== */
+
+.encabezado-editar-horario {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.encabezado-editar-horario h1 {
+    margin: 0 0 8px;
+    color: #51346F;
+    font-size: 25px;
+    font-weight: 700;
+}
+
+.encabezado-editar-horario p {
+    margin: 0;
+    color: #777;
+    font-size: 14px;
+}
+
+.boton-regresar-horario {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: 1px solid #5A3E7D;
+    border-radius: 7px;
+    color: #5A3E7D;
+    background: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: .2s ease;
+}
+
+.boton-regresar-horario:hover {
+    color: #fff;
+    background: #5A3E7D;
+}
+
+/* ========================================
+   INFORMACIÓN GENERAL DEL HORARIO
+======================================== */
+
+.panel-informacion-horario {
+    overflow: hidden;
+    margin-bottom: 25px;
+    border: 1px solid #e5deec;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, .05);
+}
+
+.franja-institucional {
+    width: 100%;
+    height: 6px;
+    background: #5A3E7D;
+}
+
+.contenido-informacion-horario {
+    padding: 22px;
+}
+
+.contenido-informacion-horario h2 {
+    margin: 0 0 20px;
+    color: #51346F;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.datos-generales-horario {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.datos-generales-horario div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.datos-generales-horario span {
+    color: #777;
+    font-size: 12px;
+}
+
+.datos-generales-horario strong {
+    color: #51346F;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* ========================================
+   PANEL PRINCIPAL
+======================================== */
+
+.pagina-editar-horario .panel-horarios {
+    overflow: hidden;
+    border: 1px solid #e5deec;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, .05);
+}
+
+.pagina-editar-horario .encabezado-panel {
+    padding: 20px 22px;
+    border-bottom: 1px solid #eee7f3;
+}
+
+.pagina-editar-horario .encabezado-panel h2 {
+    margin: 0 0 7px;
+    color: #51346F;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.pagina-editar-horario .encabezado-panel p {
+    margin: 0;
+    color: #777;
+    font-size: 13px;
+}
+
+/* ========================================
+   DISTRIBUCIÓN
+======================================== */
+
+.pagina-editar-horario .distribucion-contenedor {
+    padding: 20px;
+}
+
+/* ========================================
+   ACCIONES DE EDICIÓN
+======================================== */
+
+.acciones-editar-horario {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    border-top: 1px solid #eee7f3;
+}
+
+.boton-cancelar-edicion,
+.boton-guardar-edicion {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 10px 20px;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.boton-cancelar-edicion {
+    border: 1px solid #5A3E7D;
+    color: #5A3E7D;
+    background: #fff;
+}
+
+.boton-cancelar-edicion:hover {
+    color: #fff;
+    background: #5A3E7D;
+}
+
+.boton-guardar-edicion {
+    border: 1px solid #5A3E7D;
+    color: #fff;
+    background: #5A3E7D;
+}
+
+.boton-guardar-edicion:hover {
+    border-color: #51346F;
+    background: #51346F;
+}
+
+.boton-guardar-edicion:disabled {
+    opacity: .65;
+    cursor: not-allowed;
+}
+
+/* ========================================
+   DISEÑO RESPONSIVO
+======================================== */
+
+@media (max-width: 900px) {
+
+    .datos-generales-horario {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .pagina-editar-horario {
+        padding: 12px;
+    }
+
+    .encabezado-editar-horario {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .datos-generales-horario {
+        grid-template-columns: 1fr;
+    }
+
+    .acciones-editar-horario {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .boton-cancelar-edicion,
+    .boton-guardar-edicion {
+        width: 100%;
+    }
+
+}

@@ -1120,6 +1120,48 @@ class CreacionHorarioController extends Controller
     }
 
     /**
+     * Descripción: Muestra el formulario para editar las asignaciones
+     * de un horario académico finalizado.
+     *
+     * Entradas:
+     * $idHorario: Identificador del horario que se desea editar.
+     *
+     * Salidas:
+     * Retorna la vista de edición con los datos generales del horario.
+     */
+    public function edit($idHorario)
+    {
+        // Comprobar que el usuario tenga un rol autorizado.
+        $this->verificarRol([1, 2]);
+
+        // Consultar únicamente horarios activos y finalizados.
+        $horario = Horario::with([
+            'grupo.carrera',
+            'periodo',
+            'detalles.asignatura',
+            'detalles.docente.usuario'
+        ])
+            ->where('estado', 1)
+            ->where('borrador', 1)
+            ->findOrFail($idHorario);
+
+        // Comprobar que el grupo correspondiente esté activo.
+        if (!$horario->grupo || (int) $horario->grupo->estado !== 1) {
+            abort(404, 'El grupo correspondiente al horario no está disponible.');
+        }
+
+        // Comprobar que el periodo corresponda al año permitido.
+        if (!$horario->periodo || (int) $horario->periodo->anio < 2026) {
+            abort(404, 'El periodo del horario no está disponible para edición.');
+        }
+
+        return view(
+            'Horario.CreaciónHorario.EditarCreaciónHorario',
+            compact('horario')
+        );
+    }
+
+    /**
      * Descripción: Modifica un horario académico y sus asignaciones.
      *
      * Entradas:
@@ -1129,6 +1171,7 @@ class CreacionHorarioController extends Controller
      * Salidas:
      * Retorna una respuesta indicando si el horario fue actualizado.
      */
+    /*
     public function update(Request $solicitud, $idHorario)
     {
         // Comprobar que el usuario tenga un rol autorizado.
@@ -1210,6 +1253,136 @@ class CreacionHorarioController extends Controller
             'El horario se actualizó correctamente.',
             $horario->id_horario
         );
+    }
+*/
+
+    /**
+     * Descripción: Actualiza las asignaciones de un horario académico finalizado.
+     *
+     * Entradas:
+     * $solicitud: Contiene los bloques modificados desde el calendario.
+     * $idHorario: Identificador del horario que se desea actualizar.
+     *
+     * Salidas:
+     * Retorna una respuesta indicando si el horario fue actualizado.
+     */
+    public function update(Request $solicitud, $idHorario)
+    {
+        // Comprobar que el usuario tenga un rol autorizado.
+        $this->verificarRol([1, 2]);
+
+        // Consultar únicamente horarios activos y finalizados.
+        $horario = Horario::with([
+            'grupo',
+            'periodo'
+        ])
+            ->where('estado', 1)
+            ->where('borrador', 1)
+            ->findOrFail($idHorario);
+
+        // Validar los bloques recibidos desde el calendario.
+        $datosValidados = $solicitud->validate([
+
+            'detalles' => [
+                'required',
+                'array',
+                'min:1'
+            ],
+
+            'detalles.*.dia' => [
+                'required',
+                'string',
+                'max:15'
+            ],
+
+            'detalles.*.hora_inicio' => [
+                'required',
+                'date_format:H:i'
+            ],
+
+            'detalles.*.hora_fin' => [
+                'required',
+                'date_format:H:i'
+            ],
+
+            'detalles.*.aula' => [
+                'nullable',
+                'string',
+                'max:20'
+            ],
+
+            'detalles.*.id_docente' => [
+                'required',
+                'integer',
+                'exists:docente,id_docente'
+            ],
+
+            'detalles.*.id_asignatura' => [
+                'required',
+                'integer',
+                'exists:asignatura,id_asignatura'
+            ]
+        ]);
+
+        // Obtener el grupo correspondiente al horario.
+        $grupoSeleccionado = $horario->grupo;
+
+        // Comprobar que el grupo se encuentre activo.
+        if (!$grupoSeleccionado || (int) $grupoSeleccionado->estado !== 1) {
+            throw ValidationException::withMessages([
+                'detalles' => 'El grupo correspondiente al horario se encuentra inactivo.'
+            ]);
+        }
+
+        // Obtener el periodo correspondiente al horario.
+        $idPeriodo = (int) $horario->id_periodo;
+
+        // Comprobar que el periodo sea del año 2026 en adelante.
+        if (!$horario->periodo || (int) $horario->periodo->anio < 2026) {
+            throw ValidationException::withMessages([
+                'detalles' => 'Solo se pueden modificar horarios de periodos del año 2026 en adelante.'
+            ]);
+        }
+
+        // Validar las asignaciones con las reglas existentes.
+        $detallesValidados = $this->validarAsignaciones(
+            $datosValidados['detalles'],
+            $grupoSeleccionado,
+            $idPeriodo,
+            $horario->id_horario
+        );
+
+        // Comprobar que los docentes no superen su carga académica.
+        $this->validarCargaAcademicaDocentes(
+            $detallesValidados,
+            $idPeriodo,
+            $horario->id_horario
+        );
+
+        // Reemplazar únicamente los detalles del horario seleccionado.
+        DB::transaction(function () use (
+            $horario,
+            $detallesValidados
+        ) {
+
+            // Eliminar los bloques anteriores de este horario.
+            $horario->detalles()->delete();
+
+            // Registrar los nuevos bloques.
+            $this->guardarDetallesHorario(
+                $horario,
+                $detallesValidados
+            );
+
+            // Mantener el horario como finalizado.
+            $horario->borrador = 1;
+            $horario->save();
+        });
+
+        // Regresar al listado con el mensaje de confirmación.
+        return redirect()
+            ->route('creacion-horario.index')
+            ->with('success', 'El horario se actualizó correctamente.');
     }
 
     /**
