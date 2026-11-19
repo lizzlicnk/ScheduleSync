@@ -211,17 +211,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // VALIDAR DISPONIBILIDAD DEL DOCENTE
     // =========================================
 
-    /**
-     * Descripción:
-     * Comprueba que el docente tenga disponibilidad confirmada
-     * durante todo el horario del evento.
-     *
-     * Entradas:
-     * Recibe el evento que se desea validar.
-     *
-     * Salidas:
-     * Devuelve true si el docente está disponible y false si no.
-     */
+
     /**
      * Descripción:
      * Comprueba si el docente tiene algún bloque de indisponibilidad
@@ -336,6 +326,63 @@ document.addEventListener('DOMContentLoaded', function () {
             Number(partes[0]) * 60 +
             Number(partes[1])
         );
+    }
+
+
+    // =========================================
+    // VALIDAR EMPALMES ENTRE ASIGNATURAS
+    // =========================================
+
+    /**
+     * Descripción:
+     * Comprueba si un evento se empalma con otra asignatura
+     * que ya está colocada en el calendario.
+     *
+     * Entradas:
+     * - evento: Evento que se está moviendo o modificando.
+     *
+     * Salidas:
+     * - Devuelve el evento con el que existe un empalme.
+     * - Devuelve null cuando no existe ningún empalme.
+     */
+    function obtenerEventoEmpalmado(evento) {
+
+        // Comprobar que el evento tenga fechas válidas.
+        if (!evento.start || !evento.end) {
+            return null;
+        }
+
+        // Obtener los demás eventos del calendario.
+        const otrosEventos = calendario.getEvents();
+
+        // Buscar si existe alguna asignatura que ocupe
+        // parte del nuevo horario del evento.
+        return otrosEventos.find(function (otroEvento) {
+
+            // Ignorar el mismo evento que se está modificando.
+            if (otroEvento.id === evento.id) {
+                return false;
+            }
+
+            // Comprobar que el otro evento tenga fechas.
+            if (!otroEvento.start || !otroEvento.end) {
+                return false;
+            }
+
+            // Comprobar que ambos eventos correspondan al mismo día.
+            if (
+                evento.start.toDateString() !==
+                otroEvento.start.toDateString()
+            ) {
+                return false;
+            }
+
+            // Comprobar si los horarios se cruzan.
+            return (
+                evento.start < otroEvento.end &&
+                evento.end > otroEvento.start
+            );
+        }) || null;
     }
 
 
@@ -557,7 +604,6 @@ document.addEventListener('DOMContentLoaded', function () {
             calendario.unselect();
         },
 
-
         // =========================================
         // RECIBIR ASIGNATURAS ARRASTRADAS
         // =========================================
@@ -592,7 +638,68 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            // Validar la disponibilidad académica del docente.
+            // Obtener la duración que se intentó colocar.
+            const horasSolicitadas = (
+                info.event.end.getTime() -
+                info.event.start.getTime()
+            ) / (1000 * 60 * 60);
+
+            // Calcular hasta dónde puede colocarse la asignatura.
+            const nuevoFin = obtenerFinDisponible(info.event);
+
+            // Validar que se haya podido calcular la disponibilidad.
+            if (!nuevoFin) {
+
+                info.event.remove();
+
+                mostrarAdvertencia(
+                    'No fue posible comprobar la disponibilidad del docente.',
+                    'No se pudo validar el horario'
+                );
+
+                return;
+            }
+
+            // Calcular las horas que realmente se pueden colocar.
+            const horasDisponibles = (
+                nuevoFin.getTime() -
+                info.event.start.getTime()
+            ) / (1000 * 60 * 60);
+
+            // No permitir bloques menores a una hora.
+            if (horasDisponibles < 1) {
+
+                info.event.remove();
+
+                mostrarAdvertencia(
+                    'No existe al menos una hora consecutiva disponible desde el horario seleccionado. Las horas de la asignatura permanecen disponibles.',
+                    'Horario no disponible'
+                );
+
+                return;
+            }
+
+            // =====================================
+            // AJUSTAR LA DURACIÓN DEL EVENTO
+            // =====================================
+
+            // Modificar únicamente la hora de finalización.
+            // No se mueven ni modifican otros eventos.
+            if (horasDisponibles < horasSolicitadas) {
+
+                info.event.setEnd(nuevoFin);
+
+                mostrarAdvertencia(
+                    `La asignatura se colocó durante ${horasDisponibles} hora(s), porque después existe un horario ocupado o una indisponibilidad del docente. Las horas restantes continúan disponibles.`,
+                    'Horario ajustado'
+                );
+            }
+
+            // =====================================
+            // VALIDAR DISPONIBILIDAD DEL DOCENTE
+            // =====================================
+
+            // Comprobar nuevamente el bloque que realmente se colocó.
             if (!docenteDisponible(info.event)) {
 
                 info.event.remove();
@@ -604,9 +711,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 return;
             }
-            
 
-            // Validar que no se exceda el horario permitido.
+            // =====================================
+            // VALIDAR LÍMITES DEL HORARIO
+            // =====================================
+
             if (excedeLimiteHorario(info.event)) {
 
                 info.event.remove();
@@ -619,26 +728,34 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            // Solicitar confirmación si utiliza el horario extendido del sábado.
+            // =====================================
+            // CONFIRMAR HORARIO EXTENDIDO DEL SÁBADO
+            // =====================================
+
             if (tocaHorarioExtendidoSabado(info.event)) {
 
                 const aceptado = await confirmarHorarioSabado();
 
                 if (!aceptado) {
 
-                    // Al eliminar el evento se recuperan las horas.
                     info.event.remove();
 
                     return;
                 }
             }
 
-            // Aplicar los colores de ScheduleSync.
+            // =====================================
+            // APLICAR COLORES
+            // =====================================
+
             info.event.setProp('backgroundColor', '#5A3E7D');
             info.event.setProp('borderColor', '#5A3E7D');
             info.event.setProp('textColor', '#FFFFFF');
 
-            // Actualizar las horas disponibles.
+            // =====================================
+            // ACTUALIZAR HORAS DISPONIBLES
+            // =====================================
+
             actualizarTarjetaDisponible(
                 datos.id_asignatura,
                 info.event
@@ -647,9 +764,15 @@ document.addEventListener('DOMContentLoaded', function () {
             // Actualizar los campos del formulario.
             actualizarDetallesHorario();
 
-            console.log('Asignatura colocada:', info.event);
+            console.log('Asignatura colocada:', {
+                asignatura: info.event.title,
+                inicio: info.event.start,
+                fin: info.event.end,
+                horasSolicitadas: horasSolicitadas,
+                horasColocadas: horasDisponibles,
+                horasRestantes: horasSolicitadas - horasDisponibles
+            });
         },
-
 
         // =========================================
         // REGRESAR ASIGNATURAS A DISPONIBLES
@@ -688,7 +811,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // =========================================
         // DETECTAR CAMBIOS DE HORARIO
         // =========================================
-
+/*
         eventDrop: async function (info) {
 
             // Validar la disponibilidad académica del docente.
@@ -739,7 +862,97 @@ document.addEventListener('DOMContentLoaded', function () {
                 fin: info.event.end
             });
         },
+*/
 
+
+        // =========================================
+        // DETECTAR CAMBIOS DE HORARIO
+        // =========================================
+
+        eventDrop: async function (info) {
+
+            // =====================================
+            // VALIDAR EMPALMES CON OTRAS ASIGNATURAS
+            // =====================================
+
+            const eventoEmpalmado = obtenerEventoEmpalmado(info.event);
+
+            if (eventoEmpalmado) {
+
+                // Regresar la asignatura a su posición anterior.
+                info.revert();
+
+                mostrarAdvertencia(
+                    `No puedes mover esta asignatura porque se empalma con "${eventoEmpalmado.title}", que ya está colocada en ese horario.`,
+                    'Horario ocupado'
+                );
+
+                return;
+            }
+
+            // =====================================
+            // VALIDAR DISPONIBILIDAD DEL DOCENTE
+            // =====================================
+
+            if (!docenteDisponible(info.event)) {
+
+                info.revert();
+
+                mostrarAdvertencia(
+                    'El docente no está disponible en ese horario. Verifica su disponibilidad académica.',
+                    'Docente no disponible'
+                );
+
+                return;
+            }
+
+            // =====================================
+            // VALIDAR LÍMITES DEL HORARIO
+            // =====================================
+
+            if (
+                excedeLimiteHorario(info.event) ||
+                !horarioPermitido(info.event.start, info.event.end)
+            ) {
+
+                info.revert();
+
+                mostrarAdvertencia(
+                    'No puedes colocar una asignatura fuera del horario permitido.',
+                    'Horario no permitido'
+                );
+
+                return;
+            }
+
+            // =====================================
+            // CONFIRMAR HORARIO EXTENDIDO DEL SÁBADO
+            // =====================================
+
+            if (tocaHorarioExtendidoSabado(info.event)) {
+
+                const aceptado = await confirmarHorarioSabado();
+
+                if (!aceptado) {
+
+                    info.revert();
+
+                    return;
+                }
+            }
+
+            // =====================================
+            // ACTUALIZAR INFORMACIÓN
+            // =====================================
+
+            actualizarDetallesHorario();
+
+            console.log('Horario actualizado:', {
+                asignatura: info.event.title,
+                inicio: info.event.start,
+                fin: info.event.end
+            });
+        },
 
         // =========================================
         // DETECTAR CAMBIOS EN LA DURACIÓN
@@ -771,6 +984,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 return;
             }
+
+
+            // =====================================
+            // VALIDAR EMPALMES CON OTRAS ASIGNATURAS
+            // =====================================
+
+            const eventoEmpalmado = obtenerEventoEmpalmado(info.event);
+
+            if (eventoEmpalmado) {
+
+                // Regresar el bloque a su duración anterior.
+                info.revert();
+
+                mostrarAdvertencia(
+                    `No puedes ampliar esta asignatura porque se empalma con "${eventoEmpalmado.title}", que ya está colocada en ese horario.`,
+                    'Horario ocupado'
+                );
+
+                return;
+            }
+
 
             // Validar la disponibilidad académica del docente.
             if (!docenteDisponible(info.event)) {
@@ -1491,4 +1725,193 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+
+    // =========================================
+    // CALCULAR LA DURACIÓN DISPONIBLE DEL BLOQUE
+    // =========================================
+
+    /**
+     * Descripción:
+     * Calcula cuánto tiempo puede ocupar una asignatura desde
+     * la hora en la que se soltó, sin coincidir con otros eventos,
+     * indisponibilidades del docente o límites del calendario.
+     *
+     * Entradas:
+     * - evento: Evento que se acaba de arrastrar al calendario.
+     *
+     * Salidas:
+     * - Devuelve la fecha y hora hasta donde puede colocarse.
+     */
+    function obtenerFinDisponible(evento) {
+
+        const inicio = evento.start;
+        const finSolicitado = evento.end;
+        const datos = evento.extendedProps;
+
+        // Comprobar que existan las fechas.
+        if (!inicio || !finSolicitado) {
+            return null;
+        }
+
+        // Comenzar considerando que se pueden colocar todas las horas.
+        let finDisponible = new Date(finSolicitado);
+
+        // =====================================
+        // VALIDAR LOS LÍMITES DEL CALENDARIO
+        // =====================================
+
+        const esSabado = inicio.getDay() === 6;
+
+        // El sábado termina a las 4 pm.
+        // De lunes a viernes termina a las 9 pm.
+        const limiteHorario = new Date(inicio);
+
+        limiteHorario.setHours(
+            esSabado ? 16 : 21,
+            0,
+            0,
+            0
+        );
+
+        if (limiteHorario < finDisponible) {
+            finDisponible = limiteHorario;
+        }
+
+        // =====================================
+        // VALIDAR OTROS EVENTOS DEL CALENDARIO
+        // =====================================
+
+        const otrosEventos = calendario.getEvents().filter(function (otroEvento) {
+
+            return (
+                otroEvento.id !== evento.id &&
+                otroEvento.start &&
+                otroEvento.end &&
+                otroEvento.start.toDateString() === inicio.toDateString()
+            );
+        });
+
+        otrosEventos.forEach(function (otroEvento) {
+
+            // Comprobar si existe un cruce con el intervalo solicitado.
+            const existeCruce =
+                inicio < otroEvento.end &&
+                finDisponible > otroEvento.start;
+
+            if (!existeCruce) {
+                return;
+            }
+
+            // Obtener el momento en el que comienza el impedimento.
+            const momentoImpedimento = new Date(
+                Math.max(
+                    inicio.getTime(),
+                    otroEvento.start.getTime()
+                )
+            );
+
+            // Conservar solamente el tiempo anterior al impedimento.
+            if (momentoImpedimento < finDisponible) {
+                finDisponible = momentoImpedimento;
+            }
+        });
+
+        // =====================================
+        // VALIDAR INDISPONIBILIDAD DEL DOCENTE
+        // =====================================
+
+        const dia = inicio.getDay() === 0
+            ? 7
+            : inicio.getDay();
+
+        const indisponibilidades = window.disponibilidadesDocentes;
+
+        // Si no se cargaron los datos, no permitir colocar el bloque.
+        if (!Array.isArray(indisponibilidades)) {
+            return null;
+        }
+
+        indisponibilidades.forEach(function (bloque) {
+
+            // Comprobar que corresponda al mismo docente,
+            // al mismo día y que esté confirmado.
+            if (
+                String(bloque.id_docente) !== String(datos.id_docente) ||
+                Number(bloque.dia) !== dia ||
+                Number(bloque.estadoConfirmacion) !== 1
+            ) {
+                return;
+            }
+
+            // Convertir las horas de indisponibilidad a minutos.
+            const inicioBloque = convertirHoraAMinutos(
+                bloque.hora_inicio
+            );
+
+            const finBloque = convertirHoraAMinutos(
+                bloque.hora_fin
+            );
+
+            // Obtener la hora de inicio del evento en minutos.
+            const horaInicioEvento =
+                inicio.getHours() * 60 +
+                inicio.getMinutes();
+
+            // Obtener la hora de finalización disponible en minutos.
+            const horaFinEvento =
+                finDisponible.getHours() * 60 +
+                finDisponible.getMinutes();
+
+            // Comprobar si existe un cruce.
+            const existeCruce =
+                horaInicioEvento < finBloque &&
+                horaFinEvento > inicioBloque;
+
+            if (!existeCruce) {
+                return;
+            }
+
+            // Obtener el momento en el que comienza la indisponibilidad.
+            const momentoImpedimento = new Date(inicio);
+
+            const minutosImpedimento = Math.max(
+                horaInicioEvento,
+                inicioBloque
+            );
+
+            momentoImpedimento.setHours(
+                Math.floor(minutosImpedimento / 60),
+                minutosImpedimento % 60,
+                0,
+                0
+            );
+
+            // Conservar solamente el tiempo anterior al impedimento.
+            if (momentoImpedimento < finDisponible) {
+                finDisponible = momentoImpedimento;
+            }
+        });
+
+        // =====================================
+        // AJUSTAR A HORAS COMPLETAS
+        // =====================================
+
+        // Calcular los minutos disponibles desde el inicio.
+        const minutosDisponibles =
+            (finDisponible.getTime() - inicio.getTime()) / 60000;
+
+        // Conservar únicamente horas completas.
+        const horasCompletas = Math.floor(
+            minutosDisponibles / 60
+        );
+
+        // Calcular la hora final del bloque.
+        const nuevoFin = new Date(inicio);
+
+        nuevoFin.setMinutes(
+            nuevoFin.getMinutes() + (horasCompletas * 60)
+        );
+
+        return nuevoFin;
+    }
 });

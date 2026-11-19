@@ -269,6 +269,16 @@ document.addEventListener('DOMContentLoaded', function () {
             // Deshabilitar el botón de guardar.
             botonGuardarHorario.disabled = true;
 
+            // Limpiar las asignaturas anteriores.
+            asignaturasDisponibles = [];
+
+            // Restablecer el mensaje inicial de la lista.
+            listaAsignaturas.innerHTML = `
+                <p class="texto-secundario">
+                    Selecciona un horario para consultar sus asignaturas.
+                </p>
+            `;
+
             // Si no hay un horario seleccionado, limpia la lista.
             if (!idHorario) {
 
@@ -373,10 +383,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 );
 
                 // Limpiar las disponibilidades si ocurre un error.
-window.disponibilidadesDocentes = [];
+                window.disponibilidadesDocentes = [];
 
             }
         });
+    }
+
+        // ========================================
+    // CARGA AUTOMÁTICA DEL HORARIO SELECCIONADO
+    // ========================================
+
+    // Comprobar si se ingresó desde el botón Agregar.
+    if (horarioRegistro && horarioRegistro.value !== '') {
+
+        // Ejecutar el evento change para consultar las asignaturas.
+        horarioRegistro.dispatchEvent(new Event('change'));
+
     }
 
 

@@ -504,14 +504,8 @@
    ACCIONES DE TABLA
 ========================================================= */
 
-.pagina-creacion-horarios .acciones-tabla {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 7px;
-}
 
-.pagina-creacion-horarios .boton-consultar {
+.pagina-creacion-horarios  .boton-accion {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -528,12 +522,10 @@
     text-decoration: none;
     white-space: nowrap;
     cursor: pointer;
-    transition:
-        background 0.2s,
-        border-color 0.2s;
+    transition: background 0.2s, border-color 0.2s;
 }
 
-.pagina-creacion-horarios .boton-consultar:hover {
+.pagina-creacion-horarios .boton-accion:hover {
     border-color: #C8B3DF;
     background: #F4EFF9;
     color: #654984;
@@ -1435,10 +1427,11 @@
 }
 
 /* =========================================
-   ALTURA UNIFORME DE LAS HORAS
+   ÁREA PARA DEVOLVER ASIGNATURAS
 ========================================= */
 
-#calendario-horarios .fc-timegrid-slot {
-    height: 800px !important;
-    min-height: 800px !important;
+#lista-asignaturas-disponibles {
+    min-height: 150px;
+    position: relative;
+    padding: 10px;
 }

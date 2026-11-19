@@ -270,11 +270,13 @@
                             <td>
                                 <div class="acciones-tabla">
                                     @if ($horarioCreado && $horarioActivo)
-                                        <a href="{{ route('creacion-horario.index', ['consultar' => $horario->id_horario]) }}" 
-                                            class="boton-accion boton-consultar" title="Gestionar horario"
-                                            aria-label="Gestionar horario del grupo {{ $grupo->nombreGrupo }}">
-                                            <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
-                                            Gestionar
+                                        <a href="{{ route('creacion-horario.index', ['agregar' => $horario->id_horario]) }}#contenedor-registro-horario"
+                                            class="boton-accion boton-secundario"
+                                            title="Agregar asignaturas al horario"
+                                            aria-label="Agregar asignaturas al horario del grupo {{ $grupo->nombreGrupo }}">
+
+                                            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                                            Agregar
                                         </a>
                                     @elseif ($horarioCreado)
                                         <span class="texto-secundario">
@@ -366,11 +368,15 @@
                                 Selecciona un horario registrado
                             </option>
 
+
                             @foreach ($horariosDisponibles as $horario)
-                                <option value="{{ $horario->id_horario }}">
-                                    {{ $horario->nombreHorario }}
-                                </option>
-                            @endforeach
+                            <option
+                                value="{{ $horario->id_horario }}"
+                                @selected((string) $idHorarioAgregar === (string) $horario->id_horario)
+                            >
+                                {{ $horario->nombreHorario }}
+                            </option>
+                        @endforeach
 
                         </select>
 

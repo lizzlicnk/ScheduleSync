@@ -132,6 +132,8 @@ class CreacionHorarioController extends Controller
                 
         }
 
+        $idHorarioAgregar = $solicitud->query('agregar');
+        
         // Retornar la vista con la información necesaria.
         return view('Horario.CreaciónHorario.GestionCreaciónHorario',
             compact(
@@ -141,7 +143,8 @@ class CreacionHorarioController extends Controller
                 'horarioConsultado',
                 'asignaturasDisponibles',
                 'docentesDisponibles',
-                'horariosDisponibles'
+                'horariosDisponibles',
+                'idHorarioAgregar'
             )
         );
     }
