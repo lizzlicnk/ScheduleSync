@@ -1,44 +1,63 @@
+
 document.addEventListener('DOMContentLoaded', function () {
 
-    // Obtiene los elementos principales de la tabla.
+    // ========================================
+    // ELEMENTOS PRINCIPALES DE LA TABLA
+    // ========================================
+
     const buscarHorario = document.getElementById('buscar-horario');
     const cuerpoTabla = document.getElementById('cuerpo-tabla-horarios');
     const totalResultados = document.getElementById('total-resultados-horarios');
 
-    // Obtiene los elementos del panel de filtros.
+    // Elementos del panel de filtros.
     const botonFiltros = document.getElementById('boton-filtros');
     const contenedorFiltros = document.getElementById('contenedor-filtros');
     const limpiarFiltros = document.getElementById('limpiar-filtros');
 
-    // Obtiene los campos de los filtros.
+    // Campos de los filtros.
     const filtroPeriodo = document.getElementById('filtro-periodo');
     const filtroCuatrimestre = document.getElementById('filtro-cuatrimestre');
     const filtroCarrera = document.getElementById('filtro-carrera');
     const filtroHorarioCreado = document.getElementById('filtro-horario-creado');
     const filtroEstadoHorario = document.getElementById('filtro-estado-horario');
 
-    // Obtiene los elementos de paginación.
+    // Elementos de paginación.
     const informacionPagina = document.getElementById('informacion-pagina-horarios');
     const paginaAnterior = document.getElementById('pagina-anterior-horarios');
     const paginaSiguiente = document.getElementById('pagina-siguiente-horarios');
 
-    // Obtener los elementos del registro.
+    // Elementos del registro.
     const botonMostrarRegistro = document.getElementById('boton-mostrar-registro');
     const botonCancelarRegistro = document.getElementById('boton-cancelar-registro');
     const contenedorRegistro = document.getElementById('contenedor-registro-horario');
 
+    // Obtener las filas correspondientes a los grupos.
+    const filasHorarios = cuerpoTabla
+        ? cuerpoTabla.querySelectorAll('tr[data-grupo]')
+        : [];
 
-    // Obtiene las filas correspondientes a los grupos.
-    const filasHorarios = cuerpoTabla.querySelectorAll('tr[data-grupo]');
-
-    // Define la cantidad de registros por página.
+    // Cantidad de registros por página.
     const horariosPorPagina = 5;
 
-    // Establece la página inicial.
+    // Página inicial.
     let paginaActual = 1;
 
-    // Normaliza el texto para facilitar las búsquedas.
+    // ========================================
+    // NORMALIZACIÓN DE TEXTO
+    // ========================================
+
+    /**
+     * Descripción:
+     * Normaliza un texto para facilitar las búsquedas.
+     *
+     * Entradas:
+     * - texto: Valor que se desea normalizar.
+     *
+     * Salidas:
+     * - Retorna el texto en minúsculas y sin acentos.
+     */
     function normalizarTexto(texto) {
+
         return String(texto ?? '')
             .toLowerCase()
             .normalize('NFD')
@@ -46,40 +65,80 @@ document.addEventListener('DOMContentLoaded', function () {
             .trim();
     }
 
-    // Obtiene los grupos que coinciden con la búsqueda y los filtros.
+    // ========================================
+    // OBTENER HORARIOS FILTRADOS
+    // ========================================
+
+    /**
+     * Descripción:
+     * Obtiene los horarios que coinciden con la búsqueda
+     * y los filtros seleccionados.
+     *
+     * Salidas:
+     * - Retorna las filas que cumplen los criterios.
+     */
     function obtenerHorariosFiltrados() {
 
-        const busqueda = normalizarTexto(buscarHorario.value);
+        const busqueda = normalizarTexto(buscarHorario?.value);
 
         return Array.from(filasHorarios).filter(function (fila) {
 
-            // Comprueba si el grupo coincide con la búsqueda.
+            // Comprobar si coincide con la búsqueda.
             const coincideBusqueda =
                 normalizarTexto(fila.dataset.nombre).includes(busqueda) ||
                 normalizarTexto(fila.dataset.grupo).includes(busqueda) ||
                 normalizarTexto(fila.dataset.nombreCarrera).includes(busqueda);
 
-            // Comprueba el periodo escolar.
-            const coincidePeriodo = !filtroPeriodo.value || fila.dataset.periodo === filtroPeriodo.value;
+            // Comprobar el periodo escolar.
+            const coincidePeriodo =
+                !filtroPeriodo?.value ||
+                fila.dataset.periodo === filtroPeriodo.value;
 
-            // Comprueba el cuatrimestre.
-            const coincideCuatrimestre = !filtroCuatrimestre.value || fila.dataset.cuatrimestre === filtroCuatrimestre.value;
+            // Comprobar el cuatrimestre.
+            const coincideCuatrimestre =
+                !filtroCuatrimestre?.value ||
+                fila.dataset.cuatrimestre === filtroCuatrimestre.value;
 
-            // Comprueba la carrera.
-            const coincideCarrera = !filtroCarrera.value || fila.dataset.carrera === filtroCarrera.value;
+            // Comprobar la carrera.
+            const coincideCarrera =
+                !filtroCarrera?.value ||
+                fila.dataset.carrera === filtroCarrera.value;
 
-            // Comprueba si el grupo tiene un horario creado.
-            const coincideHorarioCreado = !filtroHorarioCreado.value || fila.dataset.horarioCreado === filtroHorarioCreado.value;
+            // Comprobar si tiene un horario creado.
+            const coincideHorarioCreado =
+                !filtroHorarioCreado?.value ||
+                fila.dataset.horarioCreado === filtroHorarioCreado.value;
 
-            // Comprueba el estado del horario.
-            const coincideEstadoHorario = !filtroEstadoHorario.value || fila.dataset.estadoHorario === filtroEstadoHorario.value;
+            // Comprobar el estado del horario.
+            const coincideEstadoHorario =
+                !filtroEstadoHorario?.value ||
+                fila.dataset.estadoHorario === filtroEstadoHorario.value;
 
-            return coincideBusqueda && coincidePeriodo && coincideCuatrimestre && coincideCarrera && coincideHorarioCreado && coincideEstadoHorario;
+            return (
+                coincideBusqueda &&
+                coincidePeriodo &&
+                coincideCuatrimestre &&
+                coincideCarrera &&
+                coincideHorarioCreado &&
+                coincideEstadoHorario
+            );
         });
     }
 
-    // Actualiza los registros visibles y la paginación.
+    // ========================================
+    // ACTUALIZAR TABLA Y PAGINACIÓN
+    // ========================================
+
+    /**
+     * Descripción:
+     * Actualiza las filas visibles y la información
+     * de paginación de la tabla.
+     */
     function actualizarTabla() {
+
+        if (!cuerpoTabla) {
+            return;
+        }
 
         const horariosFiltrados = obtenerHorariosFiltrados();
 
@@ -88,37 +147,46 @@ document.addEventListener('DOMContentLoaded', function () {
             Math.ceil(horariosFiltrados.length / horariosPorPagina)
         );
 
-        // Evita permanecer en una página que ya no existe.
+        // Evitar permanecer en una página inexistente.
         if (paginaActual > totalPaginas) {
             paginaActual = totalPaginas;
         }
 
-        // Oculta todas las filas.
+        // Ocultar todas las filas.
         filasHorarios.forEach(function (fila) {
             fila.hidden = true;
         });
 
-        // Calcula los registros que corresponden a la página actual.
+        // Calcular los registros de la página actual.
         const inicio = (paginaActual - 1) * horariosPorPagina;
         const fin = inicio + horariosPorPagina;
 
-        // Muestra los registros correspondientes.
+        // Mostrar las filas correspondientes.
         horariosFiltrados.slice(inicio, fin).forEach(function (fila) {
             fila.hidden = false;
         });
 
-        // Actualiza el total de resultados.
-        totalResultados.textContent = horariosFiltrados.length;
+        // Actualizar el total de resultados.
+        if (totalResultados) {
+            totalResultados.textContent = horariosFiltrados.length;
+        }
 
-        // Actualiza la información de la página.
-        informacionPagina.textContent =
-            `Página ${paginaActual} de ${totalPaginas}`;
+        // Actualizar la información de la página.
+        if (informacionPagina) {
+            informacionPagina.textContent =
+                `Página ${paginaActual} de ${totalPaginas}`;
+        }
 
-        // Controla los botones de paginación.
-        paginaAnterior.disabled = paginaActual === 1;
-        paginaSiguiente.disabled = paginaActual === totalPaginas;
+        // Controlar los botones de paginación.
+        if (paginaAnterior) {
+            paginaAnterior.disabled = paginaActual === 1;
+        }
 
-        // Muestra el mensaje cuando no existen coincidencias.
+        if (paginaSiguiente) {
+            paginaSiguiente.disabled = paginaActual === totalPaginas;
+        }
+
+        // Mostrar el mensaje cuando no existen coincidencias.
         const filaSinResultados = document.getElementById(
             'fila-sin-resultados-horarios'
         );
@@ -128,31 +196,45 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Muestra u oculta el panel de filtros.
-    botonFiltros.addEventListener('click', function () {
+    // ========================================
+    // MOSTRAR Y OCULTAR FILTROS
+    // ========================================
 
-        contenedorFiltros.hidden = !contenedorFiltros.hidden;
+    if (botonFiltros && contenedorFiltros) {
 
-        const filtrosActivos = !contenedorFiltros.hidden;
+        botonFiltros.addEventListener('click', function () {
 
-        botonFiltros.setAttribute(
-            'aria-expanded',
-            String(filtrosActivos)
-        );
+            contenedorFiltros.hidden = !contenedorFiltros.hidden;
 
-        botonFiltros.classList.toggle(
-            'boton-activo',
-            filtrosActivos
-        );
-    });
+            const filtrosActivos = !contenedorFiltros.hidden;
 
-    // Actualiza la tabla al realizar una búsqueda.
-    buscarHorario.addEventListener('input', function () {
-        paginaActual = 1;
-        actualizarTabla();
-    });
+            botonFiltros.setAttribute(
+                'aria-expanded',
+                String(filtrosActivos)
+            );
 
-    // Actualiza la tabla cuando cambia algún filtro.
+            botonFiltros.classList.toggle(
+                'boton-activo',
+                filtrosActivos
+            );
+        });
+    }
+
+    // ========================================
+    // EVENTOS DE BÚSQUEDA Y FILTROS
+    // ========================================
+
+    if (buscarHorario) {
+
+        buscarHorario.addEventListener('input', function () {
+
+            paginaActual = 1;
+
+            actualizarTabla();
+        });
+    }
+
+    // Actualizar la tabla cuando cambia algún filtro.
     [
         filtroPeriodo,
         filtroCuatrimestre,
@@ -161,139 +243,183 @@ document.addEventListener('DOMContentLoaded', function () {
         filtroEstadoHorario
     ].forEach(function (filtro) {
 
-        filtro.addEventListener('change', function () {
+        if (filtro) {
+
+            filtro.addEventListener('change', function () {
+
+                paginaActual = 1;
+
+                actualizarTabla();
+            });
+        }
+    });
+
+    // ========================================
+    // LIMPIAR FILTROS
+    // ========================================
+
+    if (limpiarFiltros) {
+
+        limpiarFiltros.addEventListener('click', function () {
+
+            if (filtroPeriodo) filtroPeriodo.value = '';
+            if (filtroCuatrimestre) filtroCuatrimestre.value = '';
+            if (filtroCarrera) filtroCarrera.value = '';
+            if (filtroHorarioCreado) filtroHorarioCreado.value = '';
+            if (filtroEstadoHorario) filtroEstadoHorario.value = '';
+
+            if (buscarHorario) {
+                buscarHorario.value = '';
+            }
+
             paginaActual = 1;
+
             actualizarTabla();
-        });
-    });
-
-    // Limpia los filtros y la búsqueda.
-    limpiarFiltros.addEventListener('click', function () {
-
-        filtroPeriodo.value = '';
-        filtroCuatrimestre.value = '';
-        filtroCarrera.value = '';
-        filtroHorarioCreado.value = '';
-        filtroEstadoHorario.value = '';
-
-        buscarHorario.value = '';
-
-        paginaActual = 1;
-
-        actualizarTabla();
-    });
-
-    // Cambia a la página anterior.
-    paginaAnterior.addEventListener('click', function () {
-
-        if (paginaActual > 1) {
-            paginaActual--;
-            actualizarTabla();
-        }
-    });
-
-    // Cambia a la página siguiente.
-    paginaSiguiente.addEventListener('click', function () {
-
-        const totalPaginas = Math.max(
-            1,
-            Math.ceil(
-                obtenerHorariosFiltrados().length / horariosPorPagina
-            )
-        );
-
-        if (paginaActual < totalPaginas) {
-            paginaActual++;
-            actualizarTabla();
-        }
-    });
-
-    // Inicializa la tabla.
-    actualizarTabla();
-
-
-
-    if (botonMostrarRegistro && botonCancelarRegistro && contenedorRegistro) {
-
-        botonMostrarRegistro.addEventListener('click', function () {
-            contenedorRegistro.hidden = false;
-            botonMostrarRegistro.setAttribute('aria-expanded', 'true');
-            contenedorRegistro.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-
-        botonCancelarRegistro.addEventListener('click', function () {
-            contenedorRegistro.hidden = true;
-            botonMostrarRegistro.setAttribute('aria-expanded', 'false');
         });
     }
 
-    
+    // ========================================
+    // PAGINACIÓN
+    // ========================================
+
+    // Cambiar a la página anterior.
+    if (paginaAnterior) {
+
+        paginaAnterior.addEventListener('click', function () {
+
+            if (paginaActual > 1) {
+
+                paginaActual--;
+
+                actualizarTabla();
+            }
+        });
+    }
+
+    // Cambiar a la página siguiente.
+    if (paginaSiguiente) {
+
+        paginaSiguiente.addEventListener('click', function () {
+
+            const totalPaginas = Math.max(
+                1,
+                Math.ceil(
+                    obtenerHorariosFiltrados().length / horariosPorPagina
+                )
+            );
+
+            if (paginaActual < totalPaginas) {
+
+                paginaActual++;
+
+                actualizarTabla();
+            }
+        });
+    }
+
+    // Inicializar la tabla.
+    actualizarTabla();
+
+    // ========================================
+    // MOSTRAR Y CANCELAR REGISTRO
+    // ========================================
+
+    if (
+        botonMostrarRegistro &&
+        botonCancelarRegistro &&
+        contenedorRegistro
+    ) {
+
+        // Mostrar el formulario de registro.
+        botonMostrarRegistro.addEventListener('click', function () {
+
+            contenedorRegistro.hidden = false;
+
+            botonMostrarRegistro.setAttribute(
+                'aria-expanded',
+                'true'
+            );
+
+            contenedorRegistro.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        });
+
+        // Ocultar el formulario de registro.
+        botonCancelarRegistro.addEventListener('click', function () {
+
+            contenedorRegistro.hidden = true;
+
+            botonMostrarRegistro.setAttribute(
+                'aria-expanded',
+                'false'
+            );
+        });
+    }
+
     // ========================================
     // CONSULTA DE ASIGNATURAS POR HORARIO
     // ========================================
 
-    // Obtiene los elementos de selección y visualización.
+    // Elemento para seleccionar el horario.
     const horarioRegistro = document.getElementById('horario-registro');
 
+    // Contenedor de las asignaturas disponibles.
     const listaAsignaturas = document.getElementById(
         'lista-asignaturas-disponibles'
     );
 
-    // Obtiene el contenedor de los detalles del horario.
+    // Contenedor de los detalles del horario.
     const detallesHorario = document.getElementById(
         'detalles-horario-registro'
     );
 
-    // Obtiene el botón para guardar el horario.
+    // Botón para guardar el horario.
     const botonGuardarHorario = document.getElementById(
         'boton-guardar-horario'
     );
 
-    // Almacena las asignaturas consultadas.
+    // Almacenar las asignaturas consultadas.
     let asignaturasDisponibles = [];
 
-    // Comprueba que los elementos existan.
+    // Comprobar que existan los elementos necesarios.
     if (horarioRegistro && listaAsignaturas) {
 
-        // Consulta las asignaturas cuando cambia el horario seleccionado.
+        // Consultar las asignaturas cuando cambia el horario.
         horarioRegistro.addEventListener('change', async function () {
 
             const idHorario = this.value;
 
             // Limpiar los detalles anteriores.
-            detallesHorario.innerHTML = '';
+            if (detallesHorario) {
+                detallesHorario.innerHTML = '';
+            }
 
-            // Limpiar las disponibilidades del horario anterior.
+            // Limpiar las disponibilidades anteriores.
             window.disponibilidadesDocentes = [];
 
             // Deshabilitar el botón de guardar.
-            botonGuardarHorario.disabled = true;
+            if (botonGuardarHorario) {
+                botonGuardarHorario.disabled = true;
+            }
 
             // Limpiar las asignaturas anteriores.
             asignaturasDisponibles = [];
 
-            // Restablecer el mensaje inicial de la lista.
+            // Restablecer el mensaje inicial.
             listaAsignaturas.innerHTML = `
                 <p class="texto-secundario">
                     Selecciona un horario para consultar sus asignaturas.
                 </p>
             `;
 
-            // Si no hay un horario seleccionado, limpia la lista.
+            // Si no existe un horario seleccionado, finalizar.
             if (!idHorario) {
-
-                asignaturasDisponibles = [];
-
-                listaAsignaturas.innerHTML = `
-                    <p class="texto-secundario">
-                        Selecciona un horario para consultar sus asignaturas.
-                    </p>
-                `;
-
                 return;
             }
 
-            // Mostrar mensaje mientras se consultan las asignaturas.
+            // Mostrar mensaje de consulta.
             listaAsignaturas.innerHTML = `
                 <p class="texto-secundario">
                     Consultando asignaturas...
@@ -321,19 +447,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Comprobar si la consulta fue exitosa.
                 if (!respuesta.ok) {
+
                     throw new Error(
                         datos.mensaje ||
                         'No fue posible consultar las asignaturas.'
                     );
                 }
 
-                // Actualizar las disponibilidades confirmadas del periodo
-                // correspondiente al horario seleccionado.
+                // Actualizar las disponibilidades confirmadas.
                 window.disponibilidadesDocentes =
                     datos.disponibilidadesDocentes || [];
 
-                // Comprobar si existen asignaturas disponibles.
-                if (!datos.asignaturas || datos.asignaturas.length === 0) {
+                // Comprobar si existen asignaturas.
+                if (
+                    !datos.asignaturas ||
+                    datos.asignaturas.length === 0
+                ) {
 
                     asignaturasDisponibles = [];
 
@@ -353,13 +482,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Limpiar el contenido anterior.
                 listaAsignaturas.innerHTML = '';
 
-                // Generar las tarjetas de las asignaturas.
+                // Crear las tarjetas de las asignaturas.
                 asignaturasDisponibles.forEach(function (asignatura) {
 
                     const tarjeta = crearTarjetaAsignatura(asignatura);
 
                     listaAsignaturas.appendChild(tarjeta);
-
                 });
 
             } catch (error) {
@@ -367,12 +495,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Limpiar las asignaturas anteriores.
                 asignaturasDisponibles = [];
 
+                // Limpiar las disponibilidades.
+                window.disponibilidadesDocentes = [];
+
                 // Mostrar el mensaje de error.
                 listaAsignaturas.innerHTML = '';
 
                 const mensaje = document.createElement('p');
 
                 mensaje.classList.add('texto-secundario');
+
                 mensaje.textContent = error.message;
 
                 listaAsignaturas.appendChild(mensaje);
@@ -381,198 +513,220 @@ document.addEventListener('DOMContentLoaded', function () {
                     'Error al consultar asignaturas:',
                     error
                 );
-
-                // Limpiar las disponibilidades si ocurre un error.
-                window.disponibilidadesDocentes = [];
-
             }
         });
     }
 
-        // ========================================
+    // ========================================
     // CARGA AUTOMÁTICA DEL HORARIO SELECCIONADO
     // ========================================
 
-    // Comprobar si se ingresó desde el botón Agregar.
+    // Consultar automáticamente si ya existe un horario seleccionado.
     if (horarioRegistro && horarioRegistro.value !== '') {
 
-        // Ejecutar el evento change para consultar las asignaturas.
-        horarioRegistro.dispatchEvent(new Event('change'));
-
+        horarioRegistro.dispatchEvent(
+            new Event('change')
+        );
     }
 
+// ========================================
+// CREACIÓN DE TARJETAS DE ASIGNATURAS
+// ========================================
+
+/**
+ * Descripción:
+ * Construye la tarjeta visual de una asignatura,
+ * incluyendo sus horas, docentes y espacios disponibles.
+ *
+ * Entradas:
+ * - asignatura: Información de la asignatura y sus docentes.
+ *
+ * Salidas:
+ * - Retorna un elemento HTML con la información de la asignatura.
+ */
+function crearTarjetaAsignatura(asignatura) {
 
     // ========================================
-    // CREACIÓN DE TARJETAS DE ASIGNATURAS
+    // CONTENEDOR PRINCIPAL
     // ========================================
 
-    /**
-     * Descripción: Construye la tarjeta visual de una asignatura.
-     * Entradas: Recibe la información de la asignatura y sus docentes.
-     * Salidas: Retorna un elemento HTML con la información y selectores.
-     */
-    function crearTarjetaAsignatura(asignatura) {
+    const tarjeta = document.createElement('div');
 
-        // Crear el contenedor principal.
-        const tarjeta = document.createElement('div');
+    tarjeta.classList.add('tarjeta-asignatura-disponible');
 
-        tarjeta.classList.add('tarjeta-asignatura-disponible');
+    // Guardar los datos de la asignatura.
+    tarjeta.dataset.idAsignatura = asignatura.id_asignatura;
 
-        // Guardar los datos de la asignatura en la tarjeta.
-        tarjeta.dataset.idAsignatura = asignatura.id_asignatura;
+    // Guardar las horas disponibles.
+    tarjeta.dataset.cantidadHoras = asignatura.cantidadHoras;
 
-        // Guardar las horas que quedan disponibles.
-        tarjeta.dataset.cantidadHoras = asignatura.cantidadHoras;
+    // Conservar las horas totales originales.
+    tarjeta.dataset.horasTotales = asignatura.cantidadHoras;
 
-        // Conservar las horas totales originales.
-        tarjeta.dataset.horasTotales = asignatura.cantidadHoras;
+    // ========================================
+    // NOMBRE DE LA ASIGNATURA
+    // ========================================
 
-        // ========================================
-        // NOMBRE DE LA ASIGNATURA
-        // ========================================
+    const nombre = document.createElement('h4');
 
-        const nombre = document.createElement('h4');
+    nombre.classList.add('nombre-asignatura-tarjeta');
 
-        nombre.classList.add('nombre-asignatura-tarjeta');
+    nombre.textContent = asignatura.nombreAsignatura;
 
-        nombre.textContent = asignatura.nombreAsignatura;
+    // ========================================
+    // TOTAL DE HORAS
+    // ========================================
 
-        // ========================================
-        // TOTAL DE HORAS
-        // ========================================
+    const contenedorHoras = document.createElement('div');
 
-        const contenedorHoras = document.createElement('div');
+    contenedorHoras.classList.add('informacion-asignatura');
 
-        contenedorHoras.classList.add('informacion-asignatura');
+    const etiquetaHoras = document.createElement('strong');
 
-        const etiquetaHoras = document.createElement('strong');
+    etiquetaHoras.textContent = 'Horas disponibles: ';
 
-        etiquetaHoras.textContent = 'Horas disponibles: ';
+    const cantidadHoras = document.createElement('span');
 
-        const cantidadHoras = document.createElement('span');
+    cantidadHoras.textContent =
+        `${asignatura.cantidadHoras} horas`;
 
-        cantidadHoras.textContent =
-            `${asignatura.cantidadHoras} horas`;
+    contenedorHoras.appendChild(etiquetaHoras);
+    contenedorHoras.appendChild(cantidadHoras);
 
-        contenedorHoras.appendChild(etiquetaHoras);
-        contenedorHoras.appendChild(cantidadHoras);
+    // ========================================
+    // SELECCIÓN DEL DOCENTE
+    // ========================================
 
-        // ========================================
-        // SELECCIÓN DEL DOCENTE
-        // ========================================
+    const contenedorDocente = document.createElement('div');
 
-        
-        const contenedorDocente = document.createElement('div');
+    contenedorDocente.classList.add('campo-tarjeta-asignatura');
 
-        contenedorDocente.classList.add('campo-tarjeta-asignatura');
+    const etiquetaDocente = document.createElement('label');
 
-        const etiquetaDocente = document.createElement('label');
+    etiquetaDocente.textContent = 'Docente';
 
-        etiquetaDocente.textContent = 'Docente';
+    const selectorDocente = document.createElement('select');
 
-        const selectorDocente = document.createElement('select');
+    selectorDocente.classList.add('selector-docente');
 
-        selectorDocente.classList.add('selector-docente');
+    selectorDocente.required = true;
 
-        selectorDocente.required = true;
+    // Opción inicial.
+    const opcionInicialDocente = document.createElement('option');
 
-        const opcionInicialDocente = document.createElement('option');
+    opcionInicialDocente.value = '';
+    opcionInicialDocente.textContent = 'Selecciona un docente';
 
-        opcionInicialDocente.value = '';
-        opcionInicialDocente.textContent = 'Selecciona un docente';
+    selectorDocente.appendChild(opcionInicialDocente);
 
-        selectorDocente.appendChild(opcionInicialDocente);
+    // Obtener los docentes asociados con la asignatura.
+    const docentes = asignatura.docentes || [];
 
-        // Agregar los docentes disponibles.
-        (asignatura.docentes || []).forEach(function (docente) {
+    // Agregar las opciones de los docentes.
+    docentes.forEach(function (docente) {
 
-            const opcion = document.createElement('option');
+        const opcion = document.createElement('option');
 
-            opcion.value = docente.id_docente;
+        opcion.value = docente.id_docente;
 
-            opcion.textContent = docente.nombreCompleto;
+        // Guardar la carga académica máxima del docente.
+        opcion.dataset.cargaAcademica =
+            Number(docente.cargaAcademica) || 0;
 
-            selectorDocente.appendChild(opcion);
-        });
+        // Guardar las horas asignadas en otros horarios.
+        opcion.dataset.horasAsignadasOtrosHorarios =
+            Number(docente.horasAsignadasOtrosHorarios) || 0;
 
-        // Si no existen docentes disponibles, informar al usuario.
-        if (!asignatura.docentes || asignatura.docentes.length === 0) {
+        // Guardar las horas disponibles en otros horarios.
+        opcion.dataset.horasDisponibles =
+            Number(docente.horasDisponibles) || 0;
 
-            const opcionSinDocentes = document.createElement('option');
+        // Comprobar si el docente ya completó su carga académica.
+        if (Number(docente.horasDisponibles) <= 0) {
 
-            opcionSinDocentes.value = '';
-            opcionSinDocentes.textContent = 'Sin docentes disponibles';
+            opcion.disabled = true;
 
-            opcionSinDocentes.disabled = true;
+            opcion.textContent =
+                `${docente.nombreCompleto} (Carga académica completa)`;
 
-            selectorDocente.appendChild(opcionSinDocentes);
+        } else {
+
+            opcion.textContent =
+                `${docente.nombreCompleto} (${docente.horasDisponibles} h disponibles)`;
         }
 
-        contenedorDocente.appendChild(etiquetaDocente);
-        contenedorDocente.appendChild(selectorDocente);
+        selectorDocente.appendChild(opcion);
+    });
 
-        // ========================================
-        // SELECCIÓN DEL ESPACIO
-        // ========================================
+    // Informar cuando no existen docentes asociados.
+    if (docentes.length === 0) {
 
-        const contenedorEspacio = document.createElement('div');
+        const opcionSinDocentes = document.createElement('option');
 
-        contenedorEspacio.classList.add('campo-tarjeta-asignatura');
+        opcionSinDocentes.value = '';
+        opcionSinDocentes.textContent = 'Sin docentes disponibles';
+        opcionSinDocentes.disabled = true;
 
-        const etiquetaEspacio = document.createElement('label');
-
-        etiquetaEspacio.textContent = 'ESPACIO';
-
-        const selectorEspacio = document.createElement('select');
-
-        selectorEspacio.classList.add('selector-espacio');
-
-        selectorEspacio.required = true;
-
-        // Opción inicial.
-        const opcionInicialEspacio = document.createElement('option');
-
-        opcionInicialEspacio.value = '';
-        opcionInicialEspacio.textContent = 'Selecciona un espacio';
-
-        // Opción Aula.
-        const opcionAula = document.createElement('option');
-
-        opcionAula.value = 'Aula';
-        opcionAula.textContent = 'Aula';
-
-        // Opción Laboratorio.
-        const opcionLaboratorio = document.createElement('option');
-
-        opcionLaboratorio.value = 'Laboratorio';
-        opcionLaboratorio.textContent = 'Laboratorio';
-
-        selectorEspacio.appendChild(opcionInicialEspacio);
-        selectorEspacio.appendChild(opcionAula);
-        selectorEspacio.appendChild(opcionLaboratorio);
-
-        contenedorEspacio.appendChild(etiquetaEspacio);
-        contenedorEspacio.appendChild(selectorEspacio);
-
-        // ========================================
-        // AGREGAR ELEMENTOS A LA TARJETA
-        // ========================================
-
-        tarjeta.appendChild(nombre);
-        tarjeta.appendChild(contenedorHoras);
-        tarjeta.appendChild(contenedorDocente);
-        tarjeta.appendChild(contenedorEspacio);
-
-        // ========================================
-        // VALIDAR SELECCIONES ANTES DE ARRASTRAR
-        // ========================================
-
-    
-
-        return tarjeta;
+        selectorDocente.appendChild(opcionSinDocentes);
     }
 
+    contenedorDocente.appendChild(etiquetaDocente);
+    contenedorDocente.appendChild(selectorDocente);
 
+    // ========================================
+    // SELECCIÓN DEL ESPACIO
+    // ========================================
+
+    const contenedorEspacio = document.createElement('div');
+
+    contenedorEspacio.classList.add('campo-tarjeta-asignatura');
+
+    const etiquetaEspacio = document.createElement('label');
+
+    etiquetaEspacio.textContent = 'ESPACIO';
+
+    const selectorEspacio = document.createElement('select');
+
+    selectorEspacio.classList.add('selector-espacio');
+
+    selectorEspacio.required = true;
+
+    // Opción inicial.
+    const opcionInicialEspacio = document.createElement('option');
+
+    opcionInicialEspacio.value = '';
+    opcionInicialEspacio.textContent = 'Selecciona un espacio';
+
+    // Opción Aula.
+    const opcionAula = document.createElement('option');
+
+    opcionAula.value = 'Aula';
+    opcionAula.textContent = 'Aula';
+
+    // Opción Laboratorio.
+    const opcionLaboratorio = document.createElement('option');
+
+    opcionLaboratorio.value = 'Laboratorio';
+    opcionLaboratorio.textContent = 'Laboratorio';
+
+    selectorEspacio.appendChild(opcionInicialEspacio);
+    selectorEspacio.appendChild(opcionAula);
+    selectorEspacio.appendChild(opcionLaboratorio);
+
+    contenedorEspacio.appendChild(etiquetaEspacio);
+    contenedorEspacio.appendChild(selectorEspacio);
+
+    // ========================================
+    // AGREGAR ELEMENTOS A LA TARJETA
+    // ========================================
+
+    tarjeta.appendChild(nombre);
+    tarjeta.appendChild(contenedorHoras);
+    tarjeta.appendChild(contenedorDocente);
+    tarjeta.appendChild(contenedorEspacio);
+
+    return tarjeta;
+}
 
 
 });
