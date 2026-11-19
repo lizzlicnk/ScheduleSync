@@ -580,6 +580,30 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
+
+            // =====================================
+            // VALIDAR EMPALMES EN OTROS HORARIOS
+            // =====================================
+
+            const conflictoDocente = obtenerConflictoDocenteOtroHorario(
+                info.event
+            );
+
+            if (conflictoDocente) {
+
+                // Retirar la asignatura del calendario.
+                info.event.remove();
+
+                // Mostrar la advertencia correspondiente.
+                mostrarAdvertencia(
+                    'El docente está dando clases en otro horario durante el horario seleccionado.',
+                    'Conflicto de horario'
+                );
+
+                return;
+            }
+
+
             // Obtener la duración original del evento.
             const horasSolicitadas = (
                 info.event.end.getTime() -
@@ -2050,10 +2074,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return horasComprometidas;
     }
 
-
-    // =========================================
     // LIMPIAR EL CALENDARIO CUANDO CAMBIA EL HORARIO
-    // =========================================
 
     window.addEventListener('horario-cambiado', function () {
 
@@ -2066,5 +2087,93 @@ document.addEventListener('DOMContentLoaded', function () {
         // Limpiar los detalles del formulario.
         actualizarDetallesHorario();
     });
+
+  
+/**
+ * Descripción:
+ * Comprueba si un docente tiene una clase registrada en otro
+ * horario activo que coincida con el bloque que se intenta colocar.
+ *
+ * Entradas:
+ * - evento: Evento que se intenta agregar al calendario.
+ *
+ * Salidas:
+ * - Retorna el bloque con el que existe un empalme.
+ * - Retorna null cuando no existe ningún empalme.
+ */
+function obtenerConflictoDocenteOtroHorario(evento) {
+
+    const datos = evento.extendedProps;
+
+    const horariosActivos = window.horariosDocentesActivos;
+
+    // Comprobar que existan los datos necesarios.
+    if (
+        !datos.id_docente ||
+        !evento.start ||
+        !evento.end ||
+        !Array.isArray(horariosActivos)
+    ) {
+        return null;
+    }
+
+    // Obtener el nombre del día del evento.
+    const diasSemana = [
+        'domingo',
+        'lunes',
+        'martes',
+        'miercoles',
+        'jueves',
+        'viernes',
+        'sabado'
+    ];
+
+    const diaEvento = diasSemana[evento.start.getDay()];
+
+    // Obtener las horas del evento en minutos.
+    const horaInicioEvento =
+        evento.start.getHours() * 60 +
+        evento.start.getMinutes();
+
+    const horaFinEvento =
+        evento.end.getHours() * 60 +
+        evento.end.getMinutes();
+
+    // Buscar un bloque del mismo docente que coincida.
+    return horariosActivos.find(function (bloque) {
+
+        // Normalizar el día para evitar diferencias por acentos.
+        const diaBloque = String(bloque.dia)
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .trim();
+
+        // Comprobar que sea el mismo docente y día.
+        if (
+            String(bloque.id_docente) !== String(datos.id_docente) ||
+            diaBloque !== diaEvento
+        ) {
+            return false;
+        }
+
+        // Convertir las horas registradas a minutos.
+        const horaInicioBloque = convertirHoraAMinutos(
+            bloque.hora_inicio
+        );
+
+        const horaFinBloque = convertirHoraAMinutos(
+            bloque.hora_fin
+        );
+
+        // Comprobar si los horarios se cruzan.
+        return (
+            horaInicioEvento < horaFinBloque &&
+            horaFinEvento > horaInicioBloque
+        );
+
+    }) || null;
+}
+
 
 });

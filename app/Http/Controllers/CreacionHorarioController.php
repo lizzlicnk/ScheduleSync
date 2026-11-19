@@ -711,9 +711,7 @@ class CreacionHorarioController extends Controller
                 'estadoConfirmacion'
             ]);
 
-        // =========================================
         // CONSULTAR CARGA ACADÉMICA OCUPADA
-        // =========================================
 
         // Consultar las horas que cada docente ya tiene asignadas
         // en otros horarios activos del mismo periodo escolar.
@@ -755,9 +753,7 @@ class CreacionHorarioController extends Controller
             // Organizar los resultados por identificador del docente.
             ->keyBy('id_docente');
 
-        // =========================================
         // VALIDAR GRUPO
-        // =========================================
 
         // Verificar que el grupo esté activo.
         if (!$grupo || (int) $grupo->estado !== 1) {
@@ -767,9 +763,39 @@ class CreacionHorarioController extends Controller
             ], 422);
         }
 
-        // =========================================
+        // CONSULTAR CLASES EN OTROS HORARIOS
+
+        // Obtener los bloques que los docentes tienen registrados
+        // en otros horarios activos del mismo periodo escolar.
+        $horariosDocentesActivos = DB::table('detalle_horario as detalle')
+
+            // Relacionar los detalles con sus horarios.
+            ->join(
+                'horario',
+                'detalle.id_horario',
+                '=',
+                'horario.id_horario'
+            )
+
+            // Consultar únicamente horarios del mismo periodo.
+            ->where('horario.id_periodo', $horario->id_periodo)
+
+            // Considerar únicamente horarios activos.
+            ->where('horario.estado', 1)
+
+            // Excluir el horario que se está gestionando.
+            ->where('horario.id_horario', '!=', $horario->id_horario)
+
+            // Obtener los datos necesarios para comprobar empalmes.
+            ->get([
+                'detalle.id_docente',
+                'detalle.dia',
+                'detalle.hora_inicio',
+                'detalle.hora_fin'
+            ]);
+
+
         // CONSULTAR ASIGNATURAS
-        // =========================================
 
         // Consultar las asignaturas correspondientes al grupo.
         $asignaturas = Asignatura::with([
@@ -797,9 +823,8 @@ class CreacionHorarioController extends Controller
                 'cantidadHoras'
             ]);
 
-        // =========================================
+        
         // ORGANIZAR INFORMACIÓN PARA JAVASCRIPT
-        // =========================================
 
         // Organizar las asignaturas y sus docentes preferidos.
         $asignaturas = $asignaturas->map(function ($asignatura) use ($cargasDocentes) {
@@ -860,47 +885,47 @@ class CreacionHorarioController extends Controller
             ];
         });
 
-        // =========================================
+        
         // RETORNAR INFORMACIÓN
-        // =========================================
 
-        // Retornar las asignaturas y las disponibilidades confirmadas
-        // correspondientes al periodo del horario seleccionado.
+         // Retornar las asignaturas, disponibilidades y clases
+        // registradas en otros horarios activos del periodo.
         return response()->json([
             'asignaturas' => $asignaturas,
-            'disponibilidadesDocentes' => $disponibilidadesDocentes
+            'disponibilidadesDocentes' => $disponibilidadesDocentes,
+            'horariosDocentesActivos' => $horariosDocentesActivos
         ]);
     }
 
 
     /**
-     * Descripción:
-     * Comprueba que las horas asignadas a cada docente, considerando
-     * los demás horarios activos del mismo periodo y el horario actual,
-     * no superen su carga académica.
+     * Descripción: Comprueba que las horas asignadas a cada docente,
+     * considerando los demás horarios activos del mismo periodo y
+     * las nuevas asignaciones del horario actual, no superen su carga académica.
      *
      * Entradas:
-     * - $detalles: Bloques que se desean registrar.
-     * - $idPeriodo: Identificador del periodo escolar.
-     * - $idHorario: Identificador del horario que se está registrando.
+     * $detalles: Bloques que se desean registrar.
+     * $idPeriodo: Identificador del periodo escolar.
+     * $idHorario: Identificador del horario que se está registrando o modificando.
      *
      * Salidas:
-     * - No retorna información si todos los docentes cumplen su carga.
-     * - Genera una excepción de validación si algún docente la supera.
+     * No devuelve datos si todos los docentes cumplen su carga académica.
+     * Genera una excepción de validación si algún docente supera su límite.
      */
     private function validarCargaAcademicaDocentes(
-        $detalles,
-        $idPeriodo,
-        $idHorario
-    ) {
+        array $detalles,
+        int $idPeriodo,
+        int $idHorario
+    ): void {
 
-        // Obtener los identificadores de los docentes del horario.
+        // Obtener los identificadores únicos de los docentes involucrados.
         $idsDocentes = collect($detalles)
             ->pluck('id_docente')
             ->unique()
             ->values();
 
-        // Consultar las horas que ya tienen asignadas en otros horarios.
+        // Consultar las horas que los docentes tienen asignadas
+        // en otros horarios activos del mismo periodo.
         $horasOtrosHorarios = DB::table('detalle_horario as detalle')
             ->join(
                 'horario',
@@ -926,14 +951,14 @@ class CreacionHorarioController extends Controller
             ->groupBy('detalle.id_docente')
             ->pluck('horas_asignadas', 'detalle.id_docente');
 
-        // Calcular las horas que se están registrando en este horario.
+        // Calcular las horas que se están asignando en el horario actual.
         $horasHorarioActual = [];
 
         foreach ($detalles as $detalle) {
 
-            $idDocente = $detalle['id_docente'];
+            $idDocente = (int) $detalle['id_docente'];
 
-            // Convertir las horas a minutos para calcular su duración.
+            // Calcular la duración del bloque en horas.
             $inicio = strtotime($detalle['hora_inicio']);
             $fin = strtotime($detalle['hora_fin']);
 
@@ -947,7 +972,7 @@ class CreacionHorarioController extends Controller
             $horasHorarioActual[$idDocente] += $horasBloque;
         }
 
-        // Consultar la carga académica de los docentes involucrados.
+        // Consultar la carga académica máxima de los docentes.
         $docentes = Docente::whereIn('id_docente', $idsDocentes)
             ->get([
                 'id_docente',
@@ -955,17 +980,12 @@ class CreacionHorarioController extends Controller
             ])
             ->keyBy('id_docente');
 
-        // Comprobar la carga académica de cada docente.
+        // Comprobar que ningún docente supere su carga académica.
         foreach ($horasHorarioActual as $idDocente => $horasActuales) {
 
             $docente = $docentes->get($idDocente);
 
-            // Comprobar que el docente exista.
-            if (!$docente) {
-                continue;
-            }
-
-            // Obtener las horas ocupadas en otros horarios.
+            // Obtener las horas asignadas en otros horarios.
             $horasRegistradas = (float) (
                 $horasOtrosHorarios->get($idDocente, 0)
             );
@@ -973,7 +993,7 @@ class CreacionHorarioController extends Controller
             // Sumar las horas de otros horarios y del horario actual.
             $horasTotales = $horasRegistradas + $horasActuales;
 
-            // Obtener la carga académica máxima.
+            // Obtener la carga académica máxima del docente.
             $cargaAcademica = (float) $docente->cargaAcademica;
 
             // Impedir que se supere la carga académica.
@@ -981,13 +1001,15 @@ class CreacionHorarioController extends Controller
 
                 throw ValidationException::withMessages([
                     'detalles' =>
-                        'No se pueden registrar las asignaciones porque un docente superaría su carga académica de ' .
+                        'No se pueden guardar las asignaciones porque el docente supera su carga académica máxima de ' .
                         $cargaAcademica .
-                        ' horas. Actualmente tiene ' .
+                        ' horas. Tiene ' .
                         $horasRegistradas .
                         ' horas asignadas en otros horarios y se intentan agregar ' .
                         $horasActuales .
-                        ' horas en este horario.'
+                        ' horas en este horario, dando un total de ' .
+                        $horasTotales .
+                        ' horas.'
                 ]);
             }
         }

@@ -400,7 +400,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Limpiar las disponibilidades anteriores.
             window.disponibilidadesDocentes = [];
-
+            // Limpiar las clases de otros horarios anteriores.
+            window.horariosDocentesActivos = [];
+            
             // Deshabilitar el botón de guardar.
             if (botonGuardarHorario) {
                 botonGuardarHorario.disabled = true;
@@ -457,8 +459,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 // Actualizar las disponibilidades confirmadas.
-                window.disponibilidadesDocentes =
-                    datos.disponibilidadesDocentes || [];
+                window.disponibilidadesDocentes = datos.disponibilidadesDocentes || [];
+
+                    // Actualizar las clases registradas en otros horarios activos.
+                window.horariosDocentesActivos = datos.horariosDocentesActivos || [];
 
                 // Comprobar si existen asignaturas.
                 if (
@@ -499,6 +503,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Limpiar las disponibilidades.
                 window.disponibilidadesDocentes = [];
+
+                // Limpiar las clases de otros horarios.
+                window.horariosDocentesActivos = [];
 
                 // Mostrar el mensaje de error.
                 listaAsignaturas.innerHTML = '';
