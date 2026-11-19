@@ -149,6 +149,8 @@ class CreacionHorarioController extends Controller
         );
     }
 
+
+    
     /**
      * Descripción: Registra las asignaciones académicas en un horario existente.
      *
@@ -165,17 +167,6 @@ class CreacionHorarioController extends Controller
 
         // Validar los datos recibidos.
         $datosValidados = $this->validarDatosHorario($solicitud);
-
-
-        // =========================================
-        // VALIDAR LA CARGA ACADÉMICA DE LOS DOCENTES
-        // =========================================
-
-        $this->validarCargaAcademicaDocentes(
-            $detallesValidados,
-            $idPeriodo,
-            $horarioSeleccionado->id_horario
-        );
 
         // Consultar el horario seleccionado.
         $horarioSeleccionado = Horario::with([
@@ -199,9 +190,23 @@ class CreacionHorarioController extends Controller
         $idPeriodo = (int) $horarioSeleccionado->id_periodo;
 
         // Comprobar que el periodo sea del año 2026 en adelante.
-        if (!$horarioSeleccionado->periodo || (int) $horarioSeleccionado->periodo->anio < 2026) {
+        if (
+            !$horarioSeleccionado->periodo ||
+            (int) $horarioSeleccionado->periodo->anio < 2026
+        ) {
             throw ValidationException::withMessages([
                 'id_horario' => 'Solo se pueden registrar asignaciones en horarios de periodos del año 2026 en adelante.'
+            ]);
+        }
+
+        // =========================================
+        // COMPROBAR SI EL HORARIO YA TIENE ASIGNACIONES
+        // =========================================
+
+        // Evitar que se registren nuevamente asignaciones en el mismo horario.
+        if ($horarioSeleccionado->detalles()->exists()) {
+            throw ValidationException::withMessages([
+                'id_horario' => 'Este horario ya cuenta con asignaciones registradas. No es posible volver a registrarlas.'
             ]);
         }
 
@@ -212,6 +217,21 @@ class CreacionHorarioController extends Controller
             $idPeriodo,
             $horarioSeleccionado->id_horario
         );
+
+        // =========================================
+        // VALIDAR LA CARGA ACADÉMICA DE LOS DOCENTES
+        // =========================================
+
+        // Comprobar que ningún docente supere su carga académica.
+        $this->validarCargaAcademicaDocentes(
+            $detallesValidados,
+            $idPeriodo,
+            $horarioSeleccionado->id_horario
+        );
+
+        // =========================================
+        // GUARDAR LAS ASIGNACIONES
+        // =========================================
 
         // Registrar los detalles en el horario seleccionado.
         DB::transaction(function () use (
@@ -225,13 +245,14 @@ class CreacionHorarioController extends Controller
             );
         });
 
-        // Retornar el resultado del registro.
-        return $this->respuestaOperacion(
-            $solicitud,
-            'Las asignaciones del horario se registraron correctamente.',
-            $horarioSeleccionado->id_horario
+        // Retornar a la pantalla anterior con el mensaje de éxito.
+        return redirect()->back()->with(
+            'success',
+            'Las asignaciones del horario se registraron correctamente.'
         );
     }
+
+
 
     /**
      * Descripción: Valida el identificador del horario y sus bloques asignados.

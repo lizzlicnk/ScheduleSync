@@ -391,6 +391,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const idHorario = this.value;
 
+            // Notificar al calendario que se cambió el horario seleccionado.
+            window.dispatchEvent(new Event('horario-cambiado'));
+
             // Limpiar los detalles anteriores.
             if (detallesHorario) {
                 detallesHorario.innerHTML = '';
@@ -529,204 +532,204 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
-// ========================================
-// CREACIÓN DE TARJETAS DE ASIGNATURAS
-// ========================================
-
-/**
- * Descripción:
- * Construye la tarjeta visual de una asignatura,
- * incluyendo sus horas, docentes y espacios disponibles.
- *
- * Entradas:
- * - asignatura: Información de la asignatura y sus docentes.
- *
- * Salidas:
- * - Retorna un elemento HTML con la información de la asignatura.
- */
-function crearTarjetaAsignatura(asignatura) {
-
     // ========================================
-    // CONTENEDOR PRINCIPAL
+    // CREACIÓN DE TARJETAS DE ASIGNATURAS
     // ========================================
 
-    const tarjeta = document.createElement('div');
+    /**
+     * Descripción:
+     * Construye la tarjeta visual de una asignatura,
+     * incluyendo sus horas, docentes y espacios disponibles.
+     *
+     * Entradas:
+     * - asignatura: Información de la asignatura y sus docentes.
+     *
+     * Salidas:
+     * - Retorna un elemento HTML con la información de la asignatura.
+     */
+    function crearTarjetaAsignatura(asignatura) {
 
-    tarjeta.classList.add('tarjeta-asignatura-disponible');
+        // ========================================
+        // CONTENEDOR PRINCIPAL
+        // ========================================
 
-    // Guardar los datos de la asignatura.
-    tarjeta.dataset.idAsignatura = asignatura.id_asignatura;
+        const tarjeta = document.createElement('div');
 
-    // Guardar las horas disponibles.
-    tarjeta.dataset.cantidadHoras = asignatura.cantidadHoras;
+        tarjeta.classList.add('tarjeta-asignatura-disponible');
 
-    // Conservar las horas totales originales.
-    tarjeta.dataset.horasTotales = asignatura.cantidadHoras;
+        // Guardar los datos de la asignatura.
+        tarjeta.dataset.idAsignatura = asignatura.id_asignatura;
 
-    // ========================================
-    // NOMBRE DE LA ASIGNATURA
-    // ========================================
+        // Guardar las horas disponibles.
+        tarjeta.dataset.cantidadHoras = asignatura.cantidadHoras;
 
-    const nombre = document.createElement('h4');
+        // Conservar las horas totales originales.
+        tarjeta.dataset.horasTotales = asignatura.cantidadHoras;
 
-    nombre.classList.add('nombre-asignatura-tarjeta');
+        // ========================================
+        // NOMBRE DE LA ASIGNATURA
+        // ========================================
 
-    nombre.textContent = asignatura.nombreAsignatura;
+        const nombre = document.createElement('h4');
 
-    // ========================================
-    // TOTAL DE HORAS
-    // ========================================
+        nombre.classList.add('nombre-asignatura-tarjeta');
 
-    const contenedorHoras = document.createElement('div');
+        nombre.textContent = asignatura.nombreAsignatura;
 
-    contenedorHoras.classList.add('informacion-asignatura');
+        // ========================================
+        // TOTAL DE HORAS
+        // ========================================
 
-    const etiquetaHoras = document.createElement('strong');
+        const contenedorHoras = document.createElement('div');
 
-    etiquetaHoras.textContent = 'Horas disponibles: ';
+        contenedorHoras.classList.add('informacion-asignatura');
 
-    const cantidadHoras = document.createElement('span');
+        const etiquetaHoras = document.createElement('strong');
 
-    cantidadHoras.textContent =
-        `${asignatura.cantidadHoras} horas`;
+        etiquetaHoras.textContent = 'Horas disponibles: ';
 
-    contenedorHoras.appendChild(etiquetaHoras);
-    contenedorHoras.appendChild(cantidadHoras);
+        const cantidadHoras = document.createElement('span');
 
-    // ========================================
-    // SELECCIÓN DEL DOCENTE
-    // ========================================
+        cantidadHoras.textContent =
+            `${asignatura.cantidadHoras} horas`;
 
-    const contenedorDocente = document.createElement('div');
+        contenedorHoras.appendChild(etiquetaHoras);
+        contenedorHoras.appendChild(cantidadHoras);
 
-    contenedorDocente.classList.add('campo-tarjeta-asignatura');
+        // ========================================
+        // SELECCIÓN DEL DOCENTE
+        // ========================================
 
-    const etiquetaDocente = document.createElement('label');
+        const contenedorDocente = document.createElement('div');
 
-    etiquetaDocente.textContent = 'Docente';
+        contenedorDocente.classList.add('campo-tarjeta-asignatura');
 
-    const selectorDocente = document.createElement('select');
+        const etiquetaDocente = document.createElement('label');
 
-    selectorDocente.classList.add('selector-docente');
+        etiquetaDocente.textContent = 'Docente';
 
-    selectorDocente.required = true;
+        const selectorDocente = document.createElement('select');
 
-    // Opción inicial.
-    const opcionInicialDocente = document.createElement('option');
+        selectorDocente.classList.add('selector-docente');
 
-    opcionInicialDocente.value = '';
-    opcionInicialDocente.textContent = 'Selecciona un docente';
+        selectorDocente.required = true;
 
-    selectorDocente.appendChild(opcionInicialDocente);
+        // Opción inicial.
+        const opcionInicialDocente = document.createElement('option');
 
-    // Obtener los docentes asociados con la asignatura.
-    const docentes = asignatura.docentes || [];
+        opcionInicialDocente.value = '';
+        opcionInicialDocente.textContent = 'Selecciona un docente';
 
-    // Agregar las opciones de los docentes.
-    docentes.forEach(function (docente) {
+        selectorDocente.appendChild(opcionInicialDocente);
 
-        const opcion = document.createElement('option');
+        // Obtener los docentes asociados con la asignatura.
+        const docentes = asignatura.docentes || [];
 
-        opcion.value = docente.id_docente;
+        // Agregar las opciones de los docentes.
+        docentes.forEach(function (docente) {
 
-        // Guardar la carga académica máxima del docente.
-        opcion.dataset.cargaAcademica =
-            Number(docente.cargaAcademica) || 0;
+            const opcion = document.createElement('option');
 
-        // Guardar las horas asignadas en otros horarios.
-        opcion.dataset.horasAsignadasOtrosHorarios =
-            Number(docente.horasAsignadasOtrosHorarios) || 0;
+            opcion.value = docente.id_docente;
 
-        // Guardar las horas disponibles en otros horarios.
-        opcion.dataset.horasDisponibles =
-            Number(docente.horasDisponibles) || 0;
+            // Guardar la carga académica máxima del docente.
+            opcion.dataset.cargaAcademica =
+                Number(docente.cargaAcademica) || 0;
 
-        // Comprobar si el docente ya completó su carga académica.
-        if (Number(docente.horasDisponibles) <= 0) {
+            // Guardar las horas asignadas en otros horarios.
+            opcion.dataset.horasAsignadasOtrosHorarios =
+                Number(docente.horasAsignadasOtrosHorarios) || 0;
 
-            opcion.disabled = true;
+            // Guardar las horas disponibles en otros horarios.
+            opcion.dataset.horasDisponibles =
+                Number(docente.horasDisponibles) || 0;
 
-            opcion.textContent =
-                `${docente.nombreCompleto} (Carga académica completa)`;
+            // Comprobar si el docente ya completó su carga académica.
+            if (Number(docente.horasDisponibles) <= 0) {
 
-        } else {
+                opcion.disabled = true;
 
-            opcion.textContent =
-                `${docente.nombreCompleto} (${docente.horasDisponibles} h disponibles)`;
+                opcion.textContent =
+                    `${docente.nombreCompleto} (Carga académica completa)`;
+
+            } else {
+
+                opcion.textContent =
+                    `${docente.nombreCompleto} (${docente.horasDisponibles} h disponibles)`;
+            }
+
+            selectorDocente.appendChild(opcion);
+        });
+
+        // Informar cuando no existen docentes asociados.
+        if (docentes.length === 0) {
+
+            const opcionSinDocentes = document.createElement('option');
+
+            opcionSinDocentes.value = '';
+            opcionSinDocentes.textContent = 'Sin docentes disponibles';
+            opcionSinDocentes.disabled = true;
+
+            selectorDocente.appendChild(opcionSinDocentes);
         }
 
-        selectorDocente.appendChild(opcion);
-    });
+        contenedorDocente.appendChild(etiquetaDocente);
+        contenedorDocente.appendChild(selectorDocente);
 
-    // Informar cuando no existen docentes asociados.
-    if (docentes.length === 0) {
+        // ========================================
+        // SELECCIÓN DEL ESPACIO
+        // ========================================
 
-        const opcionSinDocentes = document.createElement('option');
+        const contenedorEspacio = document.createElement('div');
 
-        opcionSinDocentes.value = '';
-        opcionSinDocentes.textContent = 'Sin docentes disponibles';
-        opcionSinDocentes.disabled = true;
+        contenedorEspacio.classList.add('campo-tarjeta-asignatura');
 
-        selectorDocente.appendChild(opcionSinDocentes);
+        const etiquetaEspacio = document.createElement('label');
+
+        etiquetaEspacio.textContent = 'ESPACIO';
+
+        const selectorEspacio = document.createElement('select');
+
+        selectorEspacio.classList.add('selector-espacio');
+
+        selectorEspacio.required = true;
+
+        // Opción inicial.
+        const opcionInicialEspacio = document.createElement('option');
+
+        opcionInicialEspacio.value = '';
+        opcionInicialEspacio.textContent = 'Selecciona un espacio';
+
+        // Opción Aula.
+        const opcionAula = document.createElement('option');
+
+        opcionAula.value = 'Aula';
+        opcionAula.textContent = 'Aula';
+
+        // Opción Laboratorio.
+        const opcionLaboratorio = document.createElement('option');
+
+        opcionLaboratorio.value = 'Laboratorio';
+        opcionLaboratorio.textContent = 'Laboratorio';
+
+        selectorEspacio.appendChild(opcionInicialEspacio);
+        selectorEspacio.appendChild(opcionAula);
+        selectorEspacio.appendChild(opcionLaboratorio);
+
+        contenedorEspacio.appendChild(etiquetaEspacio);
+        contenedorEspacio.appendChild(selectorEspacio);
+
+        // ========================================
+        // AGREGAR ELEMENTOS A LA TARJETA
+        // ========================================
+
+        tarjeta.appendChild(nombre);
+        tarjeta.appendChild(contenedorHoras);
+        tarjeta.appendChild(contenedorDocente);
+        tarjeta.appendChild(contenedorEspacio);
+
+        return tarjeta;
     }
-
-    contenedorDocente.appendChild(etiquetaDocente);
-    contenedorDocente.appendChild(selectorDocente);
-
-    // ========================================
-    // SELECCIÓN DEL ESPACIO
-    // ========================================
-
-    const contenedorEspacio = document.createElement('div');
-
-    contenedorEspacio.classList.add('campo-tarjeta-asignatura');
-
-    const etiquetaEspacio = document.createElement('label');
-
-    etiquetaEspacio.textContent = 'ESPACIO';
-
-    const selectorEspacio = document.createElement('select');
-
-    selectorEspacio.classList.add('selector-espacio');
-
-    selectorEspacio.required = true;
-
-    // Opción inicial.
-    const opcionInicialEspacio = document.createElement('option');
-
-    opcionInicialEspacio.value = '';
-    opcionInicialEspacio.textContent = 'Selecciona un espacio';
-
-    // Opción Aula.
-    const opcionAula = document.createElement('option');
-
-    opcionAula.value = 'Aula';
-    opcionAula.textContent = 'Aula';
-
-    // Opción Laboratorio.
-    const opcionLaboratorio = document.createElement('option');
-
-    opcionLaboratorio.value = 'Laboratorio';
-    opcionLaboratorio.textContent = 'Laboratorio';
-
-    selectorEspacio.appendChild(opcionInicialEspacio);
-    selectorEspacio.appendChild(opcionAula);
-    selectorEspacio.appendChild(opcionLaboratorio);
-
-    contenedorEspacio.appendChild(etiquetaEspacio);
-    contenedorEspacio.appendChild(selectorEspacio);
-
-    // ========================================
-    // AGREGAR ELEMENTOS A LA TARJETA
-    // ========================================
-
-    tarjeta.appendChild(nombre);
-    tarjeta.appendChild(contenedorHoras);
-    tarjeta.appendChild(contenedorDocente);
-    tarjeta.appendChild(contenedorEspacio);
-
-    return tarjeta;
-}
 
 
 });
