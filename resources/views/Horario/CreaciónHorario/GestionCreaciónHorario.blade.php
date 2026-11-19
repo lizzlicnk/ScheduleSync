@@ -396,7 +396,7 @@
             </div>
 
             <!-- FORMULARIO DE REGISTRO -->
-            <form id="formulario-registro-horario" action="{{ route('horarios.store') }}" method="POST">
+            <form id="formulario-registro-horario" action="{{ route('horarios.store') }}" method="POST" novalidate>
                 @csrf
                 
                 <!-- DATOS GENERALES - SELECCIÓN DEL HORARIO REGISTRADO -->
@@ -469,12 +469,15 @@
                 <!-- ACCIONES DEL REGISTRO -->
                 <div class="acciones-registro-horario">
 
-                    <button type="button" class="boton-secundario" id="boton-cancelar-registro">
-                        Cancelar
+                    <!-- Guardar como borrador -->
+                    <button type="button" id="boton-guardar-borrador" class="boton-secundario" >
+                        <i class="fa-solid fa-file-pen"></i>
+                        Guardar borrador
                     </button>
 
-                    <button type="submit" class="boton-principal" id="boton-guardar-horario" disabled>
-                        <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+                    <!-- Guardar horario definitivamente -->
+                    <button type="button" id="boton-guardar-horario" class="boton-principal" disabled>
+                        <i class="fa-solid fa-floppy-disk"></i>
                         Guardar horario
                     </button>
 

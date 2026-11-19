@@ -25,6 +25,7 @@ class Horario extends Model
     protected $fillable = [
         'nombreHorario',
         'estado',
+        'borrador',
         'id_grupo',
         'id_periodo',
     ];
@@ -38,6 +39,7 @@ class Horario extends Model
     {
         return [
             'estado' => 'integer',
+            'borrador' => 'integer',
             'id_grupo' => 'integer',
             'id_periodo' => 'integer',
         ];

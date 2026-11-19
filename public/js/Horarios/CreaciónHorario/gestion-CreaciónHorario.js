@@ -379,164 +379,13 @@ document.addEventListener('DOMContentLoaded', function () {
         'boton-guardar-horario'
     );
 
+    // Botón para guardar el horario como borrador.
+    const botonGuardarBorrador = document.getElementById(
+        'boton-guardar-borrador'
+    );
+
     // Almacenar las asignaturas consultadas.
     let asignaturasDisponibles = [];
-
-    // Comprobar que existan los elementos necesarios.
-    if (horarioRegistro && listaAsignaturas) {
-
-        // Consultar las asignaturas cuando cambia el horario.
-        horarioRegistro.addEventListener('change', async function () {
-
-            const idHorario = this.value;
-
-            // Notificar al calendario que se cambió el horario seleccionado.
-            window.dispatchEvent(new Event('horario-cambiado'));
-
-            // Limpiar los detalles anteriores.
-            if (detallesHorario) {
-                detallesHorario.innerHTML = '';
-            }
-
-            // Limpiar las disponibilidades anteriores.
-            window.disponibilidadesDocentes = [];
-            // Limpiar las clases de otros horarios anteriores.
-            window.horariosDocentesActivos = [];
-            
-            // Deshabilitar el botón de guardar.
-            if (botonGuardarHorario) {
-                botonGuardarHorario.disabled = true;
-            }
-
-            // Limpiar las asignaturas anteriores.
-            asignaturasDisponibles = [];
-
-            // Restablecer el mensaje inicial.
-            listaAsignaturas.innerHTML = `
-                <p class="texto-secundario">
-                    Selecciona un horario para consultar sus asignaturas.
-                </p>
-            `;
-
-            // Si no existe un horario seleccionado, finalizar.
-            if (!idHorario) {
-                return;
-            }
-
-            // Mostrar mensaje de consulta.
-            listaAsignaturas.innerHTML = `
-                <p class="texto-secundario">
-                    Consultando asignaturas...
-                </p>
-            `;
-
-            try {
-
-                // Construir la dirección de consulta.
-                const url = this.dataset.url.replace(
-                    'HORARIO_ID',
-                    encodeURIComponent(idHorario)
-                );
-
-                // Consultar las asignaturas al controlador.
-                const respuesta = await fetch(url, {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                });
-
-                const datos = await respuesta.json();
-
-                // Comprobar si la consulta fue exitosa.
-                if (!respuesta.ok) {
-
-                    throw new Error(
-                        datos.mensaje ||
-                        'No fue posible consultar las asignaturas.'
-                    );
-                }
-
-                // Actualizar las disponibilidades confirmadas.
-                window.disponibilidadesDocentes = datos.disponibilidadesDocentes || [];
-
-                    // Actualizar las clases registradas en otros horarios activos.
-                window.horariosDocentesActivos = datos.horariosDocentesActivos || [];
-
-                // Comprobar si existen asignaturas.
-                if (
-                    !datos.asignaturas ||
-                    datos.asignaturas.length === 0
-                ) {
-
-                    asignaturasDisponibles = [];
-
-                    listaAsignaturas.innerHTML = `
-                        <p class="texto-secundario">
-                            No hay asignaturas activas para la carrera
-                            y cuatrimestre de este grupo.
-                        </p>
-                    `;
-
-                    return;
-                }
-
-                // Guardar las asignaturas recibidas.
-                asignaturasDisponibles = datos.asignaturas;
-
-                // Limpiar el contenido anterior.
-                listaAsignaturas.innerHTML = '';
-
-                // Crear las tarjetas de las asignaturas.
-                asignaturasDisponibles.forEach(function (asignatura) {
-
-                    const tarjeta = crearTarjetaAsignatura(asignatura);
-
-                    listaAsignaturas.appendChild(tarjeta);
-                });
-
-            } catch (error) {
-
-                // Limpiar las asignaturas anteriores.
-                asignaturasDisponibles = [];
-
-                // Limpiar las disponibilidades.
-                window.disponibilidadesDocentes = [];
-
-                // Limpiar las clases de otros horarios.
-                window.horariosDocentesActivos = [];
-
-                // Mostrar el mensaje de error.
-                listaAsignaturas.innerHTML = '';
-
-                const mensaje = document.createElement('p');
-
-                mensaje.classList.add('texto-secundario');
-
-                mensaje.textContent = error.message;
-
-                listaAsignaturas.appendChild(mensaje);
-
-                console.error(
-                    'Error al consultar asignaturas:',
-                    error
-                );
-            }
-        });
-    }
-
-    // ========================================
-    // CARGA AUTOMÁTICA DEL HORARIO SELECCIONADO
-    // ========================================
-
-    // Consultar automáticamente si ya existe un horario seleccionado.
-    if (horarioRegistro && horarioRegistro.value !== '') {
-
-        horarioRegistro.dispatchEvent(
-            new Event('change')
-        );
-    }
 
     // ========================================
     // CREACIÓN DE TARJETAS DE ASIGNATURAS
@@ -553,8 +402,8 @@ document.addEventListener('DOMContentLoaded', function () {
      * Salidas:
      * - Retorna un elemento HTML con la información de la asignatura.
      */
-    function crearTarjetaAsignatura(asignatura) {
-
+    //function crearTarjetaAsignatura(asignatura) {
+    function crearTarjetaAsignatura(asignatura, detallesGuardados = []) {
         // ========================================
         // CONTENEDOR PRINCIPAL
         // ========================================
@@ -679,6 +528,19 @@ document.addEventListener('DOMContentLoaded', function () {
             selectorDocente.appendChild(opcionSinDocentes);
         }
 
+        // ========================================
+        // RECUPERAR DOCENTE DEL BORRADOR
+        // ========================================
+
+        // Obtener el docente que ya estaba asignado.
+        if (detallesGuardados.length > 0) {
+
+            const idDocenteGuardado = detallesGuardados[0].id_docente;
+
+            // Restaurar el docente seleccionado.
+            selectorDocente.value = String(idDocenteGuardado);
+        }
+
         contenedorDocente.appendChild(etiquetaDocente);
         contenedorDocente.appendChild(selectorDocente);
 
@@ -722,6 +584,19 @@ document.addEventListener('DOMContentLoaded', function () {
         selectorEspacio.appendChild(opcionAula);
         selectorEspacio.appendChild(opcionLaboratorio);
 
+        // ========================================
+        // RECUPERAR ESPACIO DEL BORRADOR
+        // ========================================
+
+        // Obtener el espacio guardado en el primer detalle.
+        if (detallesGuardados.length > 0) {
+
+            const espacioGuardado = detallesGuardados[0].aula;
+
+            // Restaurar el espacio seleccionado.
+            selectorEspacio.value = espacioGuardado || '';
+        }
+
         contenedorEspacio.appendChild(etiquetaEspacio);
         contenedorEspacio.appendChild(selectorEspacio);
 
@@ -736,6 +611,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return tarjeta;
     }
+
+    // Permitir que otros archivos JavaScript utilicen esta función.
+    window.crearTarjetaAsignatura = crearTarjetaAsignatura;
 
     // ========================================
     // CONSULTA DE HORARIOS REGISTRADOS

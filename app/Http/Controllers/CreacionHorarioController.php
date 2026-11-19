@@ -42,12 +42,19 @@ class CreacionHorarioController extends Controller
 
         // Consultar los horarios académicos registrados y activos
         // que todavía no tienen asignaciones.
+        // Consultar los horarios activos que todavía no se finalizan.
+        // Se incluyen los horarios nuevos y los que ya están guardados como borrador.
         $horariosDisponibles = Horario::with([
             'grupo.carrera',
-            'periodo'
+            'periodo',
+            'detalles.docente.usuario',
+            'detalles.asignatura'
         ])
             ->where('estado', 1)
-            ->whereDoesntHave('detalles')
+            ->where(function ($consulta) {
+                $consulta->whereNull('borrador')
+                    ->orWhere('borrador', 0);
+            })
             ->orderBy('id_horario', 'desc')
             ->get();
 
@@ -161,11 +168,14 @@ class CreacionHorarioController extends Controller
 
     }
 
+
     /**
      * Descripción: Registra las asignaciones académicas en un horario existente.
+     * Permite guardar el horario como borrador o definitivamente.
      *
      * Entradas:
-     * $solicitud: Contiene el identificador del horario y sus bloques asignados.
+     * $solicitud: Contiene el identificador del horario, sus bloques asignados
+     * y el tipo de guardado solicitado.
      *
      * Salidas:
      * Retorna una respuesta indicando si las asignaciones fueron registradas.
@@ -175,8 +185,36 @@ class CreacionHorarioController extends Controller
         // Comprobar que el usuario tenga un rol autorizado.
         $this->verificarRol([1, 2]);
 
+       // Obtener el tipo de guardado solicitado.
+        $borrador = $solicitud->input('borrador', 1);
+
+        // Agregar el valor predeterminado a la solicitud.
+        $solicitud->merge([
+            'borrador' => $borrador
+        ]);
+
+        // Validar que el tipo de guardado sea permitido.
+        $solicitud->validate([
+            'borrador' => [
+                'required',
+                'integer',
+                'in:0,1'
+            ]
+        ]);
+
+        // Convertir el tipo de guardado a entero.
+        $borrador = (int) $borrador;
+
         // Validar los datos recibidos.
-        $datosValidados = $this->validarDatosHorario($solicitud);
+        // Si es borrador, se permite que no tenga asignaciones.
+        $datosValidados = $this->validarDatosHorario(
+            $solicitud,
+            $borrador === 0
+        );
+
+        // Obtener los detalles recibidos.
+        // Si no se enviaron asignaciones, se utiliza un arreglo vacío.
+        $detallesRecibidos = $datosValidados['detalles'] ?? [];
 
         // Consultar el horario seleccionado.
         $horarioSeleccionado = Horario::with([
@@ -185,6 +223,13 @@ class CreacionHorarioController extends Controller
         ])
             ->where('estado', 1)
             ->findOrFail($datosValidados['id_horario']);
+
+        // Comprobar que el horario todavía no se encuentre finalizado.
+        if ((int) $horarioSeleccionado->borrador === 1) {
+            throw ValidationException::withMessages([
+                'id_horario' => 'Este horario ya está finalizado y no se puede modificar desde este formulario.'
+            ]);
+        }
 
         // Obtener el grupo correspondiente al horario.
         $grupoSeleccionado = $horarioSeleccionado->grupo;
@@ -210,19 +255,13 @@ class CreacionHorarioController extends Controller
         }
 
         // =========================================
-        // COMPROBAR SI EL HORARIO YA TIENE ASIGNACIONES
+        // VALIDAR LAS ASIGNACIONES
         // =========================================
 
-        // Evitar que se registren nuevamente asignaciones en el mismo horario.
-        if ($horarioSeleccionado->detalles()->exists()) {
-            throw ValidationException::withMessages([
-                'id_horario' => 'Este horario ya cuenta con asignaciones registradas. No es posible volver a registrarlas.'
-            ]);
-        }
-
         // Validar las asignaciones antes de guardar.
+        // Si se trata de un borrador vacío, se validará un arreglo sin elementos.
         $detallesValidados = $this->validarAsignaciones(
-            $datosValidados['detalles'],
+            $detallesRecibidos,
             $grupoSeleccionado,
             $idPeriodo,
             $horarioSeleccionado->id_horario
@@ -240,73 +279,94 @@ class CreacionHorarioController extends Controller
         );
 
         // =========================================
-        // GUARDAR LAS ASIGNACIONES
+        // GUARDAR LAS ASIGNACIONES Y EL TIPO DE HORARIO
         // =========================================
 
-        // Registrar los detalles en el horario seleccionado.
+        // Registrar los detalles y actualizar el tipo de guardado.
         DB::transaction(function () use (
             $horarioSeleccionado,
-            $detallesValidados
+            $detallesValidados,
+            $borrador
         ) {
-            // Guardar los bloques asignados al horario existente.
+
+            // Eliminar los detalles anteriores para evitar duplicados.
+            $horarioSeleccionado->detalles()->delete();
+
+            // Registrar los bloques asignados al horario existente.
             $this->guardarDetallesHorario(
                 $horarioSeleccionado,
                 $detallesValidados
             );
+
+            // Actualizar el indicador de borrador.
+            $horarioSeleccionado->borrador = $borrador;
+            $horarioSeleccionado->save();
         });
 
-        // Retornar a la pantalla anterior con el mensaje de éxito.
+        // Retornar a la pantalla anterior con el mensaje correspondiente.
         return redirect()->back()->with(
             'success',
-            'Las asignaciones del horario se registraron correctamente.'
+            $borrador === 0
+                ? 'El horario se guardó como borrador correctamente.'
+                : 'Las asignaciones del horario se registraron correctamente.'
         );
     }
 
     /**
      * Descripción: Valida el identificador del horario y sus bloques asignados.
+     * Permite omitir los detalles cuando se solicita guardar un borrador.
      *
      * Entradas:
      * $solicitud: Datos enviados desde el formulario.
+     * $permitirDetallesVacios: Indica si se permite guardar sin asignaciones.
      *
      * Salidas:
      * Retorna los datos validados.
      */
-    private function validarDatosHorario(Request $solicitud): array
-    {
+    private function validarDatosHorario(
+        Request $solicitud,
+        bool $permitirDetallesVacios = false
+    ): array {
         return $solicitud->validate([
             'id_horario' => [
                 'required',
                 'integer',
                 'exists:horario,id_horario'
             ],
-            'detalles' => [
-                'required',
-                'array',
-                'min:1'
-            ],
+
+            // Permitir detalles vacíos únicamente cuando se guarda un borrador.
+            'detalles' => $permitirDetallesVacios
+                ? ['sometimes', 'array']
+                : ['required', 'array', 'min:1'],
+
             'detalles.*.dia' => [
                 'required',
                 'string',
                 'max:15'
             ],
+
             'detalles.*.hora_inicio' => [
                 'required',
                 'date_format:H:i'
             ],
+
             'detalles.*.hora_fin' => [
                 'required',
                 'date_format:H:i'
             ],
+
             'detalles.*.aula' => [
                 'nullable',
                 'string',
                 'max:20'
             ],
+
             'detalles.*.id_docente' => [
                 'required',
                 'integer',
                 'exists:docente,id_docente'
             ],
+
             'detalles.*.id_asignatura' => [
                 'required',
                 'integer',
@@ -530,6 +590,7 @@ class CreacionHorarioController extends Controller
                     $idHorario
                 ) {
                     $consulta->where('estado', 1)
+                        ->where('borrador', 1)
                         ->where('id_periodo', $idPeriodo);
 
                     // Excluir el horario que se está modificando.
@@ -731,6 +792,9 @@ class CreacionHorarioController extends Controller
             // Considerar únicamente horarios activos.
             ->where('horario.estado', 1)
 
+            // Considerar únicamente horarios finalizados.
+            ->where('horario.borrador', 1)
+
             // Excluir el horario que se está gestionando actualmente.
             ->where('horario.id_horario', '!=', $horario->id_horario)
 
@@ -783,6 +847,8 @@ class CreacionHorarioController extends Controller
             // Considerar únicamente horarios activos.
             ->where('horario.estado', 1)
 
+            ->where('horario.borrador', 1)
+
             // Excluir el horario que se está gestionando.
             ->where('horario.id_horario', '!=', $horario->id_horario)
 
@@ -794,6 +860,42 @@ class CreacionHorarioController extends Controller
                 'detalle.hora_fin'
             ]);
 
+        // =========================================
+        // CONSULTAR LOS DETALLES DEL HORARIO ACTUAL
+        // =========================================
+
+        // Obtener los bloques que ya están guardados en el horario seleccionado.
+        $detallesHorario = $horario->detalles()
+            ->with([
+                'asignatura',
+                'docente.usuario'
+            ])
+            ->get()
+            ->map(function ($detalle) {
+
+                // Obtener el nombre completo del docente.
+                $usuario = $detalle->docente->usuario ?? null;
+
+                $nombreDocente = $usuario
+                    ? trim(
+                        $usuario->nombreUsuario . ' ' .
+                        $usuario->apellidoPaterno . ' ' .
+                        $usuario->apellidoMaterno
+                    )
+                    : 'Docente no disponible';
+
+                return [
+                    'id_asignatura' => $detalle->id_asignatura,
+                    'id_docente' => $detalle->id_docente,
+                    'dia' => $detalle->dia,
+                    'hora_inicio' => $detalle->hora_inicio,
+                    'hora_fin' => $detalle->hora_fin,
+                    'aula' => $detalle->aula,
+                    'nombreAsignatura' => $detalle->asignatura->nombreAsignatura ?? 'Asignatura no disponible',
+                    'nombreDocente' => $nombreDocente
+                ];
+            })
+            ->values();
 
         // CONSULTAR ASIGNATURAS
 
@@ -886,14 +988,16 @@ class CreacionHorarioController extends Controller
         });
 
         
+        
         // RETORNAR INFORMACIÓN
 
-         // Retornar las asignaturas, disponibilidades y clases
-        // registradas en otros horarios activos del periodo.
+        // Retornar las asignaturas, disponibilidades, clases
+        // registradas en otros horarios y detalles del horario actual.
         return response()->json([
             'asignaturas' => $asignaturas,
             'disponibilidadesDocentes' => $disponibilidadesDocentes,
-            'horariosDocentesActivos' => $horariosDocentesActivos
+            'horariosDocentesActivos' => $horariosDocentesActivos,
+            'detallesHorario' => $detallesHorario
         ]);
     }
 
@@ -935,8 +1039,8 @@ class CreacionHorarioController extends Controller
             )
             ->where('horario.id_periodo', $idPeriodo)
             ->where('horario.estado', 1)
+            ->where('horario.borrador', 1)
             ->where('horario.id_horario', '!=', $idHorario)
-            ->whereIn('detalle.id_docente', $idsDocentes)
             ->select('detalle.id_docente')
             ->selectRaw('
                 SUM(

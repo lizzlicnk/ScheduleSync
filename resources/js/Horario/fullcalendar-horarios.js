@@ -31,6 +31,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const botonSabado = document.getElementById('boton-sabado');
     const listaAsignaturas = document.getElementById('lista-asignaturas-disponibles');
 
+    // Obtener el selector del horario registrado.
+    const horarioRegistro = document.getElementById('horario-registro');
+
+    // Obtener el formulario de registro del horario.
+    const formularioRegistro = document.getElementById(
+        'formulario-registro-horario'
+    );
+
     // Evitar errores si esta vista no contiene el calendario.
     if (!elementoCalendario) {
         return;
@@ -1394,11 +1402,416 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // =========================================
+    // CONTROLAR LOS BOTONES DE GUARDADO
+    // =========================================
+
+    // Obtener los botones del formulario.
+    const botonGuardarHorario = document.getElementById(
+        'boton-guardar-horario'
+    );
+
+    const botonGuardarBorrador = document.getElementById(
+        'boton-guardar-borrador'
+    );
+
+
+/**
+ * Descripción:
+ * Prepara y envía el formulario para guardar un horario
+ * como borrador o definitivamente.
+ *
+ * Entradas:
+ * - tipoGuardado: 0 para borrador y 1 para guardado definitivo.
+ *
+ * Salidas:
+ * Envía los datos del horario al método store del controlador.
+ */
+function guardarHorario(tipoGuardado) {
+
+    // Comprobar que exista el formulario.
+    if (!formularioRegistro) {
+        return;
+    }
+
+    // Obtener el selector del horario.
+    const horarioRegistro = document.getElementById(
+        'horario-registro'
+    );
+
+    // Validar únicamente que se haya seleccionado un horario.
+    if (!horarioRegistro || !horarioRegistro.checkValidity()) {
+
+        horarioRegistro?.reportValidity();
+
+        return;
+    }
+
+    // Obtener los eventos registrados en el calendario.
+    const eventos = calendario.getEvents();
+
+    // Comprobar que el guardado definitivo tenga asignaciones.
+    if (tipoGuardado === 1 && eventos.length === 0) {
+
+        mostrarAdvertencia(
+            'Debes colocar al menos una asignatura en el calendario antes de guardar el horario.',
+            'Horario sin asignaciones'
+        );
+
+        return;
+    }
+
+    // Actualizar los campos ocultos con los detalles del calendario.
+    actualizarDetallesHorario();
+
+    // Buscar un campo anterior que indique el tipo de guardado.
+    let campoBorrador = formularioRegistro.querySelector(
+        'input[name="borrador"]'
+    );
+
+    // Crear el campo si todavía no existe.
+    if (!campoBorrador) {
+
+        campoBorrador = document.createElement('input');
+
+        campoBorrador.type = 'hidden';
+        campoBorrador.name = 'borrador';
+
+        formularioRegistro.appendChild(campoBorrador);
+    }
+
+    // Establecer el tipo de guardado solicitado.
+    campoBorrador.value = tipoGuardado;
+
+    // Enviar el formulario al controlador.
+    formularioRegistro.requestSubmit();
+}
+
+    // =========================================
+    // GUARDAR COMO BORRADOR
+    // =========================================
+
+    if (botonGuardarBorrador) {
+
+        botonGuardarBorrador.addEventListener('click', function () {
+
+            // 0 = Guardar como borrador.
+            guardarHorario(0);
+
+        });
+    }
+
+
+    // =========================================
+    // GUARDAR HORARIO DEFINITIVAMENTE
+    // =========================================
+
+    if (botonGuardarHorario) {
+
+        botonGuardarHorario.addEventListener('click', function () {
+
+            // 1 = Guardar definitivamente.
+            guardarHorario(1);
+
+        });
+    }
+
+    // =========================================
     // DIBUJAR EL CALENDARIO
     // =========================================
 
     calendario.render();
 
+    // =========================================
+    // RECUPERAR LOS DATOS DEL HORARIO SELECCIONADO
+    // =========================================
+
+    if (horarioRegistro) {
+
+        horarioRegistro.addEventListener('change', async function () {
+
+            const idHorario = horarioRegistro.value;
+
+            // =====================================
+            // LIMPIAR LOS DATOS ANTERIORES
+            // =====================================
+
+            calendario.removeAllEvents();
+
+            tarjetasOriginales.clear();
+
+            listaAsignaturas.innerHTML = '';
+
+            actualizarDetallesHorario();
+
+            // Si no se seleccionó ningún horario, terminar.
+            if (!idHorario) {
+                return;
+            }
+
+            try {
+
+                // =====================================
+                // CONSULTAR LOS DATOS DEL HORARIO
+                // =====================================
+
+                const url = horarioRegistro.dataset.url.replace(
+                    'HORARIO_ID',
+                    encodeURIComponent(idHorario)
+                );
+
+                const respuesta = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                const datos = await respuesta.json();
+
+                if (!respuesta.ok) {
+
+                    throw new Error(
+                        datos.message || 'No fue posible consultar el horario seleccionado.'
+                    );
+                }
+
+                // =====================================
+                // RECUPERAR LA INFORMACIÓN GENERAL
+                // =====================================
+
+                const asignaturas = datos.asignaturas || [];
+                const detallesGuardados = datos.detallesHorario || [];
+
+                // Guardar la información que utilizan las validaciones.
+                window.disponibilidadesDocentes =
+                    datos.disponibilidadesDocentes || [];
+
+                window.horariosDocentesActivos =
+                    datos.horariosDocentesActivos || [];
+
+                // =====================================
+                // CREAR LAS TARJETAS DE ASIGNATURAS
+                // =====================================
+
+                asignaturas.forEach(function (asignatura) {
+
+                    // Obtener únicamente los detalles de esta asignatura.
+                    const detallesAsignatura = detallesGuardados.filter(
+                        function (detalle) {
+
+                            return String(detalle.id_asignatura) === String(asignatura.id_asignatura);
+                        }
+                    );
+
+                    // Crear la tarjeta recuperando el docente y espacio.
+
+                    const tarjeta = window.crearTarjetaAsignatura( asignatura, detallesAsignatura );
+
+                    // Guardar la tarjeta original.
+                    tarjetasOriginales.set(
+                        String(asignatura.id_asignatura),
+                        tarjeta
+                    );
+
+                    // Agregarla a la lista de asignaturas.
+                    listaAsignaturas.appendChild(tarjeta);
+                });
+
+
+                // =====================================
+                // PREPARAR LOS DÍAS DE LA SEMANA
+                // =====================================
+
+                // Obtener la fecha actual del calendario.
+                const fechaActual = calendario.getDate();
+
+                // Calcular el lunes de la semana mostrada.
+                const lunes = new Date(fechaActual);
+
+                lunes.setDate( lunes.getDate() - ((lunes.getDay() + 6) % 7) );
+
+                lunes.setHours(0, 0, 0, 0);
+
+                // Relacionar los nombres de los días con su posición.
+                const diasSemana = {
+                    domingo: 0,
+                    lunes: 1,
+                    martes: 2,
+                    miercoles: 3,
+                    jueves: 4,
+                    viernes: 5,
+                    sabado: 6
+                };
+
+
+                // =====================================
+                // RESTAURAR LOS BLOQUES DEL HORARIO
+                // =====================================
+
+                detallesGuardados.forEach(function (detalle) {
+
+                    // Normalizar el nombre del día.
+                    const diaTexto = String(detalle.dia)
+                        .toLowerCase()
+                        .normalize('NFD')
+                        .replace(/[\u0300-\u036f]/g, '')
+                        .trim();
+
+                    // Obtener el número correspondiente al día.
+                    const numeroDia = diasSemana[diaTexto];
+
+                    if (numeroDia === undefined) {
+
+                        console.error(
+                            'No se reconoció el día del bloque:',
+                            detalle.dia
+                        );
+
+                        return;
+                    }
+
+                    // Calcular la fecha correspondiente al día.
+                    const fechaBloque = new Date(lunes);
+
+                    fechaBloque.setDate(
+                        lunes.getDate() + numeroDia - 1
+                    );
+
+                    // Obtener las horas de inicio y finalización.
+                    const partesInicio = String(
+                        detalle.hora_inicio
+                    ).split(':');
+
+                    const partesFin = String(
+                        detalle.hora_fin
+                    ).split(':');
+
+                    const inicio = new Date(fechaBloque);
+
+                    inicio.setHours(
+                        Number(partesInicio[0]),
+                        Number(partesInicio[1]),
+                        0,
+                        0
+                    );
+
+                    const fin = new Date(fechaBloque);
+
+                    fin.setHours(
+                        Number(partesFin[0]),
+                        Number(partesFin[1]),
+                        0,
+                        0
+                    );
+
+                    // Buscar la información de la asignatura.
+                    const asignatura = asignaturas.find(
+                        function (elemento) {
+
+                            return String(elemento.id_asignatura) ===
+                                String(detalle.id_asignatura);
+                        }
+                    );
+
+                    if (!asignatura) {
+                        return;
+                    }
+
+                    // Buscar la información del docente.
+                    const docente = (asignatura.docentes || []).find(
+                        function (elemento) {
+
+                            return String(elemento.id_docente) ===
+                                String(detalle.id_docente);
+                        }
+                    );
+
+                    // Calcular la duración del bloque.
+                    const horasBloque = (
+                        fin.getTime() - inicio.getTime()
+                    ) / (1000 * 60 * 60);
+
+                    // Agregar el bloque al calendario.
+                    calendario.addEvent({
+
+                        id: `bloque-${++contadorEventos}`,
+
+                        title: detalle.nombreAsignatura ||
+                            asignatura.nombreAsignatura,
+
+                        start: inicio,
+                        end: fin,
+
+                        backgroundColor: '#5A3E7D',
+                        borderColor: '#5A3E7D',
+                        textColor: '#FFFFFF',
+
+                        extendedProps: {
+
+                            id_asignatura: detalle.id_asignatura,
+
+                            id_docente: detalle.id_docente,
+
+                            nombreDocente: detalle.nombreDocente ||
+                                docente?.nombreCompleto ||
+                                'Docente no disponible',
+
+                            aula: detalle.aula || '',
+
+                            nombreEspacio: detalle.aula || '',
+
+                            totalHoras: Number(asignatura.cantidadHoras),
+
+                            cantidadHoras: horasBloque,
+
+                            cargaAcademica: Number(
+                                docente?.cargaAcademica || 0
+                            ),
+
+                            horasAsignadasOtrosHorarios: Number(
+                                docente?.horasAsignadasOtrosHorarios || 0
+                            )
+                        }
+                    });
+                });
+
+
+                // =====================================
+                // ACTUALIZAR LAS HORAS DISPONIBLES
+                // =====================================
+
+                asignaturas.forEach(function (asignatura) {
+
+                    actualizarTarjetaDisponible(
+                        asignatura.id_asignatura
+                    );
+                });
+
+                // Actualizar los detalles que se enviarán al controlador.
+                actualizarDetallesHorario();
+
+                console.log('Horario recuperado correctamente:', {
+                    idHorario: idHorario,
+                    asignaturas: asignaturas.length,
+                    bloquesRecuperados: detallesGuardados.length
+                });
+
+            } catch (error) {
+
+                console.error(
+                    'Error al recuperar el horario:',
+                    error
+                );
+
+                mostrarAdvertencia(
+                    error.message ||
+                    'Ocurrió un error al recuperar la información del horario.',
+                    'No se pudo recuperar el horario'
+                );
+            }
+        });
+    }
 
     // =========================================
     // ARRASTRAR ASIGNATURAS AL CALENDARIO
