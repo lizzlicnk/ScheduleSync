@@ -403,28 +403,6 @@
                                     </select>
                                 </div>
 
-                                <div class="campo-filtro-reporte">
-                                    <label for="periodo-materias">Periodo</label>
-
-                                    <select id="periodo-materias" name="periodo">
-                                        <option value="">Todos los periodos</option>
-                                        <option value="Invierno">Invierno</option>
-                                        <option value="Primavera">Primavera</option>
-                                        <option value="Otoño">Otoño</option>
-                                    </select>
-                                </div>
-
-                                <div class="campo-filtro-reporte">
-                                    <label for="anio-materias">Año</label>
-
-                                    <select id="anio-materias" name="anio">
-                                        <option value="">Todos los años</option>
-
-                                        @for ($anio = date('Y'); $anio >= 2026; $anio--)
-                                            <option value="{{ $anio }}">{{ $anio }}</option>
-                                        @endfor
-                                    </select>
-                                </div>
 
                                 <button type="submit" class="boton-generar-filtrado">
                                     <i class="fa-solid fa-filter" aria-hidden="true"></i>

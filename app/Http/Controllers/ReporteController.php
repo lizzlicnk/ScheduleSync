@@ -29,14 +29,15 @@ class ReporteController extends Controller
 
     /**
      * Descripción: Muestra el reporte de materias con docente asignado
-     * por carrera y cuatrimestre.
+     * por carrera y cuatrimestre, verificando que cada materia esté
+     * presente en todos los grupos correspondientes.
      *
      * Entradas:
      * $solicitud: solicitud HTTP con los filtros del reporte.
      *
      * Salidas:
-     * Vista individual del reporte con indicadores, tabla y datos
-     * para generar la gráfica de materias asignadas y pendientes.
+     * Vista individual con indicadores, tabla, gráfica y materias
+     * pendientes de asignación.
      */
     public function materiasAsignadasCuatrimestre(Request $solicitud)
     {
@@ -67,7 +68,10 @@ class ReporteController extends Controller
             ->orderBy('estacion')
             ->get();
 
-        // Consultar el total de materias activas por carrera y cuatrimestre.
+        // ==========================================
+        // 1. CONSULTAR LAS MATERIAS ACTIVAS
+        // ==========================================
+
         $consultaMaterias = DB::table('asignatura as a')
             ->join('carrera as c', 'a.id_carrera', '=', 'c.id_carrera')
             ->where('a.estado', 1)
@@ -83,117 +87,235 @@ class ReporteController extends Controller
             $consultaMaterias->where('a.cuatrimestre', $cuatrimestre);
         }
 
-        // Obtener el catálogo de materias agrupado.
-        $consultaMaterias = $consultaMaterias
+        // Obtener las materias del catálogo.
+        $materiasCatalogo = $consultaMaterias
             ->select(
+                'a.id_asignatura',
+                'a.nombreAsignatura',
+                'a.clave',
+                'a.cuatrimestre',
                 'c.id_carrera',
                 'c.nombreCarrera',
-                'c.claveCarrera',
-                'a.cuatrimestre'
+                'c.claveCarrera'
             )
-            ->selectRaw('COUNT(DISTINCT a.id_asignatura) as totalMaterias')
-            ->groupBy(
-                'c.id_carrera',
-                'c.nombreCarrera',
-                'c.claveCarrera',
-                'a.cuatrimestre'
-            );
+            ->orderBy('c.nombreCarrera')
+            ->orderBy('a.cuatrimestre')
+            ->orderBy('a.nombreAsignatura')
+            ->get();
 
-        // Consultar las materias que tienen docente asignado
-        // en horarios que ya fueron finalizados.
-        $consultaAsignadas = DB::table('detalle_horario as d')
-            ->join('horario as h', 'd.id_horario', '=', 'h.id_horario')
-            ->join('asignatura as a', 'd.id_asignatura', '=', 'a.id_asignatura')
-            ->join('carrera as c', 'a.id_carrera', '=', 'c.id_carrera')
-            ->join('periodo as p', 'h.id_periodo', '=', 'p.id_periodo')
-            ->where('h.borrador', 1)
-            ->where('a.estado', 1)
-            ->where('c.estado', 1);
+        // ==========================================
+        // 2. CONSULTAR LOS GRUPOS ACTIVOS
+        // QUE YA TIENEN DETALLES DE HORARIO
+        // ==========================================
+
+        $consultaGrupos = DB::table('grupo as g')
+            ->join('carrera as c', 'g.id_carrera', '=', 'c.id_carrera')
+            ->join('periodo as p', 'g.id_periodo', '=', 'p.id_periodo')
+            ->where('g.estado', 1)
+            ->where('c.estado', 1)
+            ->whereExists(function ($consulta) {
+
+                $consulta->select(DB::raw(1))
+                    ->from('horario as h')
+                    ->join('detalle_horario as d', 'h.id_horario', '=', 'd.id_horario')
+                    ->whereColumn('h.id_grupo', 'g.id_grupo');
+
+            });
 
         // Aplicar el filtro de carrera.
         if (!empty($carrera)) {
-            $consultaAsignadas->where('c.claveCarrera', $carrera);
+            $consultaGrupos->where('c.claveCarrera', $carrera);
         }
 
         // Aplicar el filtro de cuatrimestre.
         if (!empty($cuatrimestre)) {
-            $consultaAsignadas->where('a.cuatrimestre', $cuatrimestre);
+            $consultaGrupos->where('g.cuatrimestre', $cuatrimestre);
         }
 
         // Aplicar el filtro de periodo.
         if (!empty($periodo)) {
-            $consultaAsignadas->where('p.estacion', $periodo);
+            $consultaGrupos->where('p.estacion', $periodo);
         }
 
         // Aplicar el filtro de año.
         if (!empty($anio)) {
-            $consultaAsignadas->where('p.anio', $anio);
+            $consultaGrupos->where('p.anio', $anio);
         }
 
-        // Contar cada asignatura una sola vez por carrera y cuatrimestre.
-        $consultaAsignadas = $consultaAsignadas
+        // Obtener los grupos que ya tienen detalles de horario.
+        $grupos = $consultaGrupos
             ->select(
-                'a.id_carrera',
-                'a.cuatrimestre'
+                'g.id_grupo',
+                'g.nombreGrupo',
+                'g.id_carrera',
+                'g.cuatrimestre'
             )
-            ->selectRaw('COUNT(DISTINCT d.id_asignatura) as materiasAsignadas')
-            ->groupBy(
-                'a.id_carrera',
-                'a.cuatrimestre'
-            );
-
-        // Relacionar el catálogo de materias con las materias asignadas.
-        $datosReporte = DB::query()
-            ->fromSub($consultaMaterias, 'materias')
-            ->leftJoinSub($consultaAsignadas, 'asignadas', function ($union) {
-                $union->on(
-                    'materias.id_carrera',
-                    '=',
-                    'asignadas.id_carrera'
-                )->on(
-                    'materias.cuatrimestre',
-                    '=',
-                    'asignadas.cuatrimestre'
-                );
-            })
-            ->select(
-                'materias.id_carrera',
-                'materias.nombreCarrera',
-                'materias.claveCarrera',
-                'materias.cuatrimestre',
-                'materias.totalMaterias'
-            )
-            ->selectRaw('COALESCE(asignadas.materiasAsignadas, 0) as materiasAsignadas')
-            ->orderBy('materias.nombreCarrera')
-            ->orderBy('materias.cuatrimestre')
+            ->orderBy('g.nombreGrupo')
             ->get();
 
-        // Calcular las materias pendientes y el porcentaje de asignación.
-        $datosReporte = $datosReporte->map(function ($dato) {
+        // ==========================================
+        // 3. CONSULTAR LAS MATERIAS PRESENTES
+        // EN LOS HORARIOS DE CADA GRUPO
+        // ==========================================
 
-            // Obtener el total de materias del cuatrimestre.
-            $total = (int) $dato->totalMaterias;
+        $consultaPresencias = DB::table('detalle_horario as d')
+            ->join('horario as h', 'd.id_horario', '=', 'h.id_horario')
+            ->join('grupo as g', 'h.id_grupo', '=', 'g.id_grupo')
+            ->join('periodo as p', 'g.id_periodo', '=', 'p.id_periodo')
+            ->join('asignatura as a', 'd.id_asignatura', '=', 'a.id_asignatura')
+            ->where('g.estado', 1)
+            ->where('a.estado', 1)
+            ->whereColumn('h.id_periodo', 'g.id_periodo')
+            ->whereColumn('a.id_carrera', 'g.id_carrera')
+            ->whereColumn('a.cuatrimestre', 'g.cuatrimestre');
 
-            // Obtener las materias asignadas.
-            $asignadas = (int) $dato->materiasAsignadas;
+        // Aplicar el filtro de carrera.
+        if (!empty($carrera)) {
+            $consultaPresencias->where('a.id_carrera', function ($consulta) use ($carrera) {
+                $consulta->select('id_carrera')
+                    ->from('carrera')
+                    ->where('claveCarrera', $carrera);
+            });
+        }
 
-            // Calcular las materias pendientes.
-            $pendientes = max(0, $total - $asignadas);
+        // Aplicar el filtro de cuatrimestre.
+        if (!empty($cuatrimestre)) {
+            $consultaPresencias->where('g.cuatrimestre', $cuatrimestre);
+        }
 
-            // Calcular el porcentaje de asignación.
-            $porcentaje = $total > 0
-                ? ($asignadas / $total) * 100
-                : 0;
+        // Aplicar el filtro de periodo.
+        if (!empty($periodo)) {
+            $consultaPresencias->where('p.estacion', $periodo);
+        }
 
-            // Agregar los resultados al registro.
-            $dato->materiasAsignadas = $asignadas;
-            $dato->materiasPendientes = $pendientes;
-            $dato->porcentajeAsignacion = $porcentaje;
+        // Aplicar el filtro de año.
+        if (!empty($anio)) {
+            $consultaPresencias->where('p.anio', $anio);
+        }
 
-            return $dato;
+        // Obtener las materias registradas en cada grupo.
+        // No se filtra por borrador: también se consideran los horarios
+        // que todavía no han sido finalizados.
+        $presencias = $consultaPresencias
+            ->select(
+                'd.id_asignatura',
+                'g.id_grupo'
+            )
+            ->distinct()
+            ->get();
+
+        // Preparar una estructura para comprobar rápidamente
+        // si una materia está presente en determinado grupo.
+        $materiasPorGrupo = [];
+
+        foreach ($presencias as $presencia) {
+            $clavePresencia = $presencia->id_asignatura
+                . '-'
+                . $presencia->id_grupo;
+
+            $materiasPorGrupo[$clavePresencia] = true;
+        }
+
+        // ==========================================
+        // 4. COMPARAR LAS MATERIAS CON TODOS
+        // LOS GRUPOS DE SU CARRERA Y CUATRIMESTRE
+        // ==========================================
+
+        // Agrupar las materias por carrera y cuatrimestre.
+        $materiasAgrupadas = $materiasCatalogo->groupBy(function ($materia) {
+            return $materia->id_carrera . '-' . $materia->cuatrimestre;
         });
 
-        // Calcular los indicadores generales del reporte.
+        // Preparar los resultados del reporte.
+        $datosReporte = collect();
+
+        foreach ($materiasAgrupadas as $materias) {
+
+            // Obtener los datos de la carrera y cuatrimestre.
+            $primeraMateria = $materias->first();
+
+            $idCarrera = $primeraMateria->id_carrera;
+            $cuatrimestreActual = $primeraMateria->cuatrimestre;
+
+            // Obtener todos los grupos activos correspondientes.
+            $gruposCorrespondientes = $grupos
+                ->where('id_carrera', $idCarrera)
+                ->where('cuatrimestre', $cuatrimestreActual)
+                ->values();
+
+            // Contabilizar las materias.
+            $totalMaterias = $materias->count();
+            $totalAsignadas = 0;
+            $totalPendientes = 0;
+
+            // Guardar los detalles de las materias pendientes.
+            $detallePendientes = [];
+
+            foreach ($materias as $materia) {
+
+                // Identificar los grupos donde falta la materia.
+                $gruposFaltantes = $gruposCorrespondientes
+                    ->filter(function ($grupo) use ($materia, $materiasPorGrupo) {
+
+                        $clavePresencia = $materia->id_asignatura
+                            . '-'
+                            . $grupo->id_grupo;
+
+                        return !isset($materiasPorGrupo[$clavePresencia]);
+                    })
+                    ->values();
+
+                // Comprobar si existen grupos activos.
+                $hayGrupos = $gruposCorrespondientes->isNotEmpty();
+
+                // La materia está asignada solamente si aparece
+                // en todos los grupos activos correspondientes.
+                if ($hayGrupos && $gruposFaltantes->isEmpty()) {
+
+                    $totalAsignadas++;
+
+                } else {
+
+                    $totalPendientes++;
+
+                    // Guardar el nombre y los grupos donde falta.
+                    $detallePendientes[] = [
+                        'nombreAsignatura' => $materia->nombreAsignatura,
+                        'clave' => $materia->clave,
+                        'cantidadGruposFaltantes' => $gruposFaltantes->count(),
+                        'gruposFaltantes' => $gruposFaltantes
+                            ->pluck('nombreGrupo')
+                            ->values()
+                            ->all(),
+                        'sinGrupos' => !$hayGrupos,
+                    ];
+                }
+            }
+
+            // Calcular el porcentaje de asignación.
+            $porcentaje = $totalMaterias > 0
+                ? ($totalAsignadas / $totalMaterias) * 100
+                : 0;
+
+            // Agregar los resultados de la carrera y cuatrimestre.
+            $datosReporte->push((object) [
+                'id_carrera' => $idCarrera,
+                'nombreCarrera' => $primeraMateria->nombreCarrera,
+                'claveCarrera' => $primeraMateria->claveCarrera,
+                'cuatrimestre' => $cuatrimestreActual,
+                'totalMaterias' => $totalMaterias,
+                'materiasAsignadas' => $totalAsignadas,
+                'materiasPendientes' => $totalPendientes,
+                'porcentajeAsignacion' => $porcentaje,
+                'totalGrupos' => $gruposCorrespondientes->count(),
+                'detallePendientes' => $detallePendientes,
+            ]);
+        }
+
+        // ==========================================
+        // 5. CALCULAR LOS INDICADORES GENERALES
+        // ==========================================
+
         $totalMaterias = $datosReporte->sum('totalMaterias');
 
         $totalAsignadas = $datosReporte->sum('materiasAsignadas');
@@ -205,7 +327,10 @@ class ReporteController extends Controller
             ? ($totalAsignadas / $totalMaterias) * 100
             : 0;
 
-        // Preparar los datos que utilizará Chart.js.
+        // ==========================================
+        // 6. PREPARAR LOS DATOS DE LA GRÁFICA
+        // ==========================================
+
         $datosGrafica = $datosReporte->map(function ($dato) {
 
             return [
@@ -218,7 +343,29 @@ class ReporteController extends Controller
 
         })->values();
 
-        // Enviar toda la información a la vista del reporte.
+        // ==========================================
+        // 7. PREPARAR LA LISTA GENERAL DE PENDIENTES
+        // ==========================================
+
+        $materiasPendientesDetalle = $datosReporte->flatMap(function ($dato) {
+
+            return collect($dato->detallePendientes)->map(function ($materia) use ($dato) {
+
+                return [
+                    'carrera' => $dato->claveCarrera,
+                    'cuatrimestre' => $dato->cuatrimestre,
+                    'nombreAsignatura' => $materia['nombreAsignatura'],
+                    'clave' => $materia['clave'],
+                    'cantidadGruposFaltantes' => $materia['cantidadGruposFaltantes'],
+                    'gruposFaltantes' => $materia['gruposFaltantes'],
+                    'sinGrupos' => $materia['sinGrupos'],
+                ];
+
+            });
+
+        })->values();
+
+        // Enviar la información a la vista.
         return view('Reporte.MateriasAsignadasCuatrimestre', compact(
             'carreras',
             'periodos',
@@ -231,10 +378,180 @@ class ReporteController extends Controller
             'totalMaterias',
             'totalAsignadas',
             'totalPendientes',
-            'porcentajeAsignacion'
+            'porcentajeAsignacion',
+            'materiasPendientesDetalle'
         ));
     }
+    
 
+/**
+ * Descripción: Genera y descarga un archivo PDF con la captura visual
+ * del reporte de materias asignadas por cuatrimestre.
+ *
+ * Entradas:
+ * $solicitud: solicitud HTTP que contiene la imagen PNG del reporte.
+ *
+ * Salidas:
+ * Archivo PDF generado con FPDF.
+ */
+public function descargarMateriasAsignadasCuatrimestre(Request $solicitud)
+{
+    // Validar que se haya enviado una imagen.
+    $datosValidados = $solicitud->validate([
+        'imagen' => 'required|string|max:30000000|regex:/^data:image\/png;base64,/',
+    ]);
+
+    // Obtener el contenido Base64 de la imagen.
+    $imagenBase64 = substr(
+        $datosValidados['imagen'],
+        strlen('data:image/png;base64,')
+    );
+
+    // Decodificar la imagen.
+    $contenidoImagen = base64_decode($imagenBase64, true);
+
+    if ($contenidoImagen === false) {
+        return response()->json([
+            'mensaje' => 'No fue posible procesar la imagen del reporte.'
+        ], 422);
+    }
+
+    // Comprobar que el contenido recibido sea una imagen PNG válida.
+    $informacionImagen = getimagesizefromstring($contenidoImagen);
+
+    if (
+        $informacionImagen === false ||
+        $informacionImagen['mime'] !== 'image/png'
+    ) {
+        return response()->json([
+            'mensaje' => 'El archivo enviado no es una imagen PNG válida.'
+        ], 422);
+    }
+
+    // Crear una imagen a partir del contenido recibido.
+    $imagenOriginal = imagecreatefromstring($contenidoImagen);
+
+    if ($imagenOriginal === false) {
+        return response()->json([
+            'mensaje' => 'No fue posible generar la imagen del reporte.'
+        ], 422);
+    }
+
+    // Obtener las dimensiones de la imagen.
+    $anchoImagen = imagesx($imagenOriginal);
+    $altoImagen = imagesy($imagenOriginal);
+
+    // Configurar las dimensiones útiles de una página A4.
+    $anchoPagina = 190;
+    $altoPagina = 277;
+
+    // Calcular la cantidad de píxeles que corresponden a una página.
+    $altoFragmento = (int) floor(
+        $anchoImagen * ($altoPagina / $anchoPagina)
+    );
+
+    // Preparar el archivo temporal de la imagen original.
+    $rutaImagenOriginal = tempnam(sys_get_temp_dir(), 'reporte_');
+
+    file_put_contents($rutaImagenOriginal, $contenidoImagen);
+
+    // Inicializar FPDF.
+    $pdf = new \FPDF('P', 'mm', 'A4');
+
+    $pdf->SetMargins(10, 10, 10);
+    $pdf->SetAutoPageBreak(false);
+
+    // Crear las páginas necesarias para mostrar todo el reporte.
+    try {
+
+        for (
+            $posicionY = 0;
+            $posicionY < $altoImagen;
+            $posicionY += $altoFragmento
+        ) {
+
+            // Calcular la altura del fragmento actual.
+            $altoActual = min(
+                $altoFragmento,
+                $altoImagen - $posicionY
+            );
+
+            // Crear una imagen temporal para esta página.
+            $imagenPagina = imagecreatetruecolor(
+                $anchoImagen,
+                $altoActual
+            );
+
+            // Establecer un fondo blanco.
+            $fondoBlanco = imagecolorallocate(
+                $imagenPagina,
+                255,
+                255,
+                255
+            );
+
+            imagefill($imagenPagina, 0, 0, $fondoBlanco);
+
+            // Copiar la sección correspondiente del reporte.
+            imagecopy(
+                $imagenPagina,
+                $imagenOriginal,
+                0,
+                0,
+                0,
+                $posicionY,
+                $anchoImagen,
+                $altoActual
+            );
+
+            // Guardar temporalmente el fragmento.
+            $rutaImagenPagina = tempnam(
+                sys_get_temp_dir(),
+                'pagina_'
+            );
+
+            imagepng($imagenPagina, $rutaImagenPagina);
+
+            // Agregar una página al documento PDF.
+            $pdf->AddPage();
+
+            // Calcular la altura proporcional de la imagen.
+            $altoPDF = $altoActual * ($anchoPagina / $anchoImagen);
+
+            // Colocar la imagen en la página.
+            $pdf->Image(
+                $rutaImagenPagina,
+                10,
+                10,
+                $anchoPagina,
+                $altoPDF,
+                'PNG'
+            );
+
+            // Liberar los recursos de la página.
+            imagedestroy($imagenPagina);
+            unlink($rutaImagenPagina);
+        }
+
+        // Obtener el contenido final del PDF.
+        $contenidoPDF = $pdf->Output('S');
+
+    } finally {
+
+        // Liberar los recursos utilizados.
+        imagedestroy($imagenOriginal);
+
+        if (file_exists($rutaImagenOriginal)) {
+            unlink($rutaImagenOriginal);
+        }
+    }
+
+    // Devolver el PDF para su descarga.
+    return response($contenidoPDF, 200, [
+        'Content-Type' => 'application/pdf',
+        'Content-Disposition' => 'attachment; filename="reporte-materias-asignadas.pdf"',
+    ]);
+}
 
     /**
      * Descripción: Comprueba que el usuario autenticado tenga uno de los roles permitidos.

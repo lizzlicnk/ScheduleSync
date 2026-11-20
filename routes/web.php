@@ -595,6 +595,12 @@ Route::middleware(['auth', \App\Http\Middleware\PrevenirCachePrivada::class, For
         'materiasAsignadasCuatrimestre'
     ])->name('reportes.materias-asignadas-cuatrimestre');
 
+    Route::post('/reportes/materias-asignadas-cuatrimestre/pdf', [
+        ReporteController::class,
+        'descargarMateriasAsignadasCuatrimestre'
+    ])->name('reportes.materias-asignadas-cuatrimestre.pdf');
+
+
 });
 
 

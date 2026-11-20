@@ -5,12 +5,17 @@
  *
  * Entradas:
  * Datos de materias enviados desde Laravel.
+ * Información de materias pendientes de asignación.
  *
  * Salidas:
- * Gráfica de barras apiladas y archivo PDF del reporte.
+ * Gráfica de barras apiladas y archivo PDF generado mediante FPDF.
  */
 
 document.addEventListener('DOMContentLoaded', function () {
+
+    // ========================================
+    // 1. OBTENER LOS ELEMENTOS PRINCIPALES
+    // ========================================
 
     // Obtener el elemento donde se mostrará la gráfica.
     const elementoGrafica = document.getElementById(
@@ -25,32 +30,34 @@ document.addEventListener('DOMContentLoaded', function () {
     // Obtener los datos enviados desde Laravel.
     const datosReporte = window.datosGraficaMaterias || [];
 
-    // Obtener los indicadores del reporte.
-    const elementoTotalMaterias = document.getElementById('total-materias');
-    const elementoMateriasAsignadas = document.getElementById('materias-asignadas');
-    const elementoMateriasPendientes = document.getElementById('materias-pendientes');
-    const elementoPorcentajeAsignacion = document.getElementById('porcentaje-asignacion');
+    // Obtener los detalles de las materias pendientes.
+    const materiasPendientesDetalle = window.materiasPendientesDetalle || [];
 
     // Obtener el mensaje que se muestra cuando no existen datos.
     const mensajeGrafica = document.getElementById('mensaje-grafica-vacia');
 
-    // Comprobar que Chart.js se haya cargado correctamente.
-    if (typeof Chart === 'undefined') {
-        console.error('No se pudo cargar la librería Chart.js.');
-        return;
-    }
+    // Obtener el contenido principal del reporte.
+    const contenidoReporte = document.querySelector(
+        '.pagina-reporte-materias'
+    );
 
-    // Calcular los totales del reporte.
+    // ========================================
+    // 2. CALCULAR LOS INDICADORES
+    // ========================================
+
+    // Calcular el total de materias.
     const totalMaterias = datosReporte.reduce(
         (total, registro) => total + Number(registro.total || 0),
         0
     );
 
+    // Calcular el total de materias asignadas.
     const totalAsignadas = datosReporte.reduce(
         (total, registro) => total + Number(registro.materiasAsignadas || 0),
         0
     );
 
+    // Calcular el total de materias pendientes.
     const totalPendientes = datosReporte.reduce(
         (total, registro) => total + Number(registro.materiasPendientes || 0),
         0
@@ -61,40 +68,35 @@ document.addEventListener('DOMContentLoaded', function () {
         ? ((totalAsignadas / totalMaterias) * 100).toFixed(1)
         : '0.0';
 
-    // Mostrar los indicadores del reporte.
-    if (elementoTotalMaterias) {
-        elementoTotalMaterias.textContent = totalMaterias;
-    }
+    // ========================================
+    // 3. CONFIGURAR LA GRÁFICA
+    // ========================================
 
-    if (elementoMateriasAsignadas) {
-        elementoMateriasAsignadas.textContent = totalAsignadas;
-    }
+    // Comprobar que Chart.js se haya cargado correctamente.
+    if (typeof Chart === 'undefined') {
 
-    if (elementoMateriasPendientes) {
-        elementoMateriasPendientes.textContent = totalPendientes;
-    }
+        console.error('No se pudo cargar la librería Chart.js.');
 
-    if (elementoPorcentajeAsignacion) {
-        elementoPorcentajeAsignacion.textContent = porcentaje + '%';
-    }
+    } else if (!elementoGrafica || datosReporte.length === 0) {
 
-    // Comprobar si existen datos para generar la gráfica.
-    if (!elementoGrafica || datosReporte.length === 0) {
-
+        // Mostrar el mensaje cuando no existen datos.
         if (mensajeGrafica) {
             mensajeGrafica.hidden = false;
         }
 
+        // Ocultar la gráfica.
         if (elementoGrafica) {
             elementoGrafica.hidden = true;
         }
 
     } else {
 
+        // Ocultar el mensaje de gráfica vacía.
         if (mensajeGrafica) {
             mensajeGrafica.hidden = true;
         }
 
+        // Mostrar el elemento de la gráfica.
         elementoGrafica.hidden = false;
 
         // Obtener los cuatrimestres disponibles.
@@ -110,6 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Crear los conjuntos de datos de la gráfica.
         const conjuntosDatos = [];
 
+        // Recorrer cada carrera.
         carreras.forEach(function (carrera) {
 
             // Obtener los registros de la carrera actual.
@@ -165,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         });
 
-        // Configurar la gráfica de barras apiladas con Chart.js.
+        // Configurar la gráfica de barras apiladas.
         new Chart(elementoGrafica, {
 
             type: 'bar',
@@ -228,198 +231,192 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Configurar la descarga del reporte en formato PDF.
+    // ========================================
+    // 4. CONFIGURAR LA DESCARGA DEL PDF
+    // ========================================
+
     if (botonDescargar) {
 
         botonDescargar.addEventListener('click', async function () {
 
-            // Comprobar que las librerías necesarias estén disponibles.
-            if (
-                !window.jspdf ||
-                typeof html2canvas === 'undefined'
-            ) {
-                console.error(
-                    'No se pudieron cargar las librerías necesarias para generar el PDF.'
+            // Comprobar que html2canvas esté disponible.
+            if (typeof html2canvas === 'undefined') {
+
+                console.error('No se pudo cargar html2canvas.');
+
+                alert(
+                    'No fue posible generar el PDF. Comprueba que html2canvas esté cargado.'
                 );
+
+                return;
+            }
+
+            // Comprobar que exista el contenido del reporte.
+            if (!contenidoReporte) {
+
+                console.error('No se encontró el contenido del reporte.');
+
+                alert(
+                    'No fue posible encontrar el contenido del reporte.'
+                );
+
                 return;
             }
 
             // Comprobar que existan datos para generar el reporte.
             if (datosReporte.length === 0) {
+
                 alert('No existen datos para generar el reporte.');
+
                 return;
             }
 
-            // Crear el documento PDF en orientación horizontal.
-            const { jsPDF } = window.jspdf;
+            // Evitar múltiples solicitudes durante la generación del PDF.
+            botonDescargar.disabled = true;
 
-            const documentoPDF = new jsPDF('landscape', 'mm', 'a4');
+            // Guardar el contenido original del botón.
+            const contenidoOriginal = botonDescargar.innerHTML;
 
-            // Agregar el encabezado del documento.
-            documentoPDF.setFontSize(18);
-            documentoPDF.setTextColor(81, 52, 111);
+            try {
 
-            documentoPDF.text(
-                'Reporte de materias con docente asignado',
-                15,
-                18
-            );
+                // Mostrar el estado de generación.
+                botonDescargar.innerHTML = `
+                    <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+                    Generando PDF...
+                `;
 
-            // Agregar la descripción del sistema.
-            documentoPDF.setFontSize(10);
-            documentoPDF.setTextColor(100, 100, 100);
+                // ========================================
+                // 5. CAPTURAR EL REPORTE
+                // ========================================
 
-            documentoPDF.text(
-                'Schedule-Sync | Planeacion academica',
-                15,
-                25
-            );
+                const imagenReporte = await html2canvas(
+                    contenidoReporte,
+                    {
+                        scale: 2,
+                        backgroundColor: '#ffffff',
+                        useCORS: true,
+                        logging: false,
+                        windowWidth: contenidoReporte.scrollWidth,
+                        windowHeight: contenidoReporte.scrollHeight,
 
-            // Agregar los indicadores generales.
-            documentoPDF.setFontSize(11);
-            documentoPDF.setTextColor(50, 50, 50);
-
-            documentoPDF.text(
-                `Total de materias: ${totalMaterias}`,
-                15,
-                38
-            );
-
-            documentoPDF.text(
-                `Materias asignadas: ${totalAsignadas}`,
-                85,
-                38
-            );
-
-            documentoPDF.text(
-                `Materias pendientes: ${totalPendientes}`,
-                160,
-                38
-            );
-
-            documentoPDF.text(
-                `Porcentaje de asignacion: ${porcentaje}%`,
-                240,
-                38
-            );
-
-            // Convertir la gráfica en una imagen para el PDF.
-            if (elementoGrafica && datosReporte.length > 0) {
-
-                const imagenGrafica = await html2canvas(elementoGrafica, {
-                    scale: 2,
-                    backgroundColor: '#ffffff'
-                });
-
-                const imagenBase64 = imagenGrafica.toDataURL('image/png');
-
-                documentoPDF.addImage(
-                    imagenBase64,
-                    'PNG',
-                    15,
-                    48,
-                    265,
-                    100
-                );
-            }
-
-            // Establecer la posición inicial de la tabla.
-            let posicionY = 160;
-
-            // Configurar los encabezados de la tabla.
-            documentoPDF.setFontSize(10);
-            documentoPDF.setTextColor(81, 52, 111);
-
-            const encabezados = [
-                'Carrera',
-                'Cuatrimestre',
-                'Total',
-                'Asignadas',
-                'Pendientes',
-                'Porcentaje'
-            ];
-
-            const posicionesX = [15, 65, 105, 145, 185, 235];
-
-            // Agregar los encabezados al documento.
-            encabezados.forEach(function (encabezado, indice) {
-
-                documentoPDF.text(
-                    encabezado,
-                    posicionesX[indice],
-                    posicionY
+                        // Evitar que el botón de descarga aparezca en el PDF.
+                        ignoreElements: function (elemento) {
+                            return elemento.id === 'boton-descargar-reporte';
+                        }
+                    }
                 );
 
-            });
+                // Convertir la captura a formato PNG Base64.
+                const imagenBase64 = imagenReporte.toDataURL('image/png');
 
-            posicionY += 8;
+                // Liberar el canvas después de obtener la imagen.
+                imagenReporte.width = 0;
+                imagenReporte.height = 0;
 
-            // Configurar el color del contenido de la tabla.
-            documentoPDF.setTextColor(70, 70, 70);
+                // ========================================
+                // 6. ENVIAR LA CAPTURA A LARAVEL
+                // ========================================
 
-            // Recorrer los registros para agregarlos a la tabla.
-            datosReporte.forEach(function (registro) {
+                // Obtener el token CSRF de la página.
+                const tokenCSRF = document.querySelector(
+                    'meta[name="csrf-token"]'
+                );
 
-                const total = Number(registro.total || 0);
-                const asignadas = Number(registro.materiasAsignadas || 0);
-                const pendientes = Number(registro.materiasPendientes || 0);
+                if (!tokenCSRF) {
 
-                // Calcular el porcentaje de asignación del registro.
-                const porcentajeRegistro = total > 0
-                    ? ((asignadas / total) * 100).toFixed(1)
-                    : '0.0';
-
-                const valores = [
-                    registro.carrera,
-                    registro.cuatrimestre + '°',
-                    String(total),
-                    String(asignadas),
-                    String(pendientes),
-                    porcentajeRegistro + '%'
-                ];
-
-                // Agregar los valores de cada fila.
-                valores.forEach(function (valor, indice) {
-
-                    documentoPDF.text(
-                        String(valor),
-                        posicionesX[indice],
-                        posicionY
+                    throw new Error(
+                        'No se encontró el token de seguridad CSRF.'
                     );
-
-                });
-
-                posicionY += 8;
-
-                // Crear una nueva página si no existe espacio suficiente.
-                if (posicionY > 190) {
-
-                    documentoPDF.addPage();
-
-                    posicionY = 20;
-
-                    documentoPDF.setFontSize(10);
-                    documentoPDF.setTextColor(81, 52, 111);
-
-                    encabezados.forEach(function (encabezado, indice) {
-
-                        documentoPDF.text(
-                            encabezado,
-                            posicionesX[indice],
-                            posicionY
-                        );
-
-                    });
-
-                    posicionY += 8;
-
-                    documentoPDF.setTextColor(70, 70, 70);
                 }
 
-            });
+                // Enviar la imagen al controlador de reportes.
+                const respuesta = await fetch(
+                    '/reportes/materias-asignadas-cuatrimestre/pdf',
+                    {
+                        method: 'POST',
 
-            // Descargar el documento PDF.
-            documentoPDF.save('Reporte_Materias_Asignadas.pdf');
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': tokenCSRF.content,
+                            'Accept': 'application/pdf'
+                        },
+
+                        body: JSON.stringify({
+                            imagen: imagenBase64
+                        })
+                    }
+                );
+
+                // Comprobar si Laravel respondió correctamente.
+                if (!respuesta.ok) {
+
+                    let mensajeError = 'No fue posible generar el PDF.';
+
+                    try {
+
+                        const datosError = await respuesta.json();
+
+                        if (datosError.mensaje) {
+                            mensajeError = datosError.mensaje;
+                        }
+
+                    } catch (error) {
+
+                        console.error(
+                            'No se pudo interpretar la respuesta del servidor.',
+                            error
+                        );
+                    }
+
+                    throw new Error(mensajeError);
+                }
+
+                // ========================================
+                // 7. DESCARGAR EL ARCHIVO PDF
+                // ========================================
+
+                // Obtener el documento PDF generado por Laravel.
+                const archivoPDF = await respuesta.blob();
+
+                // Crear una dirección temporal para la descarga.
+                const direccionPDF = URL.createObjectURL(archivoPDF);
+
+                // Crear un enlace temporal.
+                const enlaceDescarga = document.createElement('a');
+
+                enlaceDescarga.href = direccionPDF;
+
+                enlaceDescarga.download =
+                    'reporte-materias-asignadas.pdf';
+
+                // Ejecutar la descarga.
+                document.body.appendChild(enlaceDescarga);
+
+                enlaceDescarga.click();
+
+                // Eliminar el enlace temporal.
+                document.body.removeChild(enlaceDescarga);
+
+                // Liberar la dirección temporal.
+                URL.revokeObjectURL(direccionPDF);
+
+            } catch (error) {
+
+                // Mostrar el error de generación.
+                console.error(
+                    'Error al generar el PDF:',
+                    error
+                );
+
+                alert(error.message || 'Ocurrió un error al generar el PDF.');
+
+            } finally {
+
+                // Restaurar el botón de descarga.
+                botonDescargar.disabled = false;
+
+                botonDescargar.innerHTML = contenidoOriginal;
+            }
 
         });
     }

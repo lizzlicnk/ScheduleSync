@@ -27,16 +27,22 @@
             </p>
         </div>
 
-        <button type="button" class="boton-descargar-reporte" id="boton-descargar-reporte">
+        <button
+            type="button"
+            class="boton-descargar-reporte"
+            id="boton-descargar-reporte"
+        >
             <i class="fa-solid fa-file-pdf" aria-hidden="true"></i>
             Descargar PDF
         </button>
 
     </header>
 
+
     <!-- INDICADORES GENERALES -->
     <section class="seccion-indicadores-materias">
 
+        <!-- TOTAL DE MATERIAS -->
         <article class="indicador-materias indicador-total">
             <div class="icono-indicador">
                 <i class="fa-solid fa-book" aria-hidden="true"></i>
@@ -48,6 +54,7 @@
             </div>
         </article>
 
+        <!-- MATERIAS ASIGNADAS -->
         <article class="indicador-materias indicador-asignadas">
             <div class="icono-indicador">
                 <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
@@ -59,6 +66,7 @@
             </div>
         </article>
 
+        <!-- MATERIAS PENDIENTES -->
         <article class="indicador-materias indicador-pendientes">
             <div class="icono-indicador">
                 <i class="fa-solid fa-clock" aria-hidden="true"></i>
@@ -70,6 +78,7 @@
             </div>
         </article>
 
+        <!-- PORCENTAJE DE ASIGNACIÓN -->
         <article class="indicador-materias indicador-porcentaje">
             <div class="icono-indicador">
                 <i class="fa-solid fa-chart-pie" aria-hidden="true"></i>
@@ -116,7 +125,9 @@
                     @forelse ($datosReporte ?? [] as $dato)
 
                         <tr>
-                            <td>{{ $dato->nombreCarrera }}</td>
+                            <td>
+                                {{ $dato->nombreCarrera }}
+                            </td>
 
                             <td>
                                 {{ $dato->cuatrimestre }}°
@@ -136,6 +147,7 @@
 
                             <td>
                                 <div class="celda-porcentaje">
+
                                     <span>
                                         {{ number_format($dato->porcentajeAsignacion, 1) }}%
                                     </span>
@@ -146,6 +158,7 @@
                                             style="width: {{ $dato->porcentajeAsignacion }}%"
                                         ></div>
                                     </div>
+
                                 </div>
                             </td>
                         </tr>
@@ -156,7 +169,9 @@
                             <td colspan="5" class="mensaje-sin-resultados">
                                 <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
 
-                                <p>No hay información disponible para mostrar.</p>
+                                <p>
+                                    No hay información disponible para mostrar.
+                                </p>
                             </td>
                         </tr>
 
@@ -167,6 +182,93 @@
             </table>
 
         </div>
+
+    </section>
+
+
+    <!-- MATERIAS PENDIENTES DE ASIGNACIÓN -->
+    <section class="seccion-materias-pendientes">
+
+        <div class="encabezado-pendientes">
+            <div>
+                <h2>Cantidad de materias pendientes de asignación</h2>
+
+                <p>
+                    Materias que todavía no están presentes en todos los grupos
+                    correspondientes a su carrera y cuatrimestre.
+                </p>
+            </div>
+
+            <span class="total-pendientes">
+                {{ isset($materiasPendientesDetalle) ? $materiasPendientesDetalle->count() : 0 }}
+            </span>
+        </div>
+
+        @if (isset($materiasPendientesDetalle) && $materiasPendientesDetalle->isNotEmpty())
+
+            <div class="lista-materias-pendientes">
+
+                @foreach ($materiasPendientesDetalle as $materia)
+
+                    <article class="elemento-materia-pendiente">
+
+                        <div class="informacion-materia-pendiente">
+
+                            <h3>
+                                {{ $materia['nombreAsignatura'] }}
+                            </h3>
+
+                            <span>
+                                Clave: {{ $materia['clave'] }}
+                            </span>
+
+                            <span>
+                                {{ $materia['carrera'] }}
+                                ·
+                                {{ $materia['cuatrimestre'] }}.º cuatrimestre
+                            </span>
+
+                        </div>
+
+                        <div class="grupos-materia-pendiente">
+
+                            @if ($materia['sinGrupos'])
+
+                                <span>
+                                    No existen grupos activos para este periodo.
+                                </span>
+
+                            @else
+
+                                <strong>
+                                    Falta en
+                                    {{ $materia['cantidadGruposFaltantes'] }}
+                                    {{ $materia['cantidadGruposFaltantes'] === 1 ? 'grupo' : 'grupos' }}:
+                                </strong>
+
+                                <span>
+                                    {{ implode(', ', $materia['gruposFaltantes']) }}
+                                </span>
+
+                            @endif
+
+                        </div>
+
+                    </article>
+
+                @endforeach
+
+            </div>
+
+        @else
+
+            <p class="mensaje-sin-pendientes">
+                <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+
+                Todas las materias están presentes en sus grupos correspondientes.
+            </p>
+
+        @endif
 
     </section>
 
@@ -188,11 +290,7 @@
 
             <canvas id="grafica-materias-cuatrimestre"></canvas>
 
-            <p
-                class="mensaje-grafica-vacia"
-                id="mensaje-grafica-vacia"
-                @if (count($datosGrafica ?? []) > 0) hidden @endif
-            >
+            <p class="mensaje-grafica-vacia" id="mensaje-grafica-vacia" @if (count($datosGrafica ?? []) > 0) hidden @endif >
                 No hay datos suficientes para generar la gráfica.
             </p>
 
@@ -202,15 +300,40 @@
 
 </main>
 
-<!-- LIBRERÍA CHART.JS 4.6.1 -->
+
+<!-- ======================================== -->
+<!-- LIBRERÍAS PARA LA GRÁFICA Y EL PDF       -->
+<!-- ======================================== -->
+
+<!-- CHART.JS 4.6.1 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.6.1/dist/chart.umd.min.js"></script>
 
+
+
+<!-- HTML2CANVAS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+
+<!-- ======================================== -->
 <!-- DATOS DEL REPORTE ENVIADOS DESDE LARAVEL -->
+<!-- ======================================== -->
+
 <script>
+    // Datos para construir la gráfica de materias asignadas y pendientes.
     window.datosGraficaMaterias = @json($datosGrafica ?? []);
+
+    // Información de las materias que todavía presentan grupos faltantes.
+    window.materiasPendientesDetalle = @json($materiasPendientesDetalle ?? []);
 </script>
 
-<!-- SCRIPT DEL REPORTE -->
-<script src="{{ asset('js/Reportes/materias-asignadas-cuatrimestre.js') }}" defer></script>
+
+<!-- ======================================== -->
+<!-- SCRIPT PRINCIPAL DEL REPORTE             -->
+<!-- ======================================== -->
+
+<script
+    src="{{ asset('js/Reportes/materias-asignadas-cuatrimestre.js') }}"
+    defer
+></script>
 
 @endsection
