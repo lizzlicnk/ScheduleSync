@@ -799,4 +799,7 @@
 <!-- JAVASCRIPT DE LA GESTIÓN DE HORARIOS -->
 <script src="{{ asset('js/Horarios/CreaciónHorario/gestion-CreaciónHorario.js') }}"></script>
 
+    {{-- Cargar FullCalendar y las funcionalidades del calendario. --}}
+    @vite('resources/js/Horario/fullcalendar-horarios.js')
+
 @endsection

@@ -1,0 +1,387 @@
+/* =====================================================
+   PÁGINA PRINCIPAL DE REPORTES
+===================================================== */
+
+.pagina-reportes {
+    width: 100%;
+    padding-bottom: 30px;
+}
+
+
+/* =====================================================
+   ENCABEZADO DEL MÓDULO
+===================================================== */
+
+.pagina-reportes .encabezado-modulo {
+    margin-bottom: 28px;
+}
+
+.pagina-reportes .ruta-modulo {
+    color: #777080;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.pagina-reportes .encabezado-modulo h1 {
+    color: #352444;
+    font-size: 27px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.pagina-reportes .descripcion-modulo {
+    color: #777080;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+
+/* =====================================================
+   SECCIÓN DE REPORTES
+===================================================== */
+
+.seccion-reportes {
+    width: 100%;
+}
+
+.encabezado-seccion-reportes {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 22px;
+}
+
+.encabezado-seccion-reportes h2 {
+    color: #352444;
+    font-size: 19px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.texto-secundario {
+    color: #81798A;
+    font-size: 13px;
+    margin: 0;
+}
+
+.cantidad-reportes {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 13px;
+    border-radius: 20px;
+    background-color: #F1EAF8;
+    color: #654282;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+
+/* =====================================================
+   DISTRIBUCIÓN DE LAS TARJETAS
+===================================================== */
+
+.grid-reportes {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+    align-items: start;
+}
+
+
+/* =====================================================
+   TARJETAS DE REPORTES
+===================================================== */
+
+.tarjeta-reporte {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 315px;
+    background-color: #FFFFFF;
+    border: 1px solid #EAE5EF;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 3px 12px rgba(50, 30, 70, 0.05);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.tarjeta-reporte:hover {
+    transform: translateY(-3px);
+    border-color: #D5C3E8;
+    box-shadow: 0 7px 20px rgba(80, 45, 115, 0.10);
+}
+
+
+/* =====================================================
+   FRANJA INSTITUCIONAL
+===================================================== */
+
+.tarjeta-reporte .franja-institucional {
+    width: 100%;
+    height: 6px;
+    flex-shrink: 0;
+    background: linear-gradient(
+        90deg,
+        #4C1D95 0%,
+        #7E22CE 42%,
+        #A78BFA 72%,
+        #E9D5FF 100%
+    );
+}
+
+
+/* =====================================================
+   CONTENIDO DE LAS TARJETAS
+===================================================== */
+
+.contenido-tarjeta-reporte {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 21px;
+}
+
+.encabezado-tarjeta-reporte {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 17px;
+}
+
+.icono-reporte {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background-color: #F1EAF8;
+    color: #654282;
+    font-size: 21px;
+}
+
+.numero-reporte {
+    color: #9B8DA9;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+}
+
+.contenido-tarjeta-reporte h3 {
+    color: #39264C;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+.descripcion-reporte {
+    color: #777080;
+    font-size: 13px;
+    line-height: 1.7;
+    margin-bottom: 20px;
+    min-height: 66px;
+}
+
+
+/* =====================================================
+   BOTONES DE LAS TARJETAS
+===================================================== */
+
+.acciones-reporte {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.boton-filtros-reporte,
+.boton-general-reporte,
+.boton-generar-filtrado {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    min-height: 39px;
+    padding: 9px 13px;
+    border-radius: 7px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+
+/* Botón filtros */
+
+.boton-filtros-reporte {
+    background-color: #FFFFFF;
+    color: #654282;
+    border: 1px solid #D9CBE7;
+}
+
+.boton-filtros-reporte:hover {
+    background-color: #F6F1FA;
+    border-color: #654282;
+}
+
+.boton-filtros-reporte .icono-flecha {
+    margin-left: auto;
+    font-size: 11px;
+    transition: transform 0.2s ease;
+}
+
+.boton-filtros-reporte[aria-expanded="true"] .icono-flecha {
+    transform: rotate(180deg);
+}
+
+
+/* Botón general */
+
+.boton-general-reporte {
+    background-color: #654282;
+    color: #FFFFFF;
+    border: 1px solid #654282;
+}
+
+.boton-general-reporte:hover {
+    background-color: #51346F;
+    border-color: #51346F;
+    box-shadow: 0 3px 8px rgba(81, 52, 111, 0.18);
+}
+
+
+/* =====================================================
+   PANEL DE FILTROS
+===================================================== */
+
+.panel-filtros-reporte {
+    padding: 14px;
+    margin-top: 2px;
+    margin-bottom: 4px;
+    border: 1px solid #E9E0F0;
+    border-radius: 8px;
+    background-color: #FAF8FC;
+    animation: aparecer-filtros 0.2s ease;
+}
+
+.panel-filtros-reporte[hidden] {
+    display: none;
+}
+
+@keyframes aparecer-filtros {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.campo-filtro-reporte {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.campo-filtro-reporte label {
+    color: #49345C;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.campo-filtro-reporte select {
+    width: 100%;
+    min-height: 37px;
+    padding: 8px 10px;
+    color: #51475C;
+    background-color: #FFFFFF;
+    border: 1px solid #DCD3E5;
+    border-radius: 6px;
+    outline: none;
+    font-family: inherit;
+    font-size: 12px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.campo-filtro-reporte select:focus {
+    border-color: #654282;
+    box-shadow: 0 0 0 3px rgba(101, 66, 130, 0.10);
+}
+
+
+/* Botón aplicar filtros */
+
+.boton-generar-filtrado {
+    min-height: 36px;
+    margin-top: 5px;
+    background-color: #EEE6F5;
+    color: #654282;
+    border: 1px solid #D9CBE7;
+}
+
+.boton-generar-filtrado:hover {
+    background-color: #E2D4EF;
+    border-color: #654282;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 1100px) {
+
+    .grid-reportes {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+}
+
+@media (max-width: 650px) {
+
+    .pagina-reportes .encabezado-modulo h1 {
+        font-size: 23px;
+    }
+
+    .encabezado-seccion-reportes {
+        align-items: flex-start;
+    }
+
+    .grid-reportes {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .tarjeta-reporte {
+        min-height: auto;
+    }
+
+    .descripcion-reporte {
+        min-height: auto;
+    }
+
+}
+
+@media (max-width: 400px) {
+
+    .encabezado-seccion-reportes {
+        flex-direction: column;
+    }
+
+}

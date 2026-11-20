@@ -18,6 +18,7 @@ use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\DatosGeneralesController;
 use App\Http\Controllers\CreacionHorarioController;
 use App\Http\Controllers\NotificacionController;
+use App\Http\Controllers\ReporteController;
 
                     /* Rutas de inicio de sesión */
 
@@ -566,10 +567,33 @@ Route::middleware(['auth', \App\Http\Middleware\PrevenirCachePrivada::class, For
                             /* Rutas para las notificaciones */
 
     // Marcar una notificación como leída.
-    Route::post(
-        '/notificaciones/{idNotificacion}/marcar-leida',
-        [NotificacionController::class, 'marcarLeida']
-    )->name('notificaciones.marcar-leida');
+    Route::post('/notificaciones/{idNotificacion}/marcar-leida',[
+        NotificacionController::class,
+        'marcarLeida'
+    ])->name('notificaciones.marcar-leida');
+
+
+                            /* Rutas para la generación de reportes */
+
+    // Mostrar la pantalla principal de reportes.
+    Route::get('/reportes', [
+        ReporteController::class,
+        'index'
+    ])->name('reportes.index');
+
+    // Mostrar el reporte de materias asignadas por cuatrimestre.
+    Route::get('/reportes/materias-asignadas-cuatrimestre', [
+        ReporteController::class,
+        'materiasAsignadasCuatrimestre'
+    ])->name('reportes.materias-asignadas-cuatrimestre');
+
+
+    //REPORTE N4
+    // Mostrar el reporte de materias asignadas por cuatrimestre.
+    Route::get('/reportes/materias-asignadas-cuatrimestre', [
+        ReporteController::class,
+        'materiasAsignadasCuatrimestre'
+    ])->name('reportes.materias-asignadas-cuatrimestre');
 
 });
 

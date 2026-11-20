@@ -21,14 +21,13 @@
     <link rel="stylesheet" href="{{ asset('css/componentes/sweet-alert.css') }}">
     <link rel="stylesheet" href="{{ asset('css/componentes/notificaciones.css') }}">
 
+
+    <!-- Carga los archivos JavaScript mediante Vite. -->
+    @vite(['resources/js/app.js'])
      <!-- Permite agregar estilos específicos desde cada vista. -->
     @stack('estilos')
    
-    <!-- Carga los archivos JavaScript mediante Vite. -->
-    @vite(['resources/js/app.js'])
 
-    <!-- Permite agregar scripts y estilos específicos desde cada vista. -->
-    @stack('scripts')
 </head>
 <body>
     <!-- Agrupa el menú lateral y el contenido principal de la aplicación. -->
@@ -43,6 +42,7 @@
                 :notificaciones="$notificaciones ?? collect()"
                 :cantidad-no-leidas="$cantidadNoLeidas ?? 0"
             />
+
 
             <!-- Inserta el contenido definido por la vista actual. -->
             <div class="contenido-pagina">
@@ -67,11 +67,11 @@
     <!-- Componente global de alertas -->
     <x-alertas.sweet-alert />
 
-    <!-- Scripts específicos de cada vista -->
-    @stack('scripts')
  
     <!-- Control de las notificaciones. -->
     <script src="{{ asset('js/componentes/notificaciones.js') }}"></script>
 
+    <!-- Scripts específicos de cada vista -->
+    @stack('scripts')
 </body>
 </html>

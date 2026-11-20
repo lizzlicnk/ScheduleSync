@@ -1,6 +1,4 @@
-// =========================================
 // IMPORTACIONES DE FULLCALENDAR
-// =========================================
 
 // Importar FullCalendar.
 import { Calendar } from 'fullcalendar';
@@ -25,6 +23,8 @@ import 'fullcalendar/themes/monarch/palettes/purple.css';
 // =========================================
 
 document.addEventListener('DOMContentLoaded', function () {
+    
+    console.count('INICIALIZACIÓN DE FULLCALENDAR');
 
     // Obtener los elementos de la vista.
     const elementoCalendario = document.getElementById('calendario-horarios');
@@ -1567,80 +1567,211 @@ document.addEventListener('DOMContentLoaded', function () {
         'boton-guardar-borrador'
     );
 
+    // =========================================
+    // VALIDAR QUE TODAS LAS ASIGNATURAS ESTÉN COMPLETAS
+    // =========================================
 
-/**
- * Descripción:
- * Prepara y envía el formulario para guardar un horario
- * como borrador o definitivamente.
- *
- * Entradas:
- * - tipoGuardado: 0 para borrador y 1 para guardado definitivo.
- *
- * Salidas:
- * Envía los datos del horario al método store del controlador.
- */
-function guardarHorario(tipoGuardado) {
+    /**
+     * Descripción:
+     * Comprueba que todas las asignaturas tengan colocadas
+     * en el calendario la totalidad de sus horas requeridas.
+     *
+     * Entradas:
+     * No recibe parámetros.
+     *
+     * Salidas:
+     * Devuelve true si todas las asignaturas están completas
+     * y false cuando existe alguna asignatura pendiente.
+     */
+    function validarAsignaturasCompletas() {
 
-    // Comprobar que exista el formulario.
-    if (!formularioRegistro) {
-        return;
-    }
+        // Obtener todas las tarjetas originales.
+        const tarjetas = new Set();
 
-    // Obtener el selector del horario.
-    const horarioRegistro = document.getElementById( 'horario-registro' );
+        // Incluir las tarjetas que todavía están disponibles.
+        if (listaAsignaturas) {
 
-    // Validar únicamente que se haya seleccionado un horario.
-    if (!horarioRegistro || !horarioRegistro.checkValidity()) {
+            listaAsignaturas.querySelectorAll(
+                '.tarjeta-asignatura-disponible'
+            ).forEach(function (tarjeta) {
 
-        horarioRegistro?.reportValidity();
-
-        return;
-    }
-    
-    // Obtener los eventos registrados en el calendario.
-    const eventos = calendario.getEvents();
-
-    // Comprobar que el guardado definitivo tenga asignaciones.
-    if (tipoGuardado === 1 && eventos.length === 0) {
-
-        mostrarAdvertencia(
-            'Debes colocar al menos una asignatura en el calendario antes de guardar el horario.',
-            'Horario sin asignaciones'
-        );
-
-        return;
-    }
-
-    // Actualizar los campos ocultos con los detalles del calendario.
-    actualizarDetallesHorario();
-
-    // En la edición no se modifica el estado del horario.
-    // El horario conserva su condición de finalizado.
-    if (!modoEdicion) {
-
-        // Buscar un campo anterior que indique el tipo de guardado.
-        let campoBorrador = formularioRegistro.querySelector(
-            'input[name="borrador"]'
-        );
-
-        // Crear el campo si todavía no existe.
-        if (!campoBorrador) {
-
-            campoBorrador = document.createElement('input');
-
-            campoBorrador.type = 'hidden';
-            campoBorrador.name = 'borrador';
-
-            formularioRegistro.appendChild(campoBorrador);
+                tarjetas.add(tarjeta);
+            });
         }
 
-        // Establecer el tipo de guardado solicitado.
-        campoBorrador.value = tipoGuardado;
+        // Incluir también las tarjetas que ya fueron retiradas
+        // de la lista porque sus horas están completamente asignadas.
+        tarjetasOriginales.forEach(function (tarjeta) {
+
+            tarjetas.add(tarjeta);
+        });
+
+        // Obtener los eventos colocados en el calendario.
+        const eventos = calendario.getEvents();
+
+        // Almacenar las asignaturas que todavía tienen horas pendientes.
+        const asignaturasPendientes = [];
+
+        // Revisar cada asignatura.
+        tarjetas.forEach(function (tarjeta) {
+
+            const idAsignatura = String(
+                tarjeta.dataset.idAsignatura
+            );
+
+            const horasTotales = Number(
+                tarjeta.dataset.horasTotales
+            );
+
+            // Calcular las horas colocadas de esta asignatura.
+            let horasAsignadas = 0;
+
+            eventos.forEach(function (evento) {
+
+                if (
+                    String(evento.extendedProps.id_asignatura) !==
+                    idAsignatura
+                ) {
+                    return;
+                }
+
+                if (!evento.start || !evento.end) {
+                    return;
+                }
+
+                const minutos = (
+                    evento.end.getTime() - evento.start.getTime()
+                ) / 60000;
+
+                horasAsignadas += minutos / 60;
+            });
+
+            // Calcular las horas que todavía faltan.
+            const horasPendientes = Math.max(
+                0,
+                horasTotales - horasAsignadas
+            );
+
+            // Registrar la asignatura si todavía tiene horas pendientes.
+            if (horasPendientes > 0.001) {
+
+                const nombreAsignatura = tarjeta.querySelector(
+                    '.nombre-asignatura-tarjeta'
+                )?.textContent.trim() || 'Asignatura sin nombre';
+
+                asignaturasPendientes.push({
+                    nombre: nombreAsignatura,
+                    horas: horasPendientes
+                });
+            }
+        });
+
+        // Mostrar una advertencia cuando existan asignaturas incompletas.
+        if (asignaturasPendientes.length > 0) {
+
+            const listaPendientes = asignaturasPendientes.map(
+                function (asignatura) {
+
+                    return `• ${asignatura.nombre}: ${asignatura.horas.toFixed(2)} horas pendientes`;
+                }
+            ).join('\n');
+
+            mostrarAdvertencia(
+                `Debes completar todas las asignaturas antes de guardar el horario.\n\n${listaPendientes}`,
+                'Asignaturas incompletas'
+            );
+
+            return false;
+        }
+
+        return true;
     }
 
-    // Enviar el formulario al controlador.
-    formularioRegistro.requestSubmit();
-}
+
+    /**
+     * Descripción:
+     * Prepara y envía el formulario para guardar un horario
+     * como borrador o definitivamente.
+     *
+     * Entradas:
+     * - tipoGuardado: 0 para borrador y 1 para guardado definitivo.
+     *
+     * Salidas:
+     * Envía los datos del horario al método store del controlador.
+     */
+    function guardarHorario(tipoGuardado) {
+
+        // Comprobar que exista el formulario.
+        if (!formularioRegistro) {
+            return;
+        }
+
+        // Obtener el selector del horario.
+        const horarioRegistro = document.getElementById( 'horario-registro' );
+
+        // Validar únicamente que se haya seleccionado un horario.
+        if (!horarioRegistro || !horarioRegistro.checkValidity()) {
+
+            horarioRegistro?.reportValidity();
+
+            return;
+        }
+        
+        // Obtener los eventos registrados en el calendario.
+        const eventos = calendario.getEvents();
+
+        // Comprobar que todas las asignaturas estén completas
+        // antes de guardar el horario definitivamente.
+        if (tipoGuardado === 1) {
+
+            // Verificar que existan asignaciones en el calendario.
+            if (eventos.length === 0) {
+
+                mostrarAdvertencia(
+                    'Debes colocar todas las asignaturas en el calendario antes de guardar el horario.',
+                    'Horario sin asignaciones'
+                );
+
+                return;
+            }
+
+            // Verificar que todas las asignaturas tengan cubiertas sus horas.
+            if (!validarAsignaturasCompletas()) {
+
+                return;
+            }
+        }
+
+        // Actualizar los campos ocultos con los detalles del calendario.
+        actualizarDetallesHorario();
+
+        // En la edición no se modifica el estado del horario.
+        // El horario conserva su condición de finalizado.
+        if (!modoEdicion) {
+
+            // Buscar un campo anterior que indique el tipo de guardado.
+            let campoBorrador = formularioRegistro.querySelector(
+                'input[name="borrador"]'
+            );
+
+            // Crear el campo si todavía no existe.
+            if (!campoBorrador) {
+
+                campoBorrador = document.createElement('input');
+
+                campoBorrador.type = 'hidden';
+                campoBorrador.name = 'borrador';
+
+                formularioRegistro.appendChild(campoBorrador);
+            }
+
+            // Establecer el tipo de guardado solicitado.
+            campoBorrador.value = tipoGuardado;
+        }
+
+        // Enviar el formulario al controlador.
+        formularioRegistro.requestSubmit();
+    }
 
     // =========================================
     // GUARDAR COMO BORRADOR
@@ -1697,6 +1828,15 @@ function guardarHorario(tipoGuardado) {
 
             listaAsignaturas.innerHTML = '';
 
+            console.count('EVENTO CHANGE EJECUTADO');
+
+            console.log(
+                'Tarjetas después de limpiar:',
+                listaAsignaturas.querySelectorAll(
+                    '.tarjeta-asignatura-disponible'
+                ).length
+            );
+
             actualizarDetallesHorario();
 
             // Si no se seleccionó ningún horario, terminar.
@@ -1737,6 +1877,19 @@ function guardarHorario(tipoGuardado) {
                 // =====================================
 
                 const asignaturas = datos.asignaturas || [];
+
+                console.log('ASIGNATURAS RECIBIDAS:', asignaturas);
+
+                console.log(
+                    'TOTAL RECIBIDO:',
+                    asignaturas.length
+                );
+
+                console.log(
+                    'IDENTIFICADORES:',
+                    asignaturas.map(asignatura => asignatura.id_asignatura)
+                );
+
                 const detallesGuardados = datos.detallesHorario || [];
 
                 // Guardar la información que utilizan las validaciones.
@@ -1773,7 +1926,25 @@ function guardarHorario(tipoGuardado) {
                     // Agregarla a la lista de asignaturas.
                     listaAsignaturas.appendChild(tarjeta);
                 });
+                
+                console.log(
+                    'Tarjetas después de crearlas:',
+                    listaAsignaturas.querySelectorAll(
+                        '.tarjeta-asignatura-disponible'
+                    ).length
+                );
 
+                console.log(
+                    'Tarjetas creadas:',
+                    listaAsignaturas.querySelectorAll(
+                        '.tarjeta-asignatura-disponible'
+                    ).length
+                );
+
+                console.log(
+                    'Tarjetas registradas en el Map:',
+                    tarjetasOriginales.size
+                );
 
                 // =====================================
                 // PREPARAR LOS DÍAS DE LA SEMANA

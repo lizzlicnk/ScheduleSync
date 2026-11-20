@@ -327,16 +327,12 @@
 
                     </a>
 
-
-                    <button type="submit"
+                    <button type="button"
                         id="boton-guardar-horario"
                         class="boton-guardar-edicion-horario">
-
                         <i class="fa-solid fa-floppy-disk"></i>
                         Guardar cambios
-
                     </button>
-
                 </div>
 
             </section>
