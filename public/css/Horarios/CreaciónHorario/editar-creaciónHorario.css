@@ -1,240 +1,875 @@
-/* ========================================
-   PÁGINA DE EDICIÓN DE HORARIOS
-======================================== */
+/* PÁGINA DE EDICIÓN DE HORARIOS */
 
 .pagina-editar-horario {
     width: 100%;
-    padding: 25px;
-    color: #333;
-    font-family: inherit;
+    max-width: 1500px;
+    margin: 0 auto;
+    color: #30263B;
 }
 
-/* ========================================
-   ENCABEZADO
-======================================== */
+.pagina-editar-horario * {
+    box-sizing: border-box;
+}
+
+.pagina-editar-horario [hidden] {
+    display: none !important;
+}
+
+.pagina-editar-horario button,
+.pagina-editar-horario a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+/* PANEL PRINCIPAL */
+
+.panel-editar-horario {
+    position: relative;
+    min-width: 0;
+    margin-bottom: 25px;
+    padding: 32px 27px 27px;
+    overflow: hidden;
+    border: 1px solid #EAE3F1;
+    border-radius: 14px;
+    background: #FFFFFF;
+    box-shadow: 0 4px 17px rgba(45, 30, 60, 0.04);
+}
+
+/* Barra de color superior. */
+.panel-editar-horario::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(
+        90deg,
+        #4C1D95 0%,
+        #7E22CE 42%,
+        #A78BFA 72%,
+        #E9D5FF 100%
+    );
+    content: "";
+}
+
+
+/* ENCABEZADO DE EDICIÓN */
 
 .encabezado-editar-horario {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     gap: 20px;
-    margin-bottom: 25px;
+    margin-bottom: 27px;
+}
+
+.encabezado-editar-horario > div {
+    min-width: 0;
 }
 
 .encabezado-editar-horario h1 {
-    margin: 0 0 8px;
-    color: #51346F;
-    font-size: 25px;
-    font-weight: 700;
+    margin: 0;
+    color: #5A3E7D;
+    font-size: clamp(25px, 3vw, 32px);
+    font-weight: 750;
+    letter-spacing: -0.7px;
+    line-height: 1.3;
 }
 
 .encabezado-editar-horario p {
-    margin: 0;
-    color: #777;
+    margin: 9px 0 0;
+    color: #797181;
     font-size: 14px;
+    line-height: 1.65;
 }
+
+
+/*  BOTÓN REGRESAR */
 
 .boton-regresar-horario {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 10px 16px;
-    border: 1px solid #5A3E7D;
-    border-radius: 7px;
+    min-height: 42px;
+    flex-shrink: 0;
+    padding: 10px 17px;
+    border: 1px solid #DDD2E9;
+    border-radius: 9px;
+    background: #FFFFFF;
     color: #5A3E7D;
-    background: #fff;
+    font-size: 13px;
+    font-weight: 700;
     text-decoration: none;
-    font-weight: 600;
-    transition: .2s ease;
+    white-space: nowrap;
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 
 .boton-regresar-horario:hover {
-    color: #fff;
-    background: #5A3E7D;
+    border-color: #BFAAD7;
+    background: #F8F5FC;
+    color: #5A3E7D;
 }
 
-/* ========================================
-   INFORMACIÓN GENERAL DEL HORARIO
-======================================== */
+.boton-regresar-horario:focus-visible {
+    outline: 3px solid rgba(90, 62, 125, 0.2);
+    outline-offset: 2px;
+}
 
-.panel-informacion-horario {
-    overflow: hidden;
-    margin-bottom: 25px;
-    border: 1px solid #e5deec;
+
+/*  ALERTAS DE VALIDACIÓN */
+
+.alerta-edicion-horario {
+    margin-bottom: 22px;
+    padding: 15px 18px;
+    border-radius: 9px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.alerta-error-horario {
+    border: 1px solid #F1CACA;
+    background: #FFF3F3;
+    color: #A8323B;
+}
+
+.alerta-error-horario strong {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 750;
+}
+
+.alerta-error-horario ul {
+    margin: 7px 0 0;
+    padding-left: 20px;
+}
+
+.alerta-error-horario li + li {
+    margin-top: 4px;
+}
+
+
+/* ICONOS DE LOS ENCABEZADOS */
+
+.icono-seccion-horario {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 43px;
+    height: 43px;
     border-radius: 10px;
-    background: #fff;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, .05);
-}
-
-.franja-institucional {
-    width: 100%;
-    height: 6px;
     background: #5A3E7D;
-}
-
-.contenido-informacion-horario {
-    padding: 22px;
-}
-
-.contenido-informacion-horario h2 {
-    margin: 0 0 20px;
-    color: #51346F;
+    color: #FFFFFF;
     font-size: 18px;
-    font-weight: 700;
+    box-shadow: 0 3px 8px rgba(90, 62, 125, 0.16);
+}
+
+
+/* INFORMACIÓN GENERAL DEL HORARIO */
+
+.informacion-edicion-horario {
+    position: relative;
+    margin-bottom: 27px;
+    padding: 23px;
+    overflow: hidden;
+    border: 1px solid #E9DDF3;
+    border-radius: 11px;
+    background: linear-gradient(145deg, #FCFAFE, #F8F3FC);
+}
+
+.informacion-edicion-horario::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(
+        90deg,
+        #4C1D95 0%,
+        #7E22CE 42%,
+        #A78BFA 72%,
+        #E9D5FF 100%
+    );
+    content: "";
+}
+
+.titulo-seccion-horario {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 20px;
+    color: #5A3E7D;
+    font-size: 19px;
+    font-weight: 750;
 }
 
 .datos-generales-horario {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 18px;
+    gap: 14px;
 }
 
-.datos-generales-horario div {
+.campo-informacion-horario {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 7px;
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid #EAE3F1;
+    border-radius: 9px;
+    background: #FFFFFF;
 }
 
-.datos-generales-horario span {
-    color: #777;
+.campo-informacion-horario span {
+    color: #847890;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.campo-informacion-horario strong {
+    color: #49345F;
+    font-size: 14px;
+    font-weight: 750;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+/* DISTRIBUCIÓN DEL HORARIO */
+
+.panel-distribucion-horario {
+    min-width: 0;
+    padding: 0;
+}
+
+.encabezado-distribucion-horario {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin-bottom: 22px;
+}
+
+.texto-encabezado-distribucion {
+    min-width: 0;
+}
+
+.texto-encabezado-distribucion h2 {
+    margin: 0;
+    color: #5A3E7D;
+    font-size: 21px;
+    font-weight: 750;
+}
+
+.texto-encabezado-distribucion p {
+    margin: 5px 0 0;
+    color: #797181;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* DISTRIBUCIÓN EN DOS COLUMNAS */
+
+.distribucion-contenedor {
+    display: grid;
+    grid-template-columns: minmax(250px, 0.75fr) minmax(0, 1.8fr);
+    align-items: start;
+    gap: 20px;
+    min-width: 0;
+}
+
+
+/* PANELES DE ASIGNATURAS Y CALENDARIO */
+
+.panel-asignaturas,
+.panel-calendario {
+    min-width: 0;
+    padding: 19px;
+    border: 1px solid #EAE3F1;
+    border-radius: 11px;
+    background: #FFFFFF;
+}
+
+.encabezado-panel-asignaturas {
+    margin-bottom: 17px;
+}
+
+.encabezado-panel-asignaturas h3,
+.texto-encabezado-calendario h3 {
+    margin: 0;
+    color: #5A3E7D;
+    font-size: 16px;
+    font-weight: 750;
+}
+
+.encabezado-panel-asignaturas p,
+.texto-encabezado-calendario p {
+    margin: 6px 0 0;
+    color: #847890;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+
+.encabezado-panel-calendario {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 13px;
+    margin-bottom: 17px;
+}
+
+.texto-encabezado-calendario {
+    min-width: 0;
+    flex: 1;
+}
+
+/* LISTA DE ASIGNATURAS */
+
+.lista-asignaturas {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+    max-height: 650px;
+    padding: 2px;
+    overflow-y: auto;
+}
+
+.lista-asignaturas:empty::before {
+    display: block;
+    padding: 25px 13px;
+    border: 1px dashed #DCCFE9;
+    border-radius: 9px;
+    color: #8A7B96;
+    content: "Selecciona un horario para consultar sus asignaturas.";
+    font-size: 12px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+/* TARJETAS DE ASIGNATURAS */
+
+.tarjeta-asignatura-disponible {
+    min-width: 0;
+    padding: 15px;
+    border: 1px solid #E4D9EF;
+    border-left: 4px solid #7047A3;
+    border-radius: 9px;
+    background: #FCFAFE;
+    cursor: grab;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.tarjeta-asignatura-disponible:hover {
+    border-color: #C6B1DD;
+    box-shadow: 0 4px 12px rgba(90, 62, 125, 0.09);
+    transform: translateY(-1px);
+}
+
+.tarjeta-asignatura-disponible:active {
+    cursor: grabbing;
+}
+
+.nombre-asignatura-tarjeta {
+    margin: 0 0 11px;
+    color: #49345F;
+    font-size: 14px;
+    font-weight: 750;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.informacion-asignatura {
+    margin-bottom: 13px;
+    color: #796D85;
     font-size: 12px;
 }
 
-.datos-generales-horario strong {
-    color: #51346F;
-    font-size: 14px;
-    font-weight: 600;
+.informacion-asignatura strong {
+    color: #5A3E7D;
+    font-weight: 750;
 }
 
-/* ========================================
-   PANEL PRINCIPAL
-======================================== */
-
-.pagina-editar-horario .panel-horarios {
-    overflow: hidden;
-    border: 1px solid #e5deec;
-    border-radius: 10px;
-    background: #fff;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, .05);
+.informacion-asignatura span {
+    color: #654984;
+    font-weight: 650;
 }
 
-.pagina-editar-horario .encabezado-panel {
-    padding: 20px 22px;
-    border-bottom: 1px solid #eee7f3;
+
+/* CAMPOS DE LAS TARJETAS */
+
+.campo-tarjeta-asignatura {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    margin-top: 11px;
 }
 
-.pagina-editar-horario .encabezado-panel h2 {
-    margin: 0 0 7px;
-    color: #51346F;
-    font-size: 19px;
+.campo-tarjeta-asignatura label {
+    color: #574765;
+    font-size: 12px;
     font-weight: 700;
 }
 
-.pagina-editar-horario .encabezado-panel p {
-    margin: 0;
-    color: #777;
-    font-size: 13px;
+.campo-tarjeta-asignatura select {
+    width: 100%;
+    min-width: 0;
+    min-height: 39px;
+    padding: 8px 10px;
+    border: 1px solid #DED5E8;
+    border-radius: 7px;
+    outline: none;
+    background: #FFFFFF;
+    color: #49345F;
+    font-family: inherit;
+    font-size: 12px;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-/* ========================================
-   DISTRIBUCIÓN
-======================================== */
-
-.pagina-editar-horario .distribucion-contenedor {
-    padding: 20px;
+.campo-tarjeta-asignatura select:focus {
+    border-color: #8A63B5;
+    box-shadow: 0 0 0 3px rgba(112, 71, 163, 0.11);
 }
 
-/* ========================================
-   ACCIONES DE EDICIÓN
-======================================== */
+.campo-tarjeta-asignatura select:disabled {
+    background: #F3F0F6;
+    color: #8A8094;
+    cursor: not-allowed;
+}
 
-.acciones-editar-horario {
+/* INDICACIÓN DE ARRASTRE */
+
+.indicacion-arrastrar {
     display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 12px;
-    padding: 20px;
-    border-top: 1px solid #eee7f3;
+    align-items: flex-start;
+    gap: 9px;
+    margin-bottom: 15px;
+    padding: 11px 13px;
+    border: 1px solid #E5D9F1;
+    border-radius: 8px;
+    background: #F8F4FC;
+    color: #665278;
+    font-size: 12px;
+    line-height: 1.6;
 }
 
-.boton-cancelar-edicion,
-.boton-guardar-edicion {
+.indicacion-arrastrar i {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: #8056A8;
+    font-size: 14px;
+}
+
+
+/* CONTENEDOR DE FULLCALENDAR */
+
+.contenedor-calendario {
+    width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    border: 1px solid #EAE3F1;
+    border-radius: 9px;
+    background: #FFFFFF;
+}
+
+#calendario-horarios {
+    width: 100%;
+    min-width: 570px;
+    padding: 10px;
+}
+
+
+/* PERSONALIZACIÓN DE FULLCALENDAR */
+
+#calendario-horarios .fc {
+    color: #49345F;
+    font-family: inherit;
+    font-size: 12px;
+}
+
+#calendario-horarios .fc .fc-toolbar-title {
+    color: #39264F;
+    font-size: 17px;
+    font-weight: 750;
+}
+
+#calendario-horarios .fc .fc-button {
+    min-height: 34px;
+    padding: 6px 11px;
+    border: 1px solid #5A3E7D;
+    border-radius: 7px;
+    background: #5A3E7D;
+    color: #FFFFFF;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    box-shadow: none;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+#calendario-horarios .fc .fc-button:hover {
+    border-color: #472D68;
+    background: #472D68;
+}
+
+#calendario-horarios .fc .fc-button:focus {
+    outline: 3px solid rgba(90, 62, 125, 0.2);
+    box-shadow: none;
+}
+
+#calendario-horarios .fc .fc-button:disabled {
+    opacity: 0.55;
+}
+
+#calendario-horarios .fc .fc-col-header-cell {
+    padding: 9px 3px;
+    border-color: #EAE3F1;
+    background: #F8F5FC;
+}
+
+#calendario-horarios .fc .fc-col-header-cell-cushion {
+    color: #654984;
+    font-size: 11px;
+    font-weight: 750;
+    text-decoration: none;
+}
+
+#calendario-horarios .fc .fc-timegrid-slot {
+    height: 43px;
+    border-color: #F0ECF4;
+}
+
+#calendario-horarios .fc .fc-timegrid-slot-label {
+    color: #81748D;
+    font-size: 10px;
+}
+
+#calendario-horarios .fc .fc-timegrid-axis {
+    background: #FCFAFE;
+}
+
+#calendario-horarios .fc .fc-timegrid-col {
+    background: #FFFFFF;
+}
+
+#calendario-horarios .fc .fc-timegrid-col.fc-day-today {
+    background: #FBF8FE;
+}
+
+#calendario-horarios .fc .fc-highlight {
+    background: rgba(126, 34, 206, 0.12);
+}
+
+#calendario-horarios .fc .fc-event {
+    border: 1px solid #7047A3;
+    border-radius: 5px;
+    background: #7047A3;
+    color: #FFFFFF;
+    cursor: grab;
+}
+
+#calendario-horarios .fc .fc-event:active {
+    cursor: grabbing;
+}
+
+#calendario-horarios .fc .fc-event-main {
+    padding: 3px 4px;
+}
+
+#calendario-horarios .fc .fc-event-title,
+#calendario-horarios .fc .fc-event-time {
+    color: #FFFFFF;
+    font-size: 10px;
+    font-weight: 650;
+}
+
+#calendario-horarios .fc .fc-event-main-frame {
+    min-width: 0;
+}
+
+/* BOTÓN PARA MOSTRAR SÁBADO */
+
+.boton-sabado {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    gap: 8px;
+    min-height: 38px;
+    margin-left: auto;
+    padding: 9px 13px;
+    border: 1px solid #DDD2E9;
+    border-radius: 8px;
+    background: #F8F5FC;
+    color: #5A3E7D;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.boton-sabado:hover {
+    border-color: #BFAAD7;
+    background: #EEE7F6;
+}
+
+.boton-sabado:focus-visible {
+    outline: 3px solid rgba(90, 62, 125, 0.2);
+    outline-offset: 2px;
+}
+
+/* BOTONES DE EDICIÓN */
+
+.acciones-edicion-horario {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 11px;
+    margin-top: 27px;
+    padding-top: 22px;
+    border-top: 1px solid #F0EAF5;
+}
+
+.boton-cancelar-edicion-horario,
+.boton-guardar-edicion-horario {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    min-height: 42px;
-    padding: 10px 20px;
-    border-radius: 7px;
-    font-size: 14px;
-    font-weight: 600;
+    min-height: 44px;
+    padding: 10px 21px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
     text-decoration: none;
     cursor: pointer;
-    transition: .2s ease;
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 
-.boton-cancelar-edicion {
-    border: 1px solid #5A3E7D;
+.boton-cancelar-edicion-horario {
+    border-color: #DDD2E9;
+    background: #FFFFFF;
     color: #5A3E7D;
-    background: #fff;
 }
 
-.boton-cancelar-edicion:hover {
-    color: #fff;
+.boton-cancelar-edicion-horario:hover {
+    border-color: #BFAAD7;
+    background: #F8F5FC;
+    color: #5A3E7D;
+}
+
+.boton-guardar-edicion-horario {
+    border-color: #5A3E7D;
     background: #5A3E7D;
+    color: #FFFFFF;
 }
 
-.boton-guardar-edicion {
-    border: 1px solid #5A3E7D;
-    color: #fff;
-    background: #5A3E7D;
+.boton-guardar-edicion-horario:hover:not(:disabled) {
+    border-color: #472D68;
+    background: #472D68;
+    box-shadow: 0 4px 10px rgba(90, 62, 125, 0.16);
 }
 
-.boton-guardar-edicion:hover {
-    border-color: #51346F;
-    background: #51346F;
-}
-
-.boton-guardar-edicion:disabled {
-    opacity: .65;
+.boton-guardar-edicion-horario:disabled {
+    opacity: 0.55;
     cursor: not-allowed;
 }
 
-/* ========================================
-   DISEÑO RESPONSIVO
-======================================== */
+.boton-cancelar-edicion-horario:focus-visible,
+.boton-guardar-edicion-horario:focus-visible {
+    outline: 3px solid rgba(90, 62, 125, 0.2);
+    outline-offset: 2px;
+}
 
-@media (max-width: 900px) {
+/* BARRAS DE DESPLAZAMIENTO */
+
+.lista-asignaturas::-webkit-scrollbar,
+.contenedor-calendario::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+
+.lista-asignaturas::-webkit-scrollbar-track,
+.contenedor-calendario::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: #F5F1F8;
+}
+
+.lista-asignaturas::-webkit-scrollbar-thumb,
+.contenedor-calendario::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #C9B8DA;
+}
+
+.lista-asignaturas::-webkit-scrollbar-thumb:hover,
+.contenedor-calendario::-webkit-scrollbar-thumb:hover {
+    background: #A98CC5;
+}
+
+/* RESPONSIVE: TABLET */
+
+@media (max-width: 1100px) {
 
     .datos-generales-horario {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .distribucion-contenedor {
+        grid-template-columns: minmax(220px, 0.7fr) minmax(0, 1.5fr);
+    }
+
+    .panel-asignaturas,
+    .panel-calendario {
+        padding: 15px;
+    }
+
 }
+
+
+/* RESPONSIVE */
+
+@media (max-width: 850px) {
+
+    .distribucion-contenedor {
+        grid-template-columns: 1fr;
+    }
+
+    .lista-asignaturas {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        max-height: 450px;
+    }
+
+    #calendario-horarios {
+        min-width: 570px;
+    }
+
+}
+
 
 @media (max-width: 600px) {
 
-    .pagina-editar-horario {
-        padding: 12px;
+    .panel-editar-horario {
+        padding: 27px 16px 19px;
+        border-radius: 11px;
     }
 
     .encabezado-editar-horario {
         align-items: flex-start;
         flex-direction: column;
+        gap: 15px;
+    }
+
+    .encabezado-editar-horario h1 {
+        font-size: 25px;
+    }
+
+    .boton-regresar-horario {
+        align-self: flex-start;
+    }
+
+    .informacion-edicion-horario {
+        padding: 19px 15px;
+    }
+
+    .titulo-seccion-horario {
+        font-size: 17px;
+    }
+
+    .icono-seccion-horario {
+        width: 39px;
+        height: 39px;
+        font-size: 16px;
+    }
+
+    .datos-generales-horario {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+    }
+
+    .campo-informacion-horario {
+        padding: 11px;
+    }
+
+    .campo-informacion-horario strong {
+        font-size: 12px;
+    }
+
+    .encabezado-distribucion-horario {
+        align-items: flex-start;
+    }
+
+    .texto-encabezado-distribucion h2 {
+        font-size: 18px;
+    }
+
+    .lista-asignaturas {
+        grid-template-columns: 1fr;
+        max-height: 400px;
+    }
+
+    .panel-asignaturas,
+    .panel-calendario {
+        padding: 13px;
+    }
+
+    .encabezado-panel-calendario {
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .boton-sabado {
+        min-height: 36px;
+    }
+
+    .acciones-edicion-horario {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .boton-cancelar-edicion-horario,
+    .boton-guardar-edicion-horario {
+        width: 100%;
+    }
+
+}
+
+
+@media (max-width: 380px) {
+
+    .panel-editar-horario {
+        padding: 27px 12px 15px;
     }
 
     .datos-generales-horario {
         grid-template-columns: 1fr;
     }
 
-    .acciones-editar-horario {
-        flex-direction: column-reverse;
-        align-items: stretch;
+    .encabezado-editar-horario h1 {
+        font-size: 23px;
     }
 
-    .boton-cancelar-edicion,
-    .boton-guardar-edicion {
+    .informacion-edicion-horario {
+        padding: 17px 12px;
+    }
+
+    .boton-regresar-horario {
+        width: 100%;
+    }
+
+    .encabezado-panel-calendario {
+        flex-direction: column;
+    }
+
+    .boton-sabado {
         width: 100%;
     }
 

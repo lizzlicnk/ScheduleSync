@@ -217,12 +217,7 @@ class CreacionHorarioController extends Controller
         $detallesRecibidos = $datosValidados['detalles'] ?? [];
 
         // Consultar el horario seleccionado.
-        $horarioSeleccionado = Horario::with([
-            'grupo',
-            'periodo'
-        ])
-            ->where('estado', 1)
-            ->findOrFail($datosValidados['id_horario']);
+        $horarioSeleccionado = Horario::with([ 'grupo', 'periodo' ])->where('estado', 1)->findOrFail($datosValidados['id_horario']);
 
         // Comprobar que el horario todavía no se encuentre finalizado.
         if ((int) $horarioSeleccionado->borrador === 1) {
@@ -254,10 +249,6 @@ class CreacionHorarioController extends Controller
             ]);
         }
 
-        // =========================================
-        // VALIDAR LAS ASIGNACIONES
-        // =========================================
-
         // Validar las asignaciones antes de guardar.
         // Si se trata de un borrador vacío, se validará un arreglo sin elementos.
         $detallesValidados = $this->validarAsignaciones(
@@ -267,10 +258,7 @@ class CreacionHorarioController extends Controller
             $horarioSeleccionado->id_horario
         );
 
-        // =========================================
         // VALIDAR LA CARGA ACADÉMICA DE LOS DOCENTES
-        // =========================================
-
         // Comprobar que ningún docente supere su carga académica.
         $this->validarCargaAcademicaDocentes(
             $detallesValidados,
@@ -283,12 +271,7 @@ class CreacionHorarioController extends Controller
         // =========================================
 
         // Registrar los detalles y actualizar el tipo de guardado.
-        DB::transaction(function () use (
-            $horarioSeleccionado,
-            $detallesValidados,
-            $borrador
-        ) {
-
+        DB::transaction(function () use ( $horarioSeleccionado, $detallesValidados, $borrador ) {
             // Eliminar los detalles anteriores para evitar duplicados.
             $horarioSeleccionado->detalles()->delete();
 
@@ -304,8 +287,9 @@ class CreacionHorarioController extends Controller
         });
 
         // Retornar a la pantalla anterior con el mensaje correspondiente.
+
         return redirect()->back()->with(
-            'success',
+            'alerta_exito',
             $borrador === 0
                 ? 'El horario se guardó como borrador correctamente.'
                 : 'Las asignaciones del horario se registraron correctamente.'
@@ -1129,7 +1113,7 @@ class CreacionHorarioController extends Controller
      * Salidas:
      * Retorna la vista de edición con los datos generales del horario.
      */
-    public function edit($idHorario)
+    public function edit($idHorario) 
     {
         // Comprobar que el usuario tenga un rol autorizado.
         $this->verificarRol([1, 2]);
@@ -1140,10 +1124,7 @@ class CreacionHorarioController extends Controller
             'periodo',
             'detalles.asignatura',
             'detalles.docente.usuario'
-        ])
-            ->where('estado', 1)
-            ->where('borrador', 1)
-            ->findOrFail($idHorario);
+            ])->where('estado', 1)->where('borrador', 1)->findOrFail($idHorario);
 
         // Comprobar que el grupo correspondiente esté activo.
         if (!$horario->grupo || (int) $horario->grupo->estado !== 1) {
@@ -1155,106 +1136,8 @@ class CreacionHorarioController extends Controller
             abort(404, 'El periodo del horario no está disponible para edición.');
         }
 
-        return view(
-            'Horario.CreaciónHorario.EditarCreaciónHorario',
-            compact('horario')
-        );
+        return view( 'Horario.CreaciónHorario.EditarCreaciónHorario', compact('horario') );
     }
-
-    /**
-     * Descripción: Modifica un horario académico y sus asignaciones.
-     *
-     * Entradas:
-     * $solicitud: Contiene los nuevos datos del horario.
-     * $idHorario: Identificador del horario que se modificará.
-     *
-     * Salidas:
-     * Retorna una respuesta indicando si el horario fue actualizado.
-     */
-    /*
-    public function update(Request $solicitud, $idHorario)
-    {
-        // Comprobar que el usuario tenga un rol autorizado.
-        $this->verificarRol([1, 2]);
-
-        // Consultar el horario activo.
-        $horario = Horario::where('estado', 1)
-            ->with('grupo.periodo')
-            ->findOrFail($idHorario);
-
-        // Validar los datos recibidos.
-        $datosValidados = $this->validarDatosHorario($solicitud);
-
-        // Consultar el grupo seleccionado.
-        $grupoSeleccionado = Grupo::with('carrera', 'periodo')
-            ->where('estado', 1)
-            ->findOrFail($datosValidados['id_grupo']);
-
-        // Comprobar que el periodo corresponda al grupo.
-        if ((int) $grupoSeleccionado->id_periodo !== (int) $datosValidados['id_periodo']) {
-            throw ValidationException::withMessages([
-                'id_periodo' => 'El periodo seleccionado no corresponde al grupo.'
-            ]);
-        }
-
-        // Comprobar que el periodo sea del año 2026 en adelante.
-        if ((int) $grupoSeleccionado->periodo->anio < 2026) {
-            throw ValidationException::withMessages([
-                'id_periodo' => 'Solo se pueden modificar horarios de periodos del año 2026 en adelante.'
-            ]);
-        }
-
-        // Comprobar que el grupo no tenga otro horario activo.
-        $horarioExistente = Horario::where('id_grupo', $grupoSeleccionado->id_grupo)
-            ->where('id_periodo', $datosValidados['id_periodo'])
-            ->where('estado', 1)
-            ->where('id_horario', '!=', $horario->id_horario)
-            ->exists();
-
-        if ($horarioExistente) {
-            throw ValidationException::withMessages([
-                'id_grupo' => 'Este grupo ya cuenta con otro horario activo.'
-            ]);
-        }
-
-        // Validar las nuevas asignaciones.
-        $detallesValidados = $this->validarAsignaciones(
-            $datosValidados['detalles'],
-            $grupoSeleccionado,
-            $datosValidados['id_periodo'],
-            $horario->id_horario
-        );
-
-        // Actualizar el horario y reemplazar sus detalles.
-        DB::transaction(function () use (
-            $horario,
-            $grupoSeleccionado,
-            $datosValidados,
-            $detallesValidados
-        ) {
-            // Actualizar la información general del horario.
-            $horario->update([
-                'nombreHorario' => $datosValidados['nombreHorario']
-                    ?? $horario->nombreHorario,
-                'id_grupo' => $grupoSeleccionado->id_grupo,
-                'id_periodo' => $datosValidados['id_periodo']
-            ]);
-
-            // Eliminar los detalles anteriores.
-            $horario->detalles()->delete();
-
-            // Guardar los nuevos bloques.
-            $this->guardarDetallesHorario($horario, $detallesValidados);
-        });
-
-        // Retornar el resultado de la modificación.
-        return $this->respuestaOperacion(
-            $solicitud,
-            'El horario se actualizó correctamente.',
-            $horario->id_horario
-        );
-    }
-*/
 
     /**
      * Descripción: Actualiza las asignaciones de un horario académico finalizado.
@@ -1272,13 +1155,7 @@ class CreacionHorarioController extends Controller
         $this->verificarRol([1, 2]);
 
         // Consultar únicamente horarios activos y finalizados.
-        $horario = Horario::with([
-            'grupo',
-            'periodo'
-        ])
-            ->where('estado', 1)
-            ->where('borrador', 1)
-            ->findOrFail($idHorario);
+        $horario = Horario::with([ 'grupo', 'periodo' ])->where('estado', 1)->where('borrador', 1)->findOrFail($idHorario);
 
         // Validar los bloques recibidos desde el calendario.
         $datosValidados = $solicitud->validate([
@@ -1345,34 +1222,19 @@ class CreacionHorarioController extends Controller
         }
 
         // Validar las asignaciones con las reglas existentes.
-        $detallesValidados = $this->validarAsignaciones(
-            $datosValidados['detalles'],
-            $grupoSeleccionado,
-            $idPeriodo,
-            $horario->id_horario
-        );
+        $detallesValidados = $this->validarAsignaciones( $datosValidados['detalles'], $grupoSeleccionado, $idPeriodo, $horario->id_horario );
 
         // Comprobar que los docentes no superen su carga académica.
-        $this->validarCargaAcademicaDocentes(
-            $detallesValidados,
-            $idPeriodo,
-            $horario->id_horario
-        );
+        $this->validarCargaAcademicaDocentes( $detallesValidados, $idPeriodo, $horario->id_horario );
 
         // Reemplazar únicamente los detalles del horario seleccionado.
-        DB::transaction(function () use (
-            $horario,
-            $detallesValidados
-        ) {
+        DB::transaction(function () use ( $horario, $detallesValidados ) {
 
             // Eliminar los bloques anteriores de este horario.
             $horario->detalles()->delete();
 
             // Registrar los nuevos bloques.
-            $this->guardarDetallesHorario(
-                $horario,
-                $detallesValidados
-            );
+            $this->guardarDetallesHorario( $horario, $detallesValidados );
 
             // Mantener el horario como finalizado.
             $horario->borrador = 1;
@@ -1380,9 +1242,7 @@ class CreacionHorarioController extends Controller
         });
 
         // Regresar al listado con el mensaje de confirmación.
-        return redirect()
-            ->route('creacion-horario.index')
-            ->with('success', 'El horario se actualizó correctamente.');
+        return redirect()->route('creacion-horario.index')->with('alerta_exito', 'El horario se actualizó correctamente.');
     }
 
     /**
@@ -1399,18 +1259,14 @@ class CreacionHorarioController extends Controller
 
         // Comprueba si el horario ya está desactivado.
         if ((int) $horarioEncontrado->estado === 0) {
-            return redirect()->route('creacion-horario.index')
-                ->with('alerta_error', 'El horario seleccionado ya se encuentra desactivado.');
+            return redirect()->route('creacion-horario.index')->with('alerta_error', 'El horario seleccionado ya se encuentra desactivado.');
         }
 
         // Cambia el estado.
-        $horarioEncontrado->update([
-            'estado' => 0,
-        ]);
+        $horarioEncontrado->update([ 'estado' => 0, ]);
 
         // Regresa al listado y muestra el modal de confirmación.
-        return redirect()->route('creacion-horario.index')
-            ->with('alerta_exito', 'Los datos generales del horario se desactivó correctamente.');
+        return redirect()->route('creacion-horario.index')->with('alerta_exito', 'Los datos generales del horario se desactivó correctamente.');
     }
 
 

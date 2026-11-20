@@ -26,39 +26,15 @@
         </div>
     </header>
 
-    <!-- MENSAJES DEL SISTEMA -->
-    @if (session('exito'))
-        <div class="alerta-horarios alerta-exito" role="alert">
-            <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
-            <span>{{ session('exito') }}</span>
-        </div>
-    @endif
-
-    @if (session('error'))
-        <div class="alerta-horarios alerta-error" role="alert">
-            <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
-            <span>{{ session('error') }}</span>
-        </div>
-    @endif
-
-    {{-- Mostrar errores de validación --}}
     @if ($errors->any())
-        <div class="alert alert-danger" role="alert">
-            <strong>No se pudo guardar el horario.</strong>
-
-            <ul class="mb-0 mt-2">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    {{-- Mostrar mensaje de éxito --}}
-    @if (session('success'))
-        <div class="alert alert-success" role="alert">
-            {{ session('success') }}
-        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                mostrarErroresValidacion(
+                    @json($errors->all()),
+                    'No se pudo guardar el horario'
+                );
+            });
+        </script>
     @endif
 
     <!-- FILTROS DE GRUPOS Y HORARIOS -->

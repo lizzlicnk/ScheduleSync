@@ -236,3 +236,47 @@ async function confirmarDesactivarHorario(nombreHorario, tieneDetalles) {
 
     return resultado.isConfirmed;
 }
+
+                                    // HORARIOS
+/**
+ * Descripción: Muestra una lista de errores de validación.
+ * Entradas: errores (arreglo de textos) y titulo.
+ */
+function mostrarErroresValidacion(errores, titulo = '¡Revisa la información!') {
+
+    // Escapar cada mensaje para no interpretarlo como HTML.
+    const items = errores.map(function (mensaje) {
+        const nodo = document.createElement('span');
+        nodo.textContent = mensaje;
+        return `<li>${nodo.innerHTML}</li>`;
+    }).join('');
+
+    Swal.fire({
+        ...configuracionAlertas,
+        icon: 'error',
+        iconHtml: '<i class="fa-solid fa-circle-exclamation"></i>',
+        title: titulo,
+        html: `<ul style="text-align:left; padding-left:20px; margin:0;">${items}</ul>`,
+        confirmButtonText: 'Aceptar'
+    });
+}
+
+/**
+ * Descripción: Confirma el guardado definitivo del horario.
+ * Salida: true si se confirma, false si se cancela.
+ */
+async function confirmarGuardadoDefinitivo() {
+
+    const resultado = await Swal.fire({
+        ...configuracionAlertas,
+        icon: 'question',
+        title: '¿Guardar el horario definitivamente?',
+        text: 'Una vez guardado dejará de ser borrador y no podrás modificarlo desde este formulario.',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, guardar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true
+    });
+
+    return resultado.isConfirmed;
+}

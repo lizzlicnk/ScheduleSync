@@ -532,28 +532,29 @@ Route::middleware(['auth', \App\Http\Middleware\PrevenirCachePrivada::class, For
         'index'
     ])->name('creacion-horario.index');
 
+    // Registrar las asignaciones de un horario.
     Route::post('/horarios', [
         CreacionHorarioController::class,
         'store'
     ])->name('horarios.store');
 
     // Consultar las asignaturas correspondientes al horario seleccionado.
-    Route::get(
-        '/horarios/{idHorario}/asignaturas',
-        [CreacionHorarioController::class, 'obtenerAsignaturas']
-    )->name('horarios.asignaturas');
+    Route::get('/horarios/{idHorario}/asignaturas', [
+        CreacionHorarioController::class,
+        'obtenerAsignaturas'
+    ])->name('horarios.asignaturas');
 
     // Mostrar el formulario de edición de un horario finalizado.
-    Route::get(
-        '/horarios/{idHorario}/editar',
-        [CreacionHorarioController::class, 'edit']
-    )->name('horarios.edit');
+    Route::get('/horarios/{idHorario}/editar', [
+        CreacionHorarioController::class, 
+        'edit'
+    ])->name('horarios.edit');
 
     // Actualizar las asignaciones de un horario.
-    Route::put(
-        '/horarios/{idHorario}',
-        [CreacionHorarioController::class, 'update']
-    )->name('horarios.update');
+    Route::put('/horarios/{idHorario}', [
+        CreacionHorarioController::class, 
+        'update'
+    ])->name('horarios.update');
 
     // Eliminar lógicamente un horario.
     Route::delete('/horarios/{idHorario}', [
