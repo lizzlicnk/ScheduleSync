@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cache;
 
+use App\Services\NotificacionService;
 
 class UsuarioController extends Controller
 {
@@ -53,10 +54,7 @@ class UsuarioController extends Controller
         $correoUsuario = trim($solicitud->input('correo', ''));
 
         // Comprobar si el correo ya está registrado.
-        if (
-            $correoUsuario !== '' &&
-            Usuario::where('correo', $correoUsuario)->exists()
-        ) {
+        if ( $correoUsuario !== '' && Usuario::where('correo', $correoUsuario)->exists() ) {
             return redirect()->back()->withInput()
                 ->with('tipo_modal_usuario', 'error')
                 ->with('mensaje_modal_usuario', 'No se puede registrar el usuario porque ese correo electrónico ya está registrado.');
@@ -115,11 +113,27 @@ class UsuarioController extends Controller
         $nuevoUsuario = Usuario::create($datosValidados);
 
         // Registrar que el usuario debe cambiar su contraseña al ingresar.
-        Cache::store('file')->forever(
-            'usuario_debe_cambiar_contrasena_' . $nuevoUsuario->id_usuario,
-            true
-        );
+        Cache::store('file')->forever( 'usuario_debe_cambiar_contrasena_' . $nuevoUsuario->id_usuario, true );
 
+        // Envía el correo de bienvenida al docente registrado.
+        /*
+        if ($solicitud->rol == 3) {
+
+            $notificacionService = app(NotificacionService::class);
+
+            $notificacionService->enviarCorreo(
+                $usuario->correo,
+                'Alta de docente | ScheduleSync',
+                'Se ha creado tu cuenta en el sistema ScheduleSync. A continuación, encontrarás tus datos de acceso.',
+                [
+                    'Nombre' => $usuario->nombreUsuario . ' ' . $usuario->apellidoPaterno,
+                    'Usuario' => $usuario->correo,
+                    'Contraseña temporal' => $datosValidados['password'],
+                    'Rol' => 'Docente'
+                ]
+            );
+        }
+*/
         // Regresar al listado y mostrar el modal de éxito.
         return redirect()
             ->route('usuarios.index')

@@ -18,6 +18,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 // Importar la clase para capturar errores y excepciones.
 use Throwable;
+use App\Services\NotificacionService;
 
 class RecuperarContrasenaController extends Controller
 {
@@ -33,14 +34,16 @@ class RecuperarContrasenaController extends Controller
         return view('auth.recuperarContrasena');
     }
 
+
     /**
      * Descripción: Valida el correo electrónico, genera un PIN de recuperación
      * y lo envía al usuario mediante correo electrónico.
      *
      * Entradas:
-     * $solicitud: contiene el correo electrónico ingresado por el usuario
+     * $solicitud: contiene el correo electrónico ingresado por el usuario.
      *
-     * Salidas: Redirige al formulario con un modal de error o éxito, según el resultado del envío del PIN.
+     * Salidas: Redirige al formulario con un modal de error o éxito,
+     * según el resultado del envío del PIN.
      */
     public function enviarPin(Request $solicitud)
     {
@@ -52,28 +55,30 @@ class RecuperarContrasenaController extends Controller
         // Normalizar el correo para realizar la búsqueda.
         $correoUsuario = strtolower(trim($datosValidados['correo']));
 
-        // Limpia una recuperación anterior de la sesión.
+        // Limpiar una recuperación anterior de la sesión.
         $solicitud->session()->forget([
             'correo_recuperacion',
             'token_recuperacion_verificada',
         ]);
 
-        // Busca el correo en la tabla usuario.
+        // Buscar el correo en la tabla usuario.
         $usuario = Usuario::where('correo', $correoUsuario)->where('estado', 1)->first();
 
-        // Identifica los datos temporales sin guardar el correo en la clave.
+        // Identificar los datos temporales sin guardar el correo en la clave.
         $identificadorCorreo = hash('sha256', $correoUsuario);
 
         $clavePin = 'recuperacion_pin:' . $identificadorCorreo;
         $claveVerificacion = 'recuperacion_verificada:' . $identificadorCorreo;
 
-        // Elimina los códigos anteriores.
+        // Eliminar los códigos anteriores.
         Cache::forget($clavePin);
         Cache::forget($claveVerificacion);
 
         // Si no existe una cuenta activa, mostrar el modal de error.
         if (!$usuario) {
-            return redirect()->back()->withInput()->with('modal_tipo', 'error');
+            return redirect()->back()
+                ->withInput()
+                ->with('modal_tipo', 'error');
         }
 
         // Generar un PIN numérico de seis dígitos.
@@ -86,57 +91,45 @@ class RecuperarContrasenaController extends Controller
             'intentos' => 0,
         ], now()->addMinutes(10));
 
-//                                                                                              QUITAR
-//                                                                                              QUITAR
-//                                                                                              QUITAR
-//                                                                                              QUITAR
-//                                                                                              QUITAR
-//                                                                                              QUITAR
-//                                                                                              QUITAR
-        if (app()->environment('local')) {
-            // Guardar el correo para continuar con la recuperación.
-            $solicitud->session()->put(
-                'correo_recuperacion',
-                $correoUsuario
+        // ENVÍO DEL PIN MEDIANTE EL SERVICIO DE NOTIFICACIONES.
+
+        try {
+
+            // Obtener el servicio de notificaciones.
+            $notificacionService = app(NotificacionService::class);
+
+            // Enviar el PIN al correo del usuario.
+            $notificacionService->enviarCorreo(
+                $usuario->correo,
+                'PIN de recuperación | Schedule-Sync',
+                'Has solicitado recuperar tu contraseña de Schedule-Sync. '
+                    . 'Utiliza el siguiente PIN para continuar con el proceso.',
+                [
+                    'PIN de recuperación' => $codigoPin,
+                    'Vigencia' => '10 minutos'
+                ]
             );
 
-            // Mostrar el PIN temporalmente para las pruebas.
-            return redirect()
-                ->route('contrasena.verificar-pin')
-                ->with('pin_prueba', $codigoPin);
-        }
-//                                                                                              HAST AQUI
-//                                                                                              HAST AQUI
-//                                                                                              HAST AQUI
-//                                                                                              HAST AQUI
-//                                                                                              HAST AQUI
-        try {
-            // Enviar el PIN al correo del usuario.
-            Mail::raw(
-                "Tu PIN para recuperar la contraseña de Schedule-Sync es: {$codigoPin}\n\n"
-                . "Este código vence en 10 minutos. Si no solicitaste esta recuperación, "
-                . "ignora este correo.",
-                function ($mensajeCorreo) use ($correoUsuario) {
-                    $mensajeCorreo
-                        ->to($correoUsuario)
-                        ->subject('PIN de recuperación | Schedule-Sync');
-                }
-            );
         } catch (Throwable $errorCorreo) {
-            // Elimina el PIN si falla el envío.
+
+            // Eliminar el PIN si falla el envío.
             Cache::forget($clavePin);
 
             // Registrar el error para facilitar su revisión.
             report($errorCorreo);
 
-            return redirect()->back()->withInput()->with('error', 'No fue posible enviar el código. Inténtalo más tarde.');
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'No fue posible enviar el código. Inténtalo más tarde.');
         }
 
-        // Guardar el correo para la siguiente etapa.
-        $solicitud->session()->put('correo_recuperacion',$correoUsuario);
+        // Guardar el correo para continuar con la recuperación.
+        $solicitud->session()->put( 'correo_recuperacion', $correoUsuario );
 
+        // Confirmar que el correo fue enviado.
         return redirect()->back()->with('modal_tipo', 'correcto');
     }
+
 
     /**
      * Descripción: Muestra el formulario para ingresar el PIN de recuperación.

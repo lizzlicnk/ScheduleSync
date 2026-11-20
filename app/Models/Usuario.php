@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Docente;
+use App\Models\Notificacion;
 
 //Importar la funcionalidad de SoftDeletes de Laravel para realizar bajas lógicas
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -89,5 +90,15 @@ class Usuario extends Authenticatable
     {
         // Relaciona la cuenta con su información académica mediante id_usuario.
         return $this->hasOne(Docente::class, 'id_usuario', 'id_usuario');
+    }
+
+    /**
+     * Descripción: Obtiene las notificaciones relacionadas con el usuario.
+     * Entradas: No recibe parámetros.
+     * Salidas: Devuelve las notificaciones del usuario.
+     */
+    public function notificaciones()
+    {
+        return $this->hasMany(Notificacion::class, 'id_usuario', 'id_usuario');
     }
 }
