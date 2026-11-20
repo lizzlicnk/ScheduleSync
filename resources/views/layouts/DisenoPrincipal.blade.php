@@ -16,9 +16,10 @@
     <!-- Estilos del sistema -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/menu-lateral.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/Componentes/modal.css') }}">
 
+    <link rel="stylesheet" href="{{ asset('css/Componentes/modal.css') }}">
     <link rel="stylesheet" href="{{ asset('css/componentes/sweet-alert.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/componentes/notificaciones.css') }}">
 
      <!-- Permite agregar estilos específicos desde cada vista. -->
     @stack('estilos')
@@ -36,6 +37,12 @@
         @include('components.MenuLateral')
 
         <main class="contenido-principal">
+
+            {{-- Campana de notificaciones para usuarios administrativos. --}}
+            <x-notificaciones.campana
+                :notificaciones="$notificaciones ?? collect()"
+                :cantidad-no-leidas="$cantidadNoLeidas ?? 0"
+            />
 
             <!-- Inserta el contenido definido por la vista actual. -->
             <div class="contenido-pagina">
@@ -62,6 +69,9 @@
 
     <!-- Scripts específicos de cada vista -->
     @stack('scripts')
-    
+ 
+    <!-- Control de las notificaciones. -->
+    <script src="{{ asset('js/componentes/notificaciones.js') }}"></script>
+
 </body>
 </html>

@@ -1,0 +1,236 @@
+/* CONTENEDOR DE LA CAMPANA */
+
+.contenedor-campana {
+    position: fixed;
+    top: 25px;
+    right: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+}
+
+/*  BOTÓN DE LA CAMPANA */
+
+.boton-campana {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 63px;
+    height: 63px;
+    padding: 0;
+    border: 1px solid #e5deeb;
+    border-radius: 50%;
+    background-color: #ffffff;
+    color: #5A3E7D;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.boton-campana:hover {
+    background-color: #f4eff8;
+    border-color: #5A3E7D;
+}
+
+.boton-campana.tiene-notificaciones {
+    color: #5A1FA8;
+}
+
+/* CONTADOR DE NOTIFICACIONES */
+
+.contador-notificaciones {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border: 2px solid #ffffff;
+    border-radius: 20px;
+    background-color: #dc3545;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+/* PANEL DESPLEGABLE */
+
+.panel-notificaciones {
+    position: absolute;
+    top: 48px;
+    right: 0;
+    width: 350px;
+    max-width: calc(100vw - 30px);
+    max-height: 430px;
+    overflow: hidden;
+    border: 1px solid #e8e1ed;
+    border-radius: 12px;
+    background-color: #ffffff;
+    box-shadow: 0 8px 25px rgba(45, 25, 65, 0.15);
+}
+
+.panel-notificaciones[hidden] {
+    display: none;
+}
+
+/* ENCABEZADO */
+
+.encabezado-notificaciones {
+    padding: 14px 16px;
+    border-bottom: 1px solid #eee8f2;
+}
+
+.encabezado-notificaciones h5 {
+    margin: 0;
+    color: #51346F;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.encabezado-notificaciones span {
+    display: block;
+    margin-top: 4px;
+    color: #77717d;
+    font-size: 12px;
+}
+
+/* CONTENIDO */
+
+.contenido-notificaciones {
+    max-height: 340px;
+    overflow-y: auto;
+}
+
+.elemento-notificacion {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 13px 15px;
+    border-bottom: 1px solid #f0ebf3;
+    transition: background-color 0.2s ease;
+}
+
+.elemento-notificacion:hover {
+    background-color: #faf8fc;
+}
+
+.icono-notificacion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background-color: #f1eaf7;
+    color: #5A3E7D;
+    font-size: 14px;
+}
+
+.informacion-notificacion {
+    flex: 1;
+    min-width: 0;
+}
+
+.mensaje-notificacion {
+    margin: 0;
+    color: #39333f;
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.fecha-notificacion {
+    display: block;
+    margin-top: 6px;
+    color: #89828e;
+    font-size: 11px;
+}
+
+/* =========================================================
+   BOTÓN PARA MARCAR COMO LEÍDA
+========================================================= */
+
+.boton-marcar-leida {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border: 1px solid #dcd1e7;
+    border-radius: 50%;
+    background-color: #ffffff;
+    color: #5A3E7D;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.boton-marcar-leida:hover {
+    border-color: #5A3E7D;
+    background-color: #5A3E7D;
+    color: #ffffff;
+}
+
+.boton-marcar-leida:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}
+
+/* =========================================================
+   ESTADO VACÍO
+========================================================= */
+
+.notificaciones-vacias {
+    padding: 30px 20px;
+    text-align: center;
+    color: #89828e;
+}
+
+.notificaciones-vacias i {
+    margin-bottom: 12px;
+    color: #b5a6c4;
+    font-size: 28px;
+}
+
+.notificaciones-vacias p {
+    margin: 0;
+    font-size: 13px;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .contenedor-campana {
+        top: 12px;
+        right: 15px;
+    }
+
+    .boton-campana {
+        width: 37px;
+        height: 37px;
+        font-size: 16px;
+    }
+
+    .panel-notificaciones {
+        position: fixed;
+        top: 60px;
+        right: 12px;
+        left: 12px;
+        width: auto;
+        max-height: 70vh;
+    }
+
+    .contenido-notificaciones {
+        max-height: calc(70vh - 75px);
+    }
+}

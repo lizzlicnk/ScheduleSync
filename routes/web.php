@@ -17,6 +17,7 @@ use App\Http\Controllers\DisponibilidadProfesorController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\DatosGeneralesController;
 use App\Http\Controllers\CreacionHorarioController;
+use App\Http\Controllers\NotificacionController;
 
                     /* Rutas de inicio de sesión */
 
@@ -561,6 +562,14 @@ Route::middleware(['auth', \App\Http\Middleware\PrevenirCachePrivada::class, For
         CreacionHorarioController::class,
         'destroy'
     ])->name('horarios.destroy');
+
+                            /* Rutas para las notificaciones */
+
+    // Marcar una notificación como leída.
+    Route::post(
+        '/notificaciones/{idNotificacion}/marcar-leida',
+        [NotificacionController::class, 'marcarLeida']
+    )->name('notificaciones.marcar-leida');
 
 });
 

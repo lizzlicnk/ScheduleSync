@@ -10,6 +10,7 @@ use App\Models\Asignatura;
 use App\Models\AsignaturaPreferida;
 use App\Models\Grupo;
 use App\Models\Carrera;
+use App\Models\Notificacion;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -201,9 +202,7 @@ class DisponibilidadProfesorController extends Controller
         $usuarioAutenticado = auth()->user();
 
         // Consultar los periodos registrados.
-        $periodosRegistrados = Periodo::orderBy('anio', 'desc')
-            ->orderBy('estacion')
-            ->get();
+        $periodosRegistrados = Periodo::orderBy('anio', 'desc')->orderBy('estacion')->get();
 
         // Identificar el periodo seleccionado.
         $periodoSeleccionado = $idPeriodo
@@ -211,7 +210,7 @@ class DisponibilidadProfesorController extends Controller
 
         // Consultar los docentes activos junto con sus datos de usuario.
         $consultaDocentes = Usuario::where('rol', 3)
-            ->where('estado')
+            ->where('estado', 1)
             ->with('docente');
 
         // Si el usuario autenticado es docente, consultar únicamente su información.
@@ -485,10 +484,7 @@ class DisponibilidadProfesorController extends Controller
         $idsAsignaturas = $datosValidados['asignaturas'];
 
         // Comprobar que las asignaturas seleccionadas sigan activas.
-        $totalAsignaturasValidas = Asignatura::whereIn(
-            'id_asignatura',
-            $idsAsignaturas
-        )
+        $totalAsignaturasValidas = Asignatura::whereIn( 'id_asignatura', $idsAsignaturas )
             ->where('estado', 1)
             ->whereHas('carrera', function ($consulta) {
                 $consulta->where('estado', 1);
@@ -511,6 +507,13 @@ class DisponibilidadProfesorController extends Controller
             $docente->id_docente,
             $periodo->id_periodo
         );
+
+        // Generar notificaciones cuando la disponibilidad sea entregada.
+        if ($datosValidados['accion'] === 'entregar') {
+
+            $this->crearNotificacionesDisponibilidad($docente, $periodo);
+
+        }
 
         return redirect()->route('disponibilidad-academica.index', [
             'id_periodo' => $periodo->id_periodo
@@ -545,10 +548,7 @@ class DisponibilidadProfesorController extends Controller
             ->findOrFail($idDocente);
 
         // El docente solamente puede modificar su propia disponibilidad.
-        if (
-            (int) auth()->user()->rol === 3 &&
-            (int) $docente->id_usuario !== (int) auth()->id()
-        ) {
+        if ( (int) auth()->user()->rol === 3 && (int) $docente->id_usuario !== (int) auth()->id() ) {
             abort(403);
         }
 
@@ -561,10 +561,7 @@ class DisponibilidadProfesorController extends Controller
             ->get();
 
         // Obtiene las asignaturas seleccionadas por el docente en el periodo.
-        $asignaturasSeleccionadas = AsignaturaPreferida::where(
-            'id_docente',
-            $docente->id_docente
-        )
+        $asignaturasSeleccionadas = AsignaturaPreferida::where( 'id_docente', $docente->id_docente )
             ->where('id_periodo', $periodoSeleccionado->id_periodo)
             ->pluck('id_asignatura')
             ->toArray();
@@ -941,6 +938,59 @@ return redirect()
         }
 
         return $asignaturasPorCarrera;
+    }
+
+
+    /**
+     * Descripción: Genera notificaciones para el administrador y el personal
+     * administrativo cuando se entrega la disponibilidad de un docente.
+     *
+     * Entradas:
+     * - $docente: Información del docente cuya disponibilidad fue entregada.
+     * - $periodo: Periodo escolar al que corresponde la disponibilidad.
+     *
+     * Salidas:
+     * - Registros de notificaciones para los usuarios administrativos.
+     */
+    private function crearNotificacionesDisponibilidad(Docente $docente, Periodo $periodo): void
+    {
+        // Obtener la información del usuario relacionado con el docente.
+        $docente->load('usuario');
+
+        $usuarioDocente = $docente->usuario;
+
+        // Obtener el nombre completo del docente.
+        $nombreDocente = trim(
+            $usuarioDocente->nombreUsuario . ' ' .
+            ($usuarioDocente->apellidoPaterno ?? '') . ' ' .
+            ($usuarioDocente->apellidoMaterno ?? '')
+        );
+
+        // Obtener el nombre del periodo académico.
+        $nombrePeriodo = ucfirst($periodo->estacion) . ' ' . $periodo->anio;
+
+        // Construir el mensaje de la notificación.
+        $mensaje = $nombreDocente .
+            ' ha registrado su disponibilidad académica para el periodo ' .
+            $nombrePeriodo . '.';
+
+        // Obtener los usuarios administrativos activos.
+        $usuariosAdministrativos = Usuario::whereIn('rol', [1, 2])
+            ->where('estado', 1)
+            ->get();
+
+        // Crear una notificación para cada destinatario.
+        foreach ($usuariosAdministrativos as $usuario) {
+
+            Notificacion::create([
+                'titulo' => 1,
+                'mensaje' => $mensaje,
+                'medio' => 1,
+                'estado' => false,
+                'fechaEnvio' => now(),
+                'id_usuario' => $usuario->id_usuario
+            ]);
+        }
     }
 
 

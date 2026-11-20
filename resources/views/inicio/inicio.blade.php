@@ -24,18 +24,6 @@
             </p>
         </div>
 
-        <!-- Botón de cerrar sesión -->
-        <div class="col-12 col-md-auto">
-            <form action="{{ route('logout') }}" method="POST">
-                @csrf
-
-                <button type="submit"
-                    class="btn boton-cerrar-sesion-inicio w-100 w-md-auto">
-                    <i class="fa-solid fa-right-from-bracket me-2"></i>
-                    <span>Cerrar sesión</span>
-                </button>
-            </form>
-        </div>
 
     </div>
 
