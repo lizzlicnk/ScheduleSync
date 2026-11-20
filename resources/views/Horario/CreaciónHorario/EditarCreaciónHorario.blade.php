@@ -127,26 +127,18 @@
 
 
         {{-- FORMULARIO DE EDICIÓN --}}
-        <form id="formulario-registro-horario"
-            action="{{ route('horarios.update', $horario->id_horario) }}"
-            method="POST"
-            data-modo="editar"
-            novalidate>
+        <form id="formulario-registro-horario" action="{{ route('horarios.update', $horario->id_horario) }}" method="POST" data-modo="editar" novalidate>
 
             @csrf
             @method('PUT')
 
 
             {{-- IDENTIFICADOR DEL HORARIO --}}
-            <input type="hidden"
-                name="id_horario"
-                value="{{ $horario->id_horario }}">
+            <input type="hidden" name="id_horario" value="{{ $horario->id_horario }}">
 
 
             {{-- SELECTOR UTILIZADO POR EL JAVASCRIPT --}}
-            <select id="horario-registro"
-                class="d-none"
-                data-url="{{ route('horarios.asignaturas', ['idHorario' => 'HORARIO_ID']) }}">
+            <select id="horario-registro" class="d-none" data-url="{{ route('horarios.asignaturas', ['idHorario' => 'HORARIO_ID']) }}">
 
                 <option value="{{ $horario->id_horario }}" selected>
                     {{ $horario->id_horario }}
@@ -185,16 +177,79 @@
 
                     {{-- ASIGNATURAS DISPONIBLES --}}
                     <div class="panel-asignaturas">
-
                         <div class="encabezado-panel-asignaturas">
 
-                            <h3>Asignaturas disponibles</h3>
+                            <!-- TÍTULO CON INFORMACIÓN DE AYUDA -->
+                            <div class="titulo-con-ayuda">
+
+                                <h3>Asignaturas disponibles</h3>
+
+                                <!-- INFORMACIÓN DE AYUDA -->
+                                <div class="ayuda-horarios">
+
+                                    <i class="fa-solid fa-circle-info icono-ayuda-horarios"></i>
+
+                                    <div class="mensaje-ayuda-horarios">
+
+                                        <strong>¿Cómo editar un horario académico?</strong>
+
+                                        <p>
+                                            Primero, consulta las asignaturas disponibles para
+                                            el horario académico seleccionado. Se mostrarán las
+                                            tarjetas correspondientes al grupo.
+                                        </p>
+
+                                        <p>
+                                            Antes de distribuir cada asignatura, selecciona el
+                                            docente que la impartirá y el espacio de horas
+                                            correspondiente.
+                                        </p>
+
+                                        <p>
+                                            Para agregar una asignatura al horario, mantén
+                                            presionado el botón izquierdo del ratón sobre su
+                                            tarjeta, arrástrala hasta el día y horario deseados
+                                            en la cuadrícula semanal y suelta el botón para
+                                            colocarla.
+                                        </p>
+
+                                        <p>
+                                            Puedes reorganizar las asignaturas en cualquier
+                                            momento, incluso después de haberlas colocado en
+                                            la cuadrícula. Mantén presionado el botón izquierdo
+                                            del ratón sobre la tarjeta, arrástrala hasta el
+                                            nuevo día y horario deseados y suelta el botón.
+                                        </p>
+
+                                        <p>
+                                            También puedes modificar la duración de cada
+                                            asignatura arrastrando el borde inferior de su
+                                            tarjeta hacia arriba o hacia abajo para reducir
+                                            o aumentar la cantidad de horas asignadas.
+                                            Si deseas retirar una asignatura, arrastra su
+                                            tarjeta nuevamente al contenedor de asignaturas
+                                            disponibles.
+                                        </p>
+
+                                        <p>
+                                            <strong>Guardar cambios:</strong> cuando hayas
+                                            terminado de realizar las modificaciones,
+                                            selecciona este botón para guardar definitivamente
+                                            los cambios realizados en el horario académico.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
 
                             <p>
                                 Selecciona el docente y el espacio antes de agregar cada bloque.
                             </p>
 
                         </div>
+
 
 
                         <div id="lista-asignaturas-disponibles"

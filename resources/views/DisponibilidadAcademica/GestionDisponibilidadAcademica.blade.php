@@ -372,12 +372,7 @@
                 </div>
 
                 <!-- FORMULARIO -->
-                <form
-                    id="formulario-disponibilidad"
-                    action="{{ route('disponibilidad-academica.store') }}"
-                    method="POST"
-                    novalidate
-                >
+                <form id="formulario-disponibilidad" action="{{ route('disponibilidad-academica.store') }}" method="POST" novalidate >
                     @csrf
 
                     <!-- INFORMACIÓN DEL REGISTRO -->

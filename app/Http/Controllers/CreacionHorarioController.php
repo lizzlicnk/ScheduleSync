@@ -32,40 +32,25 @@ class CreacionHorarioController extends Controller
         $this->verificarRol([1, 2]);
 
         // Consultar los grupos registrados con su carrera, periodo y horarios.
-        $gruposRegistrados = Grupo::with([
-            'carrera',
-            'periodo',
-            'horarios.detalles'
-        ])
-            ->orderBy('id_grupo', 'desc')
-            ->get();
+        $gruposRegistrados = Grupo::with([ 'carrera', 'periodo', 'horarios.detalles' ])
+            ->orderBy('id_grupo', 'desc')->get();
 
-        // Consultar los horarios académicos registrados y activos
-        // que todavía no tienen asignaciones.
+
         // Consultar los horarios activos que todavía no se finalizan.
         // Se incluyen los horarios nuevos y los que ya están guardados como borrador.
-        $horariosDisponibles = Horario::with([
-            'grupo.carrera',
-            'periodo',
-            'detalles.docente.usuario',
-            'detalles.asignatura'
-        ])
+        $horariosDisponibles = Horario::with([ 'grupo.carrera', 'periodo', 'detalles.docente.usuario', 'detalles.asignatura' ])
             ->where('estado', 1)
             ->where(function ($consulta) {
-                $consulta->whereNull('borrador')
-                    ->orWhere('borrador', 0);
+                $consulta->whereNull('borrador')->orWhere('borrador', 0);
             })
             ->orderBy('id_horario', 'desc')
             ->get();
 
         // Consultar los periodos escolares disponibles.
-        $periodosDisponibles = Periodo::orderBy('anio', 'desc')
-            ->orderBy('estacion')
-            ->get();
+        $periodosDisponibles = Periodo::orderBy('anio', 'desc')->orderBy('estacion')->get();
 
         // Consultar las carreras registradas.
-        $carrerasDisponibles = Carrera::orderBy('nombreCarrera')
-            ->get();
+        $carrerasDisponibles = Carrera::orderBy('nombreCarrera')->get();
 
         // Inicializar los datos del horario seleccionado.
         $horarioConsultado = null;
@@ -86,49 +71,34 @@ class CreacionHorarioController extends Controller
             ]);
 
             // Consultar el horario seleccionado y sus relaciones.
-            $horarioConsultado = Horario::where('estado', 1)
-                ->with([
+            $horarioConsultado = Horario::with([
                     'grupo',
                     'grupo.carrera',
                     'periodo',
                     'detalles.docente.usuario',
                     'detalles.asignatura'
-                ])
-                ->findOrFail($datosValidados['consultar']);
+                    ])->findOrFail($datosValidados['consultar']);
 
             // Obtener el grupo correspondiente al horario.
             $grupoSeleccionado = $horarioConsultado->grupo;
 
             // Consultar las asignaturas de la carrera y cuatrimestre del grupo.
-            $asignaturasDisponibles = Asignatura::where(
-                'id_carrera',
-                $grupoSeleccionado->id_carrera
-            )
-                ->where(
-                    'cuatrimestre',
-                    $grupoSeleccionado->cuatrimestre
-                )
+            $asignaturasDisponibles = Asignatura::where( 'id_carrera', $grupoSeleccionado->id_carrera )
+                ->where( 'cuatrimestre', $grupoSeleccionado->cuatrimestre )
                 ->where('estado', 1)
                 ->orderBy('nombreAsignatura')
                 ->get();
 
             // Consultar los docentes que tienen una cuenta activa.
-            $docentesDisponibles = Docente::whereHas(
-                'usuario',
+            $docentesDisponibles = Docente::whereHas('usuario',
                 function ($consulta) {
                     $consulta->where('estado', 1);
                 }
-            )
-                ->with('usuario')
-                ->orderBy('matricula')
-                ->get();
+            )->with('usuario')->orderBy('matricula')->get();
 
             // Consultar las disponibilidades confirmadas de los docentes
             // correspondientes al periodo del horario seleccionado.
-            $disponibilidadesDocentes = DisponibilidadProfesor::where(
-                'id_periodo',
-                $horarioConsultado->id_periodo
-            )
+            $disponibilidadesDocentes = DisponibilidadProfesor::where( 'id_periodo', $horarioConsultado->id_periodo )
                 ->where('estadoConfirmacion', 1)
                 ->get([
                     'id_docente',
@@ -143,15 +113,8 @@ class CreacionHorarioController extends Controller
         $idHorarioAgregar = $solicitud->query('agregar');
 
         // CONSULTAR HORARIOS REGISTRADOS
-        $horariosRegistrados = Horario::with([
-            'grupo.carrera',
-            'periodo',
-            'detalles.docente.usuario',
-            'detalles.asignatura'
-        ])
-        ->orderBy('id_horario', 'desc')
-        ->get();
-
+        $horariosRegistrados = Horario::with([ 'grupo.carrera', 'periodo', 'detalles.docente.usuario', 'detalles.asignatura' ])
+        ->orderBy('id_horario', 'desc')->get();
 
         return view('Horario.CreaciónHorario.GestionCreaciónHorario', compact(
             'gruposRegistrados',

@@ -874,3 +874,92 @@
     }
 
 }
+
+/*  ENCABEZADO CON INFORMACIÓN DE AYUDA */
+
+.titulo-con-ayuda {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.ayuda-horarios {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: help;
+}
+
+.icono-ayuda-horarios {
+    color: #5A3E7D;
+    font-size: 19px;
+    transition: color 0.2s ease;
+}
+
+.icono-ayuda-horarios:hover {
+    color: #8A63B5;
+}
+
+/* CUADRO INFORMATIVO */
+
+.mensaje-ayuda-horarios {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    z-index: 100;
+
+    width: 340px;
+    padding: 16px;
+
+    background: #FFFFFF;
+    border: 1px solid #5A3E7D;
+    border-radius: 10px;
+
+    box-shadow: 0 5px 18px rgba(90, 62, 125, 0.15);
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-5px);
+
+    transition: all 0.2s ease;
+}
+
+/* Mostrar información al pasar el cursor */
+.ayuda-horarios:hover .mensaje-ayuda-horarios {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Título del mensaje */
+.mensaje-ayuda-horarios strong {
+    display: block;
+    margin-bottom: 9px;
+
+    color: #5A3E7D;
+    font-size: 0.9rem;
+}
+
+/* Texto informativo */
+.mensaje-ayuda-horarios p {
+    margin: 0 0 8px;
+
+    color: #51475B;
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+.mensaje-ayuda-horarios p:last-child {
+    margin-bottom: 0;
+}
+
+/* AJUSTE PARA PANTALLAS PEQUEÑAS */
+
+@media (max-width: 575.98px) {
+
+    .mensaje-ayuda-horarios {
+        left: 0;
+        width: min(310px, calc(100vw - 40px));
+    }
+
+}

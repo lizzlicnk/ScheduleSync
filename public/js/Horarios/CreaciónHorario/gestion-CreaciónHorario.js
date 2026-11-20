@@ -554,7 +554,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const etiquetaEspacio = document.createElement('label');
 
-        etiquetaEspacio.textContent = 'ESPACIO';
+        etiquetaEspacio.textContent = 'Espacio';
 
         const selectorEspacio = document.createElement('select');
 

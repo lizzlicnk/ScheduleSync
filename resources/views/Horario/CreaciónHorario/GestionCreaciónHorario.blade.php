@@ -303,18 +303,19 @@
                                 </a>
 
                                 <!-- ELIMINAR HORARIO -->
-                                <form action="{{ route('horarios.destroy', $horario->id_horario) }}"
-                                    method="POST" class="formulario-desactivar-horario" data-nombre="{{ $horario->nombreHorario }}"
-                                    data-tiene-detalles="{{ $horario->detalles->isNotEmpty() ? 'true' : 'false' }}">
-                                    @csrf
-                                    @method('DELETE')
+                                @if ((int) auth()->user()->rol === 1)
+                                    <form action="{{ route('horarios.destroy', $horario->id_horario) }}"
+                                        method="POST" class="formulario-desactivar-horario" data-nombre="{{ $horario->nombreHorario }}"
+                                        data-tiene-detalles="{{ $horario->detalles->isNotEmpty() ? 'true' : 'false' }}">
+                                        @csrf
+                                        @method('DELETE')
 
-                                    <button type="submit" class="boton-accion boton-eliminar" title="Eliminar horario" aria-label="Eliminar el horario del grupo {{ $grupo->nombreGrupo }}">
-                                        <i class="fa-solid fa-trash" aria-hidden="true"></i>
-                                        Eliminar
-                                    </button>
-                                </form>
-
+                                        <button type="submit" class="boton-accion boton-eliminar" title="Eliminar horario" aria-label="Eliminar el horario del grupo {{ $grupo->nombreGrupo }}">
+                                            <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                                            Eliminar
+                                        </button>
+                                    </form>
+                                @endif
                             @else
                                 <span class="texto-secundario">Pendiente</span>
                             @endif
@@ -404,11 +405,84 @@
                     <div class="panel-asignaturas-disponibles">
 
                         <div class="encabezado-panel">
-                            <div>
-                                <h3>Asignaturas disponibles</h3>
 
-                                <p class="texto-secundario"> Selecciona las asignaturas y los docentes disponibles para el grupo. </p>
+                            <div>
+
+                                <!-- TÍTULO CON INFORMACIÓN DE AYUDA -->
+                                <div class="titulo-con-ayuda">
+
+                                    <h3>Asignaturas disponibles</h3>
+
+                                    <!-- INFORMACIÓN DE AYUDA -->
+                                    <div class="ayuda-horarios">
+
+                                        <i class="fa-solid fa-circle-info icono-ayuda-horarios"></i>
+
+                                        <div class="mensaje-ayuda-horarios">
+
+                                            <strong>¿Cómo registrar un horario académico?</strong>
+
+                                            <p>
+                                                Primero, selecciona el horario académico en el apartado
+                                                <strong>Nombre del horario académico</strong> Una vez
+                                                seleccionado, se mostrarán las tarjetas de las asignaturas
+                                                correspondientes al grupo.
+                                            </p>
+
+                                            <p>
+                                                Antes de distribuir cada asignatura, selecciona el docente
+                                                que la impartirá y el espacio de horas correspondiente.
+                                            </p>
+
+                                            <p>
+                                                Después, mantén presionado el botón izquierdo del ratón
+                                                sobre la tarjeta de la asignatura, arrástrala hasta el día
+                                                y horario deseados en la cuadrícula semanal y suelta el
+                                                botón para colocarla. Repite este procedimiento hasta
+                                                distribuir las asignaturas.
+                                            </p>
+
+                                            <p>
+                                                Puedes reorganizar las asignaturas en cualquier momento,
+                                                incluso después de haberlas colocado en la cuadrícula.
+                                                Para ello, mantén presionado el botón izquierdo del ratón
+                                                sobre la tarjeta, arrástrala hasta el nuevo día y horario
+                                                deseados y suelta el botón para actualizar su ubicación.
+                                            </p>
+
+                                            <p>
+                                                También puedes modificar la duración de cada asignatura
+                                                directamente en la cuadrícula, arrastrando el borde inferior
+                                                de su tarjeta hacia arriba o hacia abajo para reducir o
+                                                aumentar la cantidad de horas asignadas. Si deseas retirar
+                                                una asignatura del horario, arrastra su tarjeta nuevamente
+                                                al contenedor de asignaturas disponibles.
+                                            </p>
+
+                                            <p>
+                                                <strong>Guardar borrador:</strong> permite guardar el
+                                                avance del horario para continuar su elaboración
+                                                posteriormente, sin finalizar el registro.
+                                            </p>
+
+                                            <p>
+                                                <strong>Guardar horario:</strong> permite guardar
+                                                definitivamente el horario cuando hayas terminado
+                                                de distribuir las asignaturas en la cuadrícula.
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <p class="texto-secundario">
+                                    Selecciona las asignaturas y los docentes disponibles para el grupo.
+                                </p>
+
                             </div>
+
                         </div>
 
                         <div class="lista-asignaturas" id="lista-asignaturas-disponibles">

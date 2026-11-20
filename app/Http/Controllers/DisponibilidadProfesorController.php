@@ -195,11 +195,7 @@ class DisponibilidadProfesorController extends Controller
      * Salidas:
      * @return array
      */
-    private function datosVista(
-        $idPeriodo = null,
-        $idDocenteConsulta = null,
-        $idDocenteSeleccionado = null
-    ): array {
+    private function datosVista( $idPeriodo = null, $idDocenteConsulta = null, $idDocenteSeleccionado = null ): array {
 
         // Obtener el usuario autenticado.
         $usuarioAutenticado = auth()->user();
@@ -215,7 +211,7 @@ class DisponibilidadProfesorController extends Controller
 
         // Consultar los docentes activos junto con sus datos de usuario.
         $consultaDocentes = Usuario::where('rol', 3)
-            ->where('estado', 1)
+            ->where('estado')
             ->with('docente');
 
         // Si el usuario autenticado es docente, consultar únicamente su información.

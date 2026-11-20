@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -33,6 +32,7 @@
 <body>
     <!-- Agrupa el menú lateral y el contenido principal de la aplicación. -->
     <div class="app-layout">
+        
         @include('components.MenuLateral')
 
         <main class="contenido-principal">
@@ -53,6 +53,9 @@
     
     <!-- script controlar la inactividad de la sesión. -->
     <script src="{{ asset('js/inicio/sesion/control-inactividad.js') }}"></script>
+
+    <!-- Control del menú lateral -->
+    <script src="{{ asset('js/inicio/menu-movil.js') }}"></script>
 
     <!-- Componente global de alertas -->
     <x-alertas.sweet-alert />
