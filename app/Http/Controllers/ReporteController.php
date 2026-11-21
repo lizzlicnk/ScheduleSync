@@ -15,18 +15,399 @@ class ReporteController extends Controller
      * $solicitud: solicitud HTTP del usuario autenticado.
      *
      * Salidas:
-     * Vista principal de reportes con los cuatro tipos disponibles.
+     * Vista principal de reportes con los cuatro tipos disponibles
+     * y los periodos escolares registrados.
      */
     public function index(Request $solicitud)
     {
         // Comprobar que el usuario tenga un rol autorizado.
         $this->verificarRol([1, 2]);
 
+        // Consultar los periodos registrados en la base de datos.
+        $periodos = DB::table('periodo')
+            ->orderByDesc('anio')
+            ->orderBy('id_periodo')
+            ->get();
+
         // Mostrar la pantalla principal de reportes.
-        return view('Reporte.GestionReportes');
+        return view('Reporte.GestionReportes', compact('periodos'));
     }
 
+    //REPORTE 3
 
+    /**
+     * Descripción: Muestra el reporte de disponibilidad docente,
+     * identificando a los docentes que entregaron su disponibilidad
+     * y aquellos que todavía tienen pendiente este proceso.
+     *
+     * Entradas:
+     * $solicitud: solicitud HTTP con el filtro de periodo escolar.
+     *
+     * Salidas:
+     * Vista individual con indicadores, tabla de docentes y gráfica
+     * de pastel con las disponibilidades registradas y pendientes.
+     */
+    public function disponibilidadDocente(Request $solicitud)
+    {
+        // Comprobar que el usuario tenga un rol autorizado.
+        $this->verificarRol([1, 2]);
+
+        // Validar el periodo escolar recibido.
+        $datosValidados = $solicitud->validate([
+            'id_periodo' => ['required', 'integer', 'exists:periodo,id_periodo'],
+        ]);
+
+        // Obtener el periodo seleccionado.
+        $idPeriodo = $datosValidados['id_periodo'];
+
+        // Consultar los periodos registrados en la base de datos.
+        $periodos = DB::table('periodo')
+            ->orderByDesc('anio')
+            ->orderBy('id_periodo')
+            ->get();
+
+        // Obtener los datos del periodo seleccionado.
+        $periodoSeleccionado = !empty($idPeriodo)
+            ? $periodos->firstWhere('id_periodo', $idPeriodo)
+            : null;
+
+        // ==========================================
+        // 1. CONSULTAR LAS DISPONIBILIDADES ENTREGADAS
+        // ==========================================
+
+        // Consultar las disponibilidades que fueron confirmadas
+        // por los docentes, agrupándolas para evitar duplicados.
+        $consultaDisponibilidad = DB::table('disponibilidadProfesor as dp')
+            ->select(
+                'dp.id_docente',
+                DB::raw('COUNT(*) as totalRegistrosConfirmados'),
+                DB::raw('MAX(dp.fechaConfirmacion) as fechaRegistro')
+            )
+            ->where('dp.estadoConfirmacion', 1);
+
+        // Aplicar el filtro de periodo.
+        if (!empty($idPeriodo)) {
+            $consultaDisponibilidad->where('dp.id_periodo', $idPeriodo);
+        }
+
+        // Agrupar los registros por docente.
+        $consultaDisponibilidad->groupBy('dp.id_docente');
+
+        // ==========================================
+        // 2. CONSULTAR LOS DOCENTES
+        // ==========================================
+
+        // Consultar los docentes activos y relacionarlos con sus
+        // disponibilidades entregadas, si existen.
+        $consultaDocentes = DB::table('docente as d')
+            ->join('usuario as u', 'd.id_usuario', '=', 'u.id_usuario')
+            ->leftJoinSub(
+                $consultaDisponibilidad,
+                'disponibilidad',
+                function ($join) {
+                    $join->on(
+                        'd.id_docente',
+                        '=',
+                        'disponibilidad.id_docente'
+                    );
+                }
+            )
+            ->where('u.rol', 3)
+            ->where('u.estado', 1)
+            ->whereNull('u.deleted_at');
+
+        // Obtener la información de cada docente.
+        $docentes = $consultaDocentes
+            ->select(
+                'd.id_docente',
+                DB::raw("
+                    CONCAT_WS(
+                        ' ',
+                        u.nombreUsuario,
+                        u.apellidoPaterno,
+                        u.apellidoMaterno
+                    ) as nombreDocente
+                "),
+                'd.tipoDocente',
+                'disponibilidad.totalRegistrosConfirmados',
+                'disponibilidad.fechaRegistro'
+            )
+            ->orderBy('u.apellidoPaterno')
+            ->orderBy('u.apellidoMaterno')
+            ->orderBy('u.nombreUsuario')
+            ->get();
+
+        // ==========================================
+        // 3. IDENTIFICAR EL ESTADO DE CADA DOCENTE
+        // ==========================================
+
+        // Determinar si cada docente entregó su disponibilidad.
+        $datosReporte = $docentes->map(function ($docente) {
+
+            // Comprobar si tiene al menos un registro confirmado.
+            $registrada = (int) ($docente->totalRegistrosConfirmados ?? 0) > 0;
+
+            // Obtener el tipo de docente.
+            $tipoDocente = match ((int) $docente->tipoDocente) {
+                1 => 'PTC',
+                2 => 'PA',
+                default => 'No especificado',
+            };
+
+            // Agregar el estado de disponibilidad.
+            return (object) [
+                'id_docente' => $docente->id_docente,
+                'nombreDocente' => $docente->nombreDocente,
+                'tipoDocente' => $tipoDocente,
+                'estadoDisponibilidad' => $registrada
+                    ? 'Registrada'
+                    : 'Pendiente',
+                'fechaRegistro' => $registrada
+                    ? $docente->fechaRegistro
+                    : null,
+            ];
+        });
+
+        // ==========================================
+        // 4. CALCULAR LOS INDICADORES GENERALES
+        // ==========================================
+
+        // Contabilizar los docentes que registraron su disponibilidad.
+        $totalRegistrados = $datosReporte
+            ->where('estadoDisponibilidad', 'Registrada')
+            ->count();
+
+        // Contabilizar los docentes que todavía tienen pendiente
+        // entregar su disponibilidad.
+        $totalPendientes = $datosReporte
+            ->where('estadoDisponibilidad', 'Pendiente')
+            ->count();
+
+        // Obtener el total de docentes consultados.
+        $totalDocentes = $datosReporte->count();
+
+        // Calcular el porcentaje de disponibilidades registradas.
+        $porcentajeRegistrados = $totalDocentes > 0
+            ? ($totalRegistrados / $totalDocentes) * 100
+            : 0;
+
+        // ==========================================
+        // 5. PREPARAR LOS DATOS DE LA GRÁFICA
+        // ==========================================
+
+        // Preparar las cantidades que utilizará la gráfica de pastel.
+        $datosGrafica = [
+            'etiquetas' => [
+                'Registrada',
+                'Pendiente',
+            ],
+            'valores' => [
+                $totalRegistrados,
+                $totalPendientes,
+            ],
+        ];
+
+        // Enviar la información a la vista.
+        return view('Reporte.DisponibilidadDocente', compact(
+            'periodos',
+            'idPeriodo',
+            'periodoSeleccionado',
+            'datosReporte',
+            'totalDocentes',
+            'totalRegistrados',
+            'totalPendientes',
+            'porcentajeRegistrados',
+            'datosGrafica'
+        ));
+    }
+
+    /**
+     * Descripción: Genera y descarga un archivo PDF con la captura visual
+     * del reporte de disponibilidad académica docente.
+     *
+     * Entradas:
+     * $solicitud: solicitud HTTP que contiene la imagen PNG del reporte.
+     *
+     * Salidas:
+     * Archivo PDF generado con FPDF.
+     */
+    public function descargarDisponibilidadDocente(Request $solicitud)
+    {
+        // Comprobar que el usuario tenga un rol autorizado.
+        $this->verificarRol([1, 2]);
+
+        // Validar que se haya enviado una imagen.
+        $datosValidados = $solicitud->validate([
+            'imagen' => [
+                'required',
+                'string',
+                'max:30000000',
+                'regex:/^data:image\/png;base64,/',
+            ],
+        ]);
+
+        // Obtener el contenido Base64 de la imagen.
+        $imagenBase64 = substr(
+            $datosValidados['imagen'],
+            strlen('data:image/png;base64,')
+        );
+
+        // Decodificar la imagen.
+        $contenidoImagen = base64_decode($imagenBase64, true);
+
+        if ($contenidoImagen === false) {
+            return response()->json([
+                'mensaje' => 'No fue posible procesar la imagen del reporte.'
+            ], 422);
+        }
+
+        // Comprobar que el contenido recibido sea una imagen PNG válida.
+        $informacionImagen = getimagesizefromstring($contenidoImagen);
+
+        if (
+            $informacionImagen === false ||
+            $informacionImagen['mime'] !== 'image/png'
+        ) {
+            return response()->json([
+                'mensaje' => 'El archivo enviado no es una imagen PNG válida.'
+            ], 422);
+        }
+
+        // Crear una imagen a partir del contenido recibido.
+        $imagenOriginal = imagecreatefromstring($contenidoImagen);
+
+        if ($imagenOriginal === false) {
+            return response()->json([
+                'mensaje' => 'No fue posible generar la imagen del reporte.'
+            ], 422);
+        }
+
+        // Obtener las dimensiones de la imagen.
+        $anchoImagen = imagesx($imagenOriginal);
+        $altoImagen = imagesy($imagenOriginal);
+
+        // Configurar las dimensiones útiles de una página A4.
+        $anchoPagina = 190;
+        $altoPagina = 277;
+
+        // Calcular la cantidad de píxeles que corresponden a una página.
+        $altoFragmento = (int) floor(
+            $anchoImagen * ($altoPagina / $anchoPagina)
+        );
+
+        // Evitar que la altura del fragmento sea cero.
+        if ($altoFragmento < 1) {
+            imagedestroy($imagenOriginal);
+
+            return response()->json([
+                'mensaje' => 'Las dimensiones de la imagen no son válidas.'
+            ], 422);
+        }
+
+        // Inicializar FPDF.
+        $pdf = new \FPDF('P', 'mm', 'A4');
+
+        $pdf->SetMargins(10, 10, 10);
+        $pdf->SetAutoPageBreak(false);
+
+        try {
+
+            // Crear las páginas necesarias para mostrar todo el reporte.
+            for (
+                $posicionY = 0;
+                $posicionY < $altoImagen;
+                $posicionY += $altoFragmento
+            ) {
+
+                // Calcular la altura del fragmento actual.
+                $altoActual = min(
+                    $altoFragmento,
+                    $altoImagen - $posicionY
+                );
+
+                // Crear una imagen temporal para esta página.
+                $imagenPagina = imagecreatetruecolor(
+                    $anchoImagen,
+                    $altoActual
+                );
+
+                // Establecer un fondo blanco.
+                $fondoBlanco = imagecolorallocate(
+                    $imagenPagina,
+                    255,
+                    255,
+                    255
+                );
+
+                imagefill($imagenPagina, 0, 0, $fondoBlanco);
+
+                // Copiar la sección correspondiente del reporte.
+                imagecopy(
+                    $imagenPagina,
+                    $imagenOriginal,
+                    0,
+                    0,
+                    0,
+                    $posicionY,
+                    $anchoImagen,
+                    $altoActual
+                );
+
+                // Preparar el archivo temporal del fragmento.
+                $rutaImagenPagina = tempnam(
+                    sys_get_temp_dir(),
+                    'disponibilidad_'
+                );
+
+                try {
+
+                    // Guardar el fragmento como imagen PNG.
+                    imagepng($imagenPagina, $rutaImagenPagina);
+
+                    // Agregar una página al documento PDF.
+                    $pdf->AddPage();
+
+                    // Calcular la altura proporcional de la imagen.
+                    $altoPDF = $altoActual * ($anchoPagina / $anchoImagen);
+
+                    // Colocar la imagen en la página.
+                    $pdf->Image(
+                        $rutaImagenPagina,
+                        10,
+                        10,
+                        $anchoPagina,
+                        $altoPDF,
+                        'PNG'
+                    );
+
+                } finally {
+
+                    // Liberar los recursos de la página.
+                    imagedestroy($imagenPagina);
+
+                    if (file_exists($rutaImagenPagina)) {
+                        unlink($rutaImagenPagina);
+                    }
+                }
+            }
+
+            // Obtener el contenido final del PDF.
+            $contenidoPDF = $pdf->Output('S');
+
+        } finally {
+
+            // Liberar la imagen original.
+            imagedestroy($imagenOriginal);
+        }
+
+        // Devolver el PDF para su descarga.
+        return response($contenidoPDF, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="reporte-disponibilidad-docente.pdf"',
+        ]);
+    }
+
+    //REPORTE 4
     /**
      * Descripción: Muestra el reporte de materias con docente asignado
      * por carrera y cuatrimestre, verificando que cada materia esté

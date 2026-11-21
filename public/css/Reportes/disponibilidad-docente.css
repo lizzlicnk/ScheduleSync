@@ -1,0 +1,448 @@
+/* =========================================================
+   CONTENEDOR PRINCIPAL
+========================================================= */
+
+.pagina-reporte-disponibilidad {
+    padding-bottom: 35px;
+    color: #352444;
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.encabezado-reporte-disponibilidad {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+.ruta-reporte {
+    margin-bottom: 9px;
+    color: #898092;
+    font-size: 13px;
+}
+
+.encabezado-reporte-disponibilidad h1 {
+    margin: 0;
+    color: #352444;
+    font-size: 27px;
+    font-weight: 700;
+}
+
+.descripcion-reporte-principal {
+    margin: 9px 0 0;
+    color: #777080;
+    font-size: 14px;
+}
+
+.periodo-reporte {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 12px;
+    padding: 7px 11px;
+    border-radius: 7px;
+    background: #f1eaf8;
+    color: #5A3E7D;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.boton-descargar-reporte {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 11px 17px;
+    border: none;
+    border-radius: 8px;
+    background: #5A3E7D;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s, transform .2s;
+}
+
+.boton-descargar-reporte:hover {
+    background: #51346F;
+    transform: translateY(-2px);
+}
+
+.boton-descargar-reporte:disabled {
+    opacity: .7;
+    cursor: wait;
+    transform: none;
+}
+
+
+/* =========================================================
+   SECCIONES
+========================================================= */
+
+.seccion-tabla-disponibilidad,
+.seccion-grafica-disponibilidad,
+.seccion-disponibilidades-pendientes {
+    margin-bottom: 25px;
+    padding: 22px;
+    border: 1px solid #eee9f2;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 3px 12px rgba(53, 36, 68, .04);
+}
+
+.encabezado-seccion-reporte {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.encabezado-seccion-reporte h2 {
+    margin: 0;
+    color: #49335f;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.encabezado-seccion-reporte p {
+    margin: 6px 0 0;
+    color: #898092;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   INDICADORES
+========================================================= */
+
+.seccion-indicadores-disponibilidad {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 17px;
+    margin-bottom: 25px;
+}
+
+.indicador-disponibilidad {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 105px;
+    padding: 18px;
+    border: 1px solid #eee9f2;
+    border-radius: 11px;
+    background: #fff;
+    box-shadow: 0 3px 12px rgba(53, 36, 68, .04);
+}
+
+.icono-indicador {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    background: #f1eaf8;
+    color: #654282;
+    font-size: 19px;
+}
+
+.indicador-disponibilidad p {
+    margin: 0 0 6px;
+    color: #898092;
+    font-size: 12px;
+}
+
+.indicador-disponibilidad h3 {
+    margin: 0;
+    color: #49335f;
+    font-size: 25px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   TABLA
+========================================================= */
+
+.contenedor-tabla-disponibilidad {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.tabla-disponibilidad-docente {
+    width: 100%;
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+
+.tabla-disponibilidad-docente thead {
+    background: #f5f1f8;
+}
+
+.tabla-disponibilidad-docente th {
+    padding: 13px 15px;
+    color: #59446e;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: left;
+}
+
+.tabla-disponibilidad-docente td {
+    padding: 14px 15px;
+    border-bottom: 1px solid #eee9f2;
+    color: #62576c;
+    font-size: 13px;
+}
+
+.tipo-docente {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    padding: 5px 9px;
+    border-radius: 6px;
+    background: #f1eaf8;
+    color: #5A3E7D;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.estado-disponibilidad {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.estado-registrada {
+    background: #eaf6ef;
+    color: #23845b;
+}
+
+.estado-pendiente {
+    background: #fff5e6;
+    color: #b77924;
+}
+
+.fecha-sin-registro {
+    color: #a49baa;
+    font-style: italic;
+}
+
+.mensaje-sin-resultados {
+    padding: 35px !important;
+    color: #898092 !important;
+    text-align: center;
+}
+
+.mensaje-sin-resultados i {
+    margin-bottom: 10px;
+    font-size: 25px;
+}
+
+.mensaje-sin-resultados p {
+    margin: 0;
+}
+
+
+/* =========================================================
+   DISPONIBILIDADES PENDIENTES
+========================================================= */
+
+.encabezado-pendientes {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.encabezado-pendientes h2 {
+    margin: 0;
+    color: #49335f;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.encabezado-pendientes p {
+    margin: 7px 0 0;
+    color: #898092;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.total-pendientes {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    min-width: 42px;
+    height: 42px;
+    padding: 0 12px;
+    border-radius: 10px;
+    background: #f1eaf8;
+    color: #5A3E7D;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.lista-disponibilidades-pendientes {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.elemento-disponibilidad-pendiente {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 17px 18px;
+    border: 1px solid #eee9f2;
+    border-left: 4px solid #D8C6E8;
+    border-radius: 9px;
+    background: #fcfaff;
+    transition: background .2s, border-color .2s;
+}
+
+.elemento-disponibilidad-pendiente:hover {
+    border-color: #d8c6e8;
+    background: #f8f4fb;
+}
+
+.informacion-docente-pendiente {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.informacion-docente-pendiente h3 {
+    margin: 0;
+    color: #49335f;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.informacion-docente-pendiente span {
+    color: #898092;
+    font-size: 12px;
+}
+
+.etiqueta-pendiente {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #b77924;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.mensaje-sin-pendientes {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 0;
+    padding: 28px 15px;
+    border: 1px solid #e5eee9;
+    border-radius: 9px;
+    background: #f8fcf9;
+    color: #23845b;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.mensaje-sin-pendientes i {
+    font-size: 19px;
+}
+
+
+/* =========================================================
+   GRÁFICA
+========================================================= */
+
+.contenedor-grafica-disponibilidad {
+    position: relative;
+    width: 100%;
+    height: 350px;
+}
+
+.contenedor-grafica-disponibilidad canvas {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.mensaje-grafica-vacia {
+    padding: 15px;
+    color: #898092;
+    font-size: 13px;
+    text-align: center;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .seccion-indicadores-disponibilidad {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .encabezado-reporte-disponibilidad {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .encabezado-reporte-disponibilidad h1 {
+        font-size: 22px;
+    }
+
+    .seccion-indicadores-disponibilidad {
+        grid-template-columns: 1fr;
+    }
+
+    .seccion-tabla-disponibilidad,
+    .seccion-grafica-disponibilidad,
+    .seccion-disponibilidades-pendientes {
+        padding: 16px;
+    }
+
+    .encabezado-pendientes {
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .encabezado-pendientes h2 {
+        font-size: 16px;
+    }
+
+    .elemento-disponibilidad-pendiente {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 13px;
+        padding: 15px;
+    }
+
+    .contenedor-grafica-disponibilidad {
+        height: 300px;
+    }
+
+}

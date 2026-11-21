@@ -235,7 +235,6 @@
                 </div>
             </article>
 
-
             <!-- REPORTE 3: DISPONIBILIDAD DOCENTE -->
             <article class="tarjeta-reporte">
 
@@ -260,76 +259,52 @@
 
                     <div class="acciones-reporte">
 
-                        <button
-                            type="button"
-                            class="boton-filtros-reporte"
-                            data-filtros="filtros-disponibilidad"
-                            aria-expanded="false"
-                            aria-controls="filtros-disponibilidad"
-                        >
+                        <button type="button" class="boton-filtros-reporte" data-filtros="filtros-disponibilidad" aria-expanded="false" aria-controls="filtros-disponibilidad" >
                             <i class="fa-solid fa-sliders" aria-hidden="true"></i>
                             Filtros
                             <i class="fa-solid fa-chevron-down icono-flecha" aria-hidden="true"></i>
                         </button>
 
-                        <form action="#" method="GET" class="formulario-reporte">
+                        <form
+    action="{{ route('reportes.disponibilidad-docente') }}"
+    method="GET"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="formulario-reporte"
+>
+    <div class="panel-filtros-reporte" id="filtros-disponibilidad">
 
-                            <div class="panel-filtros-reporte" id="filtros-disponibilidad" hidden>
+        <div class="campo-filtro-reporte">
+            <label for="periodo-disponibilidad">Periodo escolar</label>
 
-                                <div class="campo-filtro-reporte">
-                                    <label for="carrera-disponibilidad">Carrera</label>
+            <select
+                id="periodo-disponibilidad"
+                name="id_periodo"
+                required
+            >
+                <option value="" selected disabled>
+                    Selecciona un periodo
+                </option>
 
-                                    <select id="carrera-disponibilidad" name="carrera">
-                                        <option value="">Todas las carreras</option>
-                                        <option value="ITI">ITI</option>
-                                        <option value="IET">IET</option>
-                                        <option value="ISE">ISE</option>
-                                        <option value="IID">IID</option>
-                                    </select>
-                                </div>
+                @foreach ($periodos as $periodo)
+                    <option value="{{ $periodo->id_periodo }}">
+                        {{ $periodo->estacion }} {{ $periodo->anio }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
 
-                                <div class="campo-filtro-reporte">
-                                    <label for="periodo-disponibilidad">Periodo</label>
+        <button type="submit" class="boton-generar-filtrado">
+            <i class="fa-solid fa-filter" aria-hidden="true"></i>
+            Generar reporte
+        </button>
 
-                                    <select id="periodo-disponibilidad" name="periodo">
-                                        <option value="">Todos los periodos</option>
-                                        <option value="Invierno">Invierno</option>
-                                        <option value="Primavera">Primavera</option>
-                                        <option value="Otoño">Otoño</option>
-                                    </select>
-                                </div>
-
-                                <div class="campo-filtro-reporte">
-                                    <label for="anio-disponibilidad">Año</label>
-
-                                    <select id="anio-disponibilidad" name="anio">
-                                        <option value="">Todos los años</option>
-
-                                        @for ($anio = date('Y'); $anio >= 2026; $anio--)
-                                            <option value="{{ $anio }}">{{ $anio }}</option>
-                                        @endfor
-                                    </select>
-                                </div>
-
-                                <button type="submit" class="boton-generar-filtrado">
-                                    <i class="fa-solid fa-filter" aria-hidden="true"></i>
-                                    Aplicar filtros
-                                </button>
-
-                            </div>
-
-                            <button type="submit" class="boton-general-reporte">
-                                <i class="fa-solid fa-chart-simple" aria-hidden="true"></i>
-                                General
-                            </button>
-
-                        </form>
-
+    </div>
+</form>
                     </div>
 
                 </div>
             </article>
-
 
             <!-- REPORTE 4: MATERIAS CON DOCENTE ASIGNADO -->
             <article class="tarjeta-reporte">
@@ -412,12 +387,7 @@
                             </div>
 
                             <!-- ABRIR EL REPORTE GENERAL EN UNA PESTAÑA NUEVA -->
-                            <a
-                                href="{{ route('reportes.materias-asignadas-cuatrimestre') }}"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="boton-general-reporte"
-                            >
+                            <a href="{{ route('reportes.materias-asignadas-cuatrimestre') }}" target="_blank" rel="noopener noreferrer" class="boton-general-reporte" >
                                 <i class="fa-solid fa-chart-simple" aria-hidden="true"></i>
                                 General
                             </a>

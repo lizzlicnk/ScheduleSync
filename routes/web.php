@@ -587,6 +587,17 @@ Route::middleware(['auth', \App\Http\Middleware\PrevenirCachePrivada::class, For
         'materiasAsignadasCuatrimestre'
     ])->name('reportes.materias-asignadas-cuatrimestre');
 
+    //REPORTE N3
+    // Mostrar el reporte de disponibilidad académica
+    Route::get('/reportes/disponibilidad-docente', [
+        ReporteController::class,
+        'disponibilidadDocente'
+    ])->name('reportes.disponibilidad-docente');
+
+    Route::post('/reportes/disponibilidad-docente/pdf', [
+        ReporteController::class,
+        'descargarDisponibilidadDocente'
+    ])->name('reportes.disponibilidad-docente.pdf');
 
     //REPORTE N4
     // Mostrar el reporte de materias asignadas por cuatrimestre.
@@ -599,7 +610,6 @@ Route::middleware(['auth', \App\Http\Middleware\PrevenirCachePrivada::class, For
         ReporteController::class,
         'descargarMateriasAsignadasCuatrimestre'
     ])->name('reportes.materias-asignadas-cuatrimestre.pdf');
-
 
 });
 

@@ -1,16 +1,12 @@
 
-/* =========================================================
-   CONTENEDOR PRINCIPAL
-========================================================= */
+/* CONTENEDOR PRINCIPAL */
 
 .pagina-reporte-materias {
     padding-bottom: 35px;
     color: #352444;
 }
 
-/* =========================================================
-   ENCABEZADO
-========================================================= */
+/*  ENCABEZADO */
 
 .encabezado-reporte-materias {
     display: flex;
@@ -60,9 +56,7 @@
     transform: translateY(-2px);
 }
 
-/* =========================================================
-   SECCIONES
-========================================================= */
+/* SECCIONES */
 
 .seccion-filtros-reporte,
 .seccion-tabla-materias,
@@ -95,9 +89,7 @@
     font-size: 13px;
 }
 
-/* =========================================================
-   FILTROS
-========================================================= */
+/* FILTROS */
 
 .formulario-filtros-materias {
     display: grid;
@@ -177,9 +169,7 @@
     background: #f5f0f9;
 }
 
-/* =========================================================
-   INDICADORES
-========================================================= */
+/*  INDICADORES */
 
 .seccion-indicadores-materias {
     display: grid;
@@ -226,9 +216,7 @@
     font-weight: 700;
 }
 
-/* =========================================================
-   TABLA
-========================================================= */
+/* TABLA */
 
 .contenedor-tabla-materias {
     width: 100%;
@@ -307,30 +295,7 @@
     margin: 0;
 }
 
-/* =========================================================
-   GRÁFICA
-========================================================= 
-
-.contenedor-grafica-materias {
-    position: relative;
-    width: 100%;
-    min-height: 330px;
-}
-
-.contenedor-grafica-materias canvas {
-    max-height: 390px;
-}
-
-.mensaje-grafica-vacia {
-    padding: 15px;
-    color: #898092;
-    font-size: 13px;
-    text-align: center;
-}*/
-
-/* =========================================================
-   GRÁFICA
-========================================================= */
+/* GRÁFICA */
 
 .contenedor-grafica-materias {
     position: relative;
@@ -350,9 +315,7 @@
     text-align: center;
 }
 
-/* =========================================================
-   RESPONSIVE
-========================================================= */
+/*  RESPONSIVE */
 
 @media (max-width: 1100px) {
 
@@ -395,10 +358,7 @@
     }
 }
 
-
-/* =========================================================
-   MATERIAS PENDIENTES DE ASIGNACIÓN
-========================================================= */
+/*  MATERIAS PENDIENTES DE ASIGNACIÓN */
 
 .seccion-materias-pendientes {
     margin-bottom: 25px;
