@@ -7,30 +7,28 @@ use Illuminate\Support\Facades\DB;
 
 class ReporteController extends Controller
 {
+
     /**
-     * Descripción: Muestra la pantalla principal de reportes disponibles
-     * para consultar la información de la planeación académica.
+     * Descripción:
+     * Muestra el módulo principal de reportes académicos.
      *
      * Entradas:
-     * $solicitud: solicitud HTTP del usuario autenticado.
+     * Solicitud HTTP.
      *
      * Salidas:
-     * Vista principal de reportes con los cuatro tipos disponibles
-     * y los periodos escolares registrados.
+     * Vista de reportes con periodos y carreras disponibles.
      */
     public function index(Request $solicitud)
     {
-        // Comprobar que el usuario tenga un rol autorizado.
         $this->verificarRol([1, 2]);
 
-        // Consultar los periodos registrados en la base de datos.
-        $periodos = DB::table('periodo')
-            ->orderByDesc('anio')
-            ->orderBy('id_periodo')
-            ->get();
+        // Obtener los periodos registrados.
+        $periodos = DB::table('periodo')->orderByDesc('anio')->orderBy('id_periodo')->get();
 
-        // Mostrar la pantalla principal de reportes.
-        return view('Reporte.GestionReportes', compact('periodos'));
+        // Obtener las carreras activas.
+        $carreras = DB::table('carrera')->where('estado', 1)->orderBy('nombreCarrera')->get();
+
+        return view('Reporte.GestionReportes', compact( 'periodos', 'carreras' ));
     }
 
     //REPORTE 3
@@ -449,9 +447,7 @@ class ReporteController extends Controller
             ->orderBy('estacion')
             ->get();
 
-        // ==========================================
         // 1. CONSULTAR LAS MATERIAS ACTIVAS
-        // ==========================================
 
         $consultaMaterias = DB::table('asignatura as a')
             ->join('carrera as c', 'a.id_carrera', '=', 'c.id_carrera')
@@ -484,10 +480,8 @@ class ReporteController extends Controller
             ->orderBy('a.nombreAsignatura')
             ->get();
 
-        // ==========================================
         // 2. CONSULTAR LOS GRUPOS ACTIVOS
         // QUE YA TIENEN DETALLES DE HORARIO
-        // ==========================================
 
         $consultaGrupos = DB::table('grupo as g')
             ->join('carrera as c', 'g.id_carrera', '=', 'c.id_carrera')
@@ -534,10 +528,8 @@ class ReporteController extends Controller
             ->orderBy('g.nombreGrupo')
             ->get();
 
-        // ==========================================
         // 3. CONSULTAR LAS MATERIAS PRESENTES
         // EN LOS HORARIOS DE CADA GRUPO
-        // ==========================================
 
         $consultaPresencias = DB::table('detalle_horario as d')
             ->join('horario as h', 'd.id_horario', '=', 'h.id_horario')
@@ -597,10 +589,8 @@ class ReporteController extends Controller
             $materiasPorGrupo[$clavePresencia] = true;
         }
 
-        // ==========================================
         // 4. COMPARAR LAS MATERIAS CON TODOS
         // LOS GRUPOS DE SU CARRERA Y CUATRIMESTRE
-        // ==========================================
 
         // Agrupar las materias por carrera y cuatrimestre.
         $materiasAgrupadas = $materiasCatalogo->groupBy(function ($materia) {
@@ -693,9 +683,7 @@ class ReporteController extends Controller
             ]);
         }
 
-        // ==========================================
         // 5. CALCULAR LOS INDICADORES GENERALES
-        // ==========================================
 
         $totalMaterias = $datosReporte->sum('totalMaterias');
 
@@ -708,9 +696,7 @@ class ReporteController extends Controller
             ? ($totalAsignadas / $totalMaterias) * 100
             : 0;
 
-        // ==========================================
         // 6. PREPARAR LOS DATOS DE LA GRÁFICA
-        // ==========================================
 
         $datosGrafica = $datosReporte->map(function ($dato) {
 
@@ -724,10 +710,7 @@ class ReporteController extends Controller
 
         })->values();
 
-        // ==========================================
         // 7. PREPARAR LA LISTA GENERAL DE PENDIENTES
-        // ==========================================
-
         $materiasPendientesDetalle = $datosReporte->flatMap(function ($dato) {
 
             return collect($dato->detallePendientes)->map(function ($materia) use ($dato) {
@@ -765,174 +748,174 @@ class ReporteController extends Controller
     }
     
 
-/**
- * Descripción: Genera y descarga un archivo PDF con la captura visual
- * del reporte de materias asignadas por cuatrimestre.
- *
- * Entradas:
- * $solicitud: solicitud HTTP que contiene la imagen PNG del reporte.
- *
- * Salidas:
- * Archivo PDF generado con FPDF.
- */
-public function descargarMateriasAsignadasCuatrimestre(Request $solicitud)
-{
-    // Validar que se haya enviado una imagen.
-    $datosValidados = $solicitud->validate([
-        'imagen' => 'required|string|max:30000000|regex:/^data:image\/png;base64,/',
-    ]);
+    /**
+     * Descripción: Genera y descarga un archivo PDF con la captura visual
+     * del reporte de materias asignadas por cuatrimestre.
+     *
+     * Entradas:
+     * $solicitud: solicitud HTTP que contiene la imagen PNG del reporte.
+     *
+     * Salidas:
+     * Archivo PDF generado con FPDF.
+     */
+    public function descargarMateriasAsignadasCuatrimestre(Request $solicitud)
+    {
+        // Validar que se haya enviado una imagen.
+        $datosValidados = $solicitud->validate([
+            'imagen' => 'required|string|max:30000000|regex:/^data:image\/png;base64,/',
+        ]);
 
-    // Obtener el contenido Base64 de la imagen.
-    $imagenBase64 = substr(
-        $datosValidados['imagen'],
-        strlen('data:image/png;base64,')
-    );
+        // Obtener el contenido Base64 de la imagen.
+        $imagenBase64 = substr(
+            $datosValidados['imagen'],
+            strlen('data:image/png;base64,')
+        );
 
-    // Decodificar la imagen.
-    $contenidoImagen = base64_decode($imagenBase64, true);
+        // Decodificar la imagen.
+        $contenidoImagen = base64_decode($imagenBase64, true);
 
-    if ($contenidoImagen === false) {
-        return response()->json([
-            'mensaje' => 'No fue posible procesar la imagen del reporte.'
-        ], 422);
-    }
+        if ($contenidoImagen === false) {
+            return response()->json([
+                'mensaje' => 'No fue posible procesar la imagen del reporte.'
+            ], 422);
+        }
 
-    // Comprobar que el contenido recibido sea una imagen PNG válida.
-    $informacionImagen = getimagesizefromstring($contenidoImagen);
+        // Comprobar que el contenido recibido sea una imagen PNG válida.
+        $informacionImagen = getimagesizefromstring($contenidoImagen);
 
-    if (
-        $informacionImagen === false ||
-        $informacionImagen['mime'] !== 'image/png'
-    ) {
-        return response()->json([
-            'mensaje' => 'El archivo enviado no es una imagen PNG válida.'
-        ], 422);
-    }
-
-    // Crear una imagen a partir del contenido recibido.
-    $imagenOriginal = imagecreatefromstring($contenidoImagen);
-
-    if ($imagenOriginal === false) {
-        return response()->json([
-            'mensaje' => 'No fue posible generar la imagen del reporte.'
-        ], 422);
-    }
-
-    // Obtener las dimensiones de la imagen.
-    $anchoImagen = imagesx($imagenOriginal);
-    $altoImagen = imagesy($imagenOriginal);
-
-    // Configurar las dimensiones útiles de una página A4.
-    $anchoPagina = 190;
-    $altoPagina = 277;
-
-    // Calcular la cantidad de píxeles que corresponden a una página.
-    $altoFragmento = (int) floor(
-        $anchoImagen * ($altoPagina / $anchoPagina)
-    );
-
-    // Preparar el archivo temporal de la imagen original.
-    $rutaImagenOriginal = tempnam(sys_get_temp_dir(), 'reporte_');
-
-    file_put_contents($rutaImagenOriginal, $contenidoImagen);
-
-    // Inicializar FPDF.
-    $pdf = new \FPDF('P', 'mm', 'A4');
-
-    $pdf->SetMargins(10, 10, 10);
-    $pdf->SetAutoPageBreak(false);
-
-    // Crear las páginas necesarias para mostrar todo el reporte.
-    try {
-
-        for (
-            $posicionY = 0;
-            $posicionY < $altoImagen;
-            $posicionY += $altoFragmento
+        if (
+            $informacionImagen === false ||
+            $informacionImagen['mime'] !== 'image/png'
         ) {
-
-            // Calcular la altura del fragmento actual.
-            $altoActual = min(
-                $altoFragmento,
-                $altoImagen - $posicionY
-            );
-
-            // Crear una imagen temporal para esta página.
-            $imagenPagina = imagecreatetruecolor(
-                $anchoImagen,
-                $altoActual
-            );
-
-            // Establecer un fondo blanco.
-            $fondoBlanco = imagecolorallocate(
-                $imagenPagina,
-                255,
-                255,
-                255
-            );
-
-            imagefill($imagenPagina, 0, 0, $fondoBlanco);
-
-            // Copiar la sección correspondiente del reporte.
-            imagecopy(
-                $imagenPagina,
-                $imagenOriginal,
-                0,
-                0,
-                0,
-                $posicionY,
-                $anchoImagen,
-                $altoActual
-            );
-
-            // Guardar temporalmente el fragmento.
-            $rutaImagenPagina = tempnam(
-                sys_get_temp_dir(),
-                'pagina_'
-            );
-
-            imagepng($imagenPagina, $rutaImagenPagina);
-
-            // Agregar una página al documento PDF.
-            $pdf->AddPage();
-
-            // Calcular la altura proporcional de la imagen.
-            $altoPDF = $altoActual * ($anchoPagina / $anchoImagen);
-
-            // Colocar la imagen en la página.
-            $pdf->Image(
-                $rutaImagenPagina,
-                10,
-                10,
-                $anchoPagina,
-                $altoPDF,
-                'PNG'
-            );
-
-            // Liberar los recursos de la página.
-            imagedestroy($imagenPagina);
-            unlink($rutaImagenPagina);
+            return response()->json([
+                'mensaje' => 'El archivo enviado no es una imagen PNG válida.'
+            ], 422);
         }
 
-        // Obtener el contenido final del PDF.
-        $contenidoPDF = $pdf->Output('S');
+        // Crear una imagen a partir del contenido recibido.
+        $imagenOriginal = imagecreatefromstring($contenidoImagen);
 
-    } finally {
-
-        // Liberar los recursos utilizados.
-        imagedestroy($imagenOriginal);
-
-        if (file_exists($rutaImagenOriginal)) {
-            unlink($rutaImagenOriginal);
+        if ($imagenOriginal === false) {
+            return response()->json([
+                'mensaje' => 'No fue posible generar la imagen del reporte.'
+            ], 422);
         }
+
+        // Obtener las dimensiones de la imagen.
+        $anchoImagen = imagesx($imagenOriginal);
+        $altoImagen = imagesy($imagenOriginal);
+
+        // Configurar las dimensiones útiles de una página A4.
+        $anchoPagina = 190;
+        $altoPagina = 277;
+
+        // Calcular la cantidad de píxeles que corresponden a una página.
+        $altoFragmento = (int) floor(
+            $anchoImagen * ($altoPagina / $anchoPagina)
+        );
+
+        // Preparar el archivo temporal de la imagen original.
+        $rutaImagenOriginal = tempnam(sys_get_temp_dir(), 'reporte_');
+
+        file_put_contents($rutaImagenOriginal, $contenidoImagen);
+
+        // Inicializar FPDF.
+        $pdf = new \FPDF('P', 'mm', 'A4');
+
+        $pdf->SetMargins(10, 10, 10);
+        $pdf->SetAutoPageBreak(false);
+
+        // Crear las páginas necesarias para mostrar todo el reporte.
+        try {
+
+            for (
+                $posicionY = 0;
+                $posicionY < $altoImagen;
+                $posicionY += $altoFragmento
+            ) {
+
+                // Calcular la altura del fragmento actual.
+                $altoActual = min(
+                    $altoFragmento,
+                    $altoImagen - $posicionY
+                );
+
+                // Crear una imagen temporal para esta página.
+                $imagenPagina = imagecreatetruecolor(
+                    $anchoImagen,
+                    $altoActual
+                );
+
+                // Establecer un fondo blanco.
+                $fondoBlanco = imagecolorallocate(
+                    $imagenPagina,
+                    255,
+                    255,
+                    255
+                );
+
+                imagefill($imagenPagina, 0, 0, $fondoBlanco);
+
+                // Copiar la sección correspondiente del reporte.
+                imagecopy(
+                    $imagenPagina,
+                    $imagenOriginal,
+                    0,
+                    0,
+                    0,
+                    $posicionY,
+                    $anchoImagen,
+                    $altoActual
+                );
+
+                // Guardar temporalmente el fragmento.
+                $rutaImagenPagina = tempnam(
+                    sys_get_temp_dir(),
+                    'pagina_'
+                );
+
+                imagepng($imagenPagina, $rutaImagenPagina);
+
+                // Agregar una página al documento PDF.
+                $pdf->AddPage();
+
+                // Calcular la altura proporcional de la imagen.
+                $altoPDF = $altoActual * ($anchoPagina / $anchoImagen);
+
+                // Colocar la imagen en la página.
+                $pdf->Image(
+                    $rutaImagenPagina,
+                    10,
+                    10,
+                    $anchoPagina,
+                    $altoPDF,
+                    'PNG'
+                );
+
+                // Liberar los recursos de la página.
+                imagedestroy($imagenPagina);
+                unlink($rutaImagenPagina);
+            }
+
+            // Obtener el contenido final del PDF.
+            $contenidoPDF = $pdf->Output('S');
+
+        } finally {
+
+            // Liberar los recursos utilizados.
+            imagedestroy($imagenOriginal);
+
+            if (file_exists($rutaImagenOriginal)) {
+                unlink($rutaImagenOriginal);
+            }
+        }
+
+        // Devolver el PDF para su descarga.
+        return response($contenidoPDF, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="reporte-materias-asignadas.pdf"',
+        ]);
     }
-
-    // Devolver el PDF para su descarga.
-    return response($contenidoPDF, 200, [
-        'Content-Type' => 'application/pdf',
-        'Content-Disposition' => 'attachment; filename="reporte-materias-asignadas.pdf"',
-    ]);
-}
 
     /**
      * Descripción: Comprueba que el usuario autenticado tenga uno de los roles permitidos.

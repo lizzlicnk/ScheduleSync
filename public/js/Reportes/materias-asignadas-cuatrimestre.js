@@ -68,6 +68,95 @@ document.addEventListener('DOMContentLoaded', function () {
         ? ((totalAsignadas / totalMaterias) * 100).toFixed(1)
         : '0.0';
 
+    
+    const pluginClavesCarrera = {
+
+        id: 'pluginClavesCarrera',
+
+        afterDatasetsDraw: function (grafica) {
+
+            const contexto = grafica.ctx;
+            const escalaY = grafica.scales.y;
+
+            // Obtener las carreras que aparecen en la gráfica.
+            const carrerasGrafica = [...new Set(
+                grafica.data.datasets.map(function (conjunto) {
+                    return conjunto.label.split(' - ')[0];
+                })
+            )];
+
+            // Recorrer cada columna (cuatrimestre).
+            grafica.data.labels.forEach(function (etiqueta, posicion) {
+
+                carrerasGrafica.forEach(function (carrera) {
+
+                    // Obtener los índices de los conjuntos de esta carrera.
+                    const indices = [];
+
+                    grafica.data.datasets.forEach(function (conjunto, indice) {
+                        if (conjunto.label.split(' - ')[0] === carrera) {
+                            indices.push(indice);
+                        }
+                    });
+
+                    // Sumar el valor total de la pila de esta carrera.
+                    const total = indices.reduce(function (suma, indice) {
+                        return suma + Number(
+                            grafica.data.datasets[indice].data[posicion] || 0
+                        );
+                    }, 0);
+
+                    // No mostrar la clave si no existen materias.
+                    if (total === 0) {
+                        return;
+                    }
+
+                    // Obtener la posición horizontal de la barra.
+                    const barra = grafica.getDatasetMeta(indices[0]).data[posicion];
+
+                    // Calcular el centro vertical de la barra apilada.
+                    const yMitad = escalaY.getPixelForValue(total / 2);
+
+                    contexto.save();
+
+                    // Configurar el texto.
+                    contexto.font = 'bold 10px sans-serif';
+                    contexto.textAlign = 'center';
+                    contexto.textBaseline = 'middle';
+
+                    // Calcular las dimensiones de la etiqueta.
+                    const anchoTexto = contexto.measureText(carrera).width;
+                    const anchoEtiqueta = anchoTexto + 16;
+                    const altoEtiqueta = 22;
+
+                    // Dibujar el fondo de la etiqueta.
+                    contexto.fillStyle = 'rgba(255, 255, 255, 0.92)';
+
+                    contexto.beginPath();
+                    contexto.roundRect(
+                        barra.x - anchoEtiqueta / 2,
+                        yMitad - altoEtiqueta / 2,
+                        anchoEtiqueta,
+                        altoEtiqueta,
+                        6
+                    );
+                    contexto.fill();
+
+                    // Dibujar la clave de la carrera.
+                    contexto.fillStyle = '#51346F';
+                    contexto.fillText(carrera, barra.x, yMitad);
+
+                    contexto.restore();
+
+                });
+
+            });
+
+        }
+
+    };
+
+
     // ========================================
     // 3. CONFIGURAR LA GRÁFICA
     // ========================================
@@ -182,7 +271,7 @@ document.addEventListener('DOMContentLoaded', function () {
             },
 
             options: {
-
+    
                 responsive: true,
                 maintainAspectRatio: false,
 
@@ -227,7 +316,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                     }
                 }
-            }
+            },
+                plugins: [pluginClavesCarrera]
         });
     }
 

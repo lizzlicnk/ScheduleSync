@@ -280,3 +280,53 @@ async function confirmarGuardadoDefinitivo() {
 
     return resultado.isConfirmed;
 }
+
+//RESPALDO Y RESTAURACIOÓN DE LA BASE DE DATOS
+
+/**
+ * Descripción: Solicita confirmación antes de generar un respaldo.
+ * Salida: true si se confirma, false si se cancela.
+ */
+async function confirmarGenerarRespaldo() {
+
+    const resultado = await Swal.fire({
+        ...configuracionAlertas,
+        icon: 'question',
+        title: '¿Deseas generar un respaldo?',
+        text: 'Se creará una copia de seguridad con la información actual de la base de datos.',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, generar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true
+    });
+
+    return resultado.isConfirmed;
+}
+
+/**
+ * Descripción: Solicita confirmación antes de descargar un respaldo.
+ * Entradas: nombreArchivo: Nombre del archivo de respaldo.
+ * Salida: true si se confirma, false si se cancela.
+ */
+async function confirmarDescargarRespaldo(nombreArchivo) {
+
+    // Escapar el nombre para no interpretarlo como HTML.
+    const nombreSeguro = document.createElement('span');
+    nombreSeguro.textContent = nombreArchivo;
+
+    const resultado = await Swal.fire({
+        ...configuracionAlertas,
+        icon: 'question',
+        title: '¿Deseas descargar este respaldo?',
+        html: `
+            <p>Se descargará el archivo:</p>
+            <strong>${nombreSeguro.innerHTML}</strong>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Sí, descargar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true
+    });
+
+    return resultado.isConfirmed;
+}

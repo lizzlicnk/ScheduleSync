@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const texto = boton.querySelector('.texto-bloque');
 
         if (texto) {
-            texto.textContent = noDisponible ? 'No disponible' : 'Disponible';
+            texto.textContent = noDisponible ? ' ' : ' ';
         }
     }
 

@@ -300,24 +300,13 @@
 
 </main>
 
-
-<!-- ======================================== -->
-<!-- LIBRERÍAS PARA LA GRÁFICA Y EL PDF       -->
-<!-- ======================================== -->
-
 <!-- CHART.JS 4.6.1 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.6.1/dist/chart.umd.min.js"></script>
-
-
 
 <!-- HTML2CANVAS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-
-<!-- ======================================== -->
 <!-- DATOS DEL REPORTE ENVIADOS DESDE LARAVEL -->
-<!-- ======================================== -->
-
 <script>
     // Datos para construir la gráfica de materias asignadas y pendientes.
     window.datosGraficaMaterias = @json($datosGrafica ?? []);
@@ -327,13 +316,7 @@
 </script>
 
 
-<!-- ======================================== -->
 <!-- SCRIPT PRINCIPAL DEL REPORTE             -->
-<!-- ======================================== -->
-
-<script
-    src="{{ asset('js/Reportes/materias-asignadas-cuatrimestre.js') }}"
-    defer
-></script>
+<script src="{{ asset('js/Reportes/materias-asignadas-cuatrimestre.js') }}" defer></script>
 
 @endsection

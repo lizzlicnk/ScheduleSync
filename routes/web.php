@@ -19,6 +19,7 @@ use App\Http\Controllers\DatosGeneralesController;
 use App\Http\Controllers\CreacionHorarioController;
 use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\RespaldoBaseDatosController;
 
                     /* Rutas de inicio de sesión */
 
@@ -613,4 +614,34 @@ Route::middleware(['auth', \App\Http\Middleware\PrevenirCachePrivada::class, For
 
 });
 
+                    /* Rutas para el respaldo y restauración de la base de datos */
+
+// Rutas exclusivas para el Administrador.
+Route::middleware([\App\Http\Middleware\VerificarAdministrador::class])->group(function () {
+
+    // Mostrar la interfaz de respaldo y restauración.
+    Route::get('/respaldo-base-datos', [
+        RespaldoBaseDatosController::class,
+        'index'
+    ])->name('respaldo.index');
+
+    // Generar un respaldo de la base de datos.
+    Route::post('/respaldo-base-datos/generar', [
+        RespaldoBaseDatosController::class,
+        'generarRespaldo'
+    ])->name('respaldo.generar');
+
+    // Descargar un respaldo generado.
+    Route::get('/respaldo-base-datos/descargar/{archivo}', [
+        RespaldoBaseDatosController::class,
+        'descargarRespaldo'
+    ])->name('respaldo.descargar');
+
+    // Restaurar la base de datos mediante un archivo de respaldo.
+    Route::post('/respaldo-base-datos/restaurar', [
+        RespaldoBaseDatosController::class,
+        'restaurarRespaldo'
+    ])->name('respaldo.restaurar');
+
+});
 
