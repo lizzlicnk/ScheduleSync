@@ -237,6 +237,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (botonDescargar) {
 
+        /**
+         * Descripción: Obtiene la fecha actual en formato AAAA-MM-DD.
+         */
+        function obtenerFechaArchivo() {
+
+            const hoy = new Date();
+
+            const anio = hoy.getFullYear();
+            const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+            const dia = String(hoy.getDate()).padStart(2, '0');
+
+            return anio + '-' + mes + '-' + dia;
+        }
+
         botonDescargar.addEventListener('click', async function () {
 
             // Comprobar que html2canvas esté disponible.
@@ -387,7 +401,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 enlaceDescarga.href = direccionPDF;
 
                 enlaceDescarga.download =
-                    'reporte-materias-asignadas.pdf';
+                    'reporte-materias-asignadas-' + obtenerFechaArchivo() + '.pdf';
 
                 // Ejecutar la descarga.
                 document.body.appendChild(enlaceDescarga);
@@ -400,21 +414,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Liberar la dirección temporal.
                 URL.revokeObjectURL(direccionPDF);
 
-            } catch (error) {
-
-                // Mostrar el error de generación.
-                console.error(
-                    'Error al generar el PDF:',
-                    error
+                mostrarExito(
+                    'El reporte de materias asignadas se descargó correctamente.',
+                    '¡Descarga completa!'
                 );
 
-                alert(error.message || 'Ocurrió un error al generar el PDF.');
+            } catch (error) {
+
+                console.error('Error al generar el PDF:', error);
+
+                mostrarError(
+                    error.message || 'Ocurrió un error al generar el PDF.',
+                    'No se pudo descargar el reporte'
+                );
 
             } finally {
 
-                // Restaurar el botón de descarga.
                 botonDescargar.disabled = false;
-
                 botonDescargar.innerHTML = contenidoOriginal;
             }
 

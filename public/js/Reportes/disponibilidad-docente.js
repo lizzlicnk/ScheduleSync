@@ -44,6 +44,8 @@ document.addEventListener('DOMContentLoaded', function () {
         '.pagina-reporte-disponibilidad'
     );
 
+    // Obtener el periodo seleccionado en el reporte.
+    const elementoPeriodo = document.querySelector('.periodo-reporte');
 
     // ========================================
     // 2. OBTENER LOS DATOS DE LA GRÁFICA
@@ -62,6 +64,51 @@ document.addEventListener('DOMContentLoaded', function () {
     // ========================================
     // 3. CONFIGURAR LA GRÁFICA DE ANILLO
     // ========================================
+
+    // Plugin que escribe el porcentaje sobre cada sección del anillo.
+    const pluginPorcentajes = {
+
+        id: 'pluginPorcentajes',
+
+        afterDatasetsDraw: function (grafica) {
+
+            const contexto = grafica.ctx;
+            const datos = grafica.data.datasets[0].data;
+            const total = datos.reduce(function (suma, valor) {
+                return suma + Number(valor || 0);
+            }, 0);
+
+            if (total === 0) {
+                return;
+            }
+
+            grafica.getDatasetMeta(0).data.forEach(function (arco, indice) {
+
+                const valor = Number(datos[indice] || 0);
+
+                // No dibujar secciones vacías.
+                if (valor === 0) {
+                    return;
+                }
+
+                const porcentaje = ((valor / total) * 100).toFixed(1) + '%';
+
+                // Obtener el centro de la sección.
+                const posicion = arco.tooltipPosition();
+
+                contexto.save();
+                contexto.font = 'bold 16px sans-serif';
+                contexto.textAlign = 'center';
+                contexto.textBaseline = 'middle';
+
+                // Texto blanco sobre el color oscuro y oscuro sobre el claro.
+                contexto.fillStyle = indice === 0 ? '#FFFFFF' : '#51346F';
+
+                contexto.fillText(porcentaje, posicion.x, posicion.y);
+                contexto.restore();
+            });
+        }
+    };
 
     // Comprobar que Chart.js se haya cargado correctamente.
     if (typeof Chart === 'undefined') {
@@ -198,8 +245,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 }
 
-            }
+            },
 
+            plugins: [pluginPorcentajes]
         });
 
     }
@@ -213,6 +261,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         botonDescargar.addEventListener('click', async function () {
 
+            
             // Comprobar que html2canvas esté disponible.
             if (typeof html2canvas === 'undefined') {
 
@@ -404,13 +453,37 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 enlaceDescarga.href = direccionPDF;
 
+                //Nombre archivo
+                const periodo = elementoPeriodo
+                    ? elementoPeriodo.textContent.trim()
+                        .replace(/\s+/g, '_')
+                        .normalize('NFD')
+                        .replace(/[\u0300-\u036f]/g, '')
+                        .toUpperCase()
+                    : 'SIN_PERIODO';
+
+                // Obtener la fecha actual.
+                const fechaActual = new Date();
+
+                const fecha = [
+                    fechaActual.getFullYear(),
+                    String(fechaActual.getMonth() + 1).padStart(2, '0'),
+                    String(fechaActual.getDate()).padStart(2, '0')
+                ].join('-');
+
+                // Asignar el nombre al archivo PDF.
                 enlaceDescarga.download =
-                    'reporte-disponibilidad-docente.pdf';
+                    `reporte-disponibilidad-docente_${periodo}_${fecha}.pdf`;
 
                 // Ejecutar la descarga.
                 document.body.appendChild(enlaceDescarga);
 
                 enlaceDescarga.click();
+
+                mostrarExito(
+                    'El reporte de disponibilidad docente se descargó correctamente.',
+                    '¡Descarga completa!'
+                );
 
                 // Eliminar el enlace temporal.
                 document.body.removeChild(enlaceDescarga);
@@ -425,23 +498,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
             } catch (error) {
 
-                // Mostrar el error de generación.
-                console.error(
-                    'Error al generar el PDF:',
-                    error
-                );
+                console.error('Error al generar el PDF:', error);
 
-                alert(
-                    error.message || 'Ocurrió un error al generar el PDF.'
+                mostrarError(
+                    error.message || 'Ocurrió un error al generar el PDF.',
+                    'No se pudo descargar el reporte'
                 );
 
             } finally {
-
-                // Restaurar el botón de descarga.
                 botonDescargar.disabled = false;
-
                 botonDescargar.innerHTML = contenidoOriginal;
-
             }
 
         });

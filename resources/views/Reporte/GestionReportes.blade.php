@@ -236,75 +236,92 @@
             </article>
 
             <!-- REPORTE 3: DISPONIBILIDAD DOCENTE -->
-            <article class="tarjeta-reporte">
 
-                <div class="franja-institucional"></div>
+<!-- REPORTE 3: DISPONIBILIDAD DOCENTE -->
+<article class="tarjeta-reporte">
 
-                <div class="contenido-tarjeta-reporte">
+    <div class="franja-institucional"></div>
 
-                    <div class="encabezado-tarjeta-reporte">
-                        <div class="icono-reporte">
-                            <i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
-                        </div>
+    <div class="contenido-tarjeta-reporte">
 
-                        <span class="numero-reporte">REPORTE 03</span>
-                    </div>
+        <div class="encabezado-tarjeta-reporte">
+            <div class="icono-reporte">
+                <i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
+            </div>
 
-                    <h3>Disponibilidad docente</h3>
-
-                    <p class="descripcion-reporte">
-                        Consulta los docentes que han registrado su disponibilidad
-                        y aquellos que todavía tienen pendiente este proceso.
-                    </p>
-
-                    <div class="acciones-reporte">
-
-                        <button type="button" class="boton-filtros-reporte" data-filtros="filtros-disponibilidad" aria-expanded="false" aria-controls="filtros-disponibilidad" >
-                            <i class="fa-solid fa-sliders" aria-hidden="true"></i>
-                            Filtros
-                            <i class="fa-solid fa-chevron-down icono-flecha" aria-hidden="true"></i>
-                        </button>
-
-                        <form
-    action="{{ route('reportes.disponibilidad-docente') }}"
-    method="GET"
-    target="_blank"
-    rel="noopener noreferrer"
-    class="formulario-reporte"
->
-    <div class="panel-filtros-reporte" id="filtros-disponibilidad">
-
-        <div class="campo-filtro-reporte">
-            <label for="periodo-disponibilidad">Periodo escolar</label>
-
-            <select
-                id="periodo-disponibilidad"
-                name="id_periodo"
-                required
-            >
-                <option value="" selected disabled>
-                    Selecciona un periodo
-                </option>
-
-                @foreach ($periodos as $periodo)
-                    <option value="{{ $periodo->id_periodo }}">
-                        {{ $periodo->estacion }} {{ $periodo->anio }}
-                    </option>
-                @endforeach
-            </select>
+            <span class="numero-reporte">REPORTE 03</span>
         </div>
 
-        <button type="submit" class="boton-generar-filtrado">
-            <i class="fa-solid fa-filter" aria-hidden="true"></i>
-            Generar reporte
-        </button>
+        <h3>Disponibilidad docente</h3>
 
-    </div>
-</form>
+        <p class="descripcion-reporte">
+            Consulta los docentes que han registrado su disponibilidad
+            y aquellos que todavía tienen pendiente este proceso.
+        </p>
+
+        <div class="acciones-reporte">
+
+            <button
+                type="button"
+                class="boton-filtros-reporte"
+                data-filtros="filtros-disponibilidad"
+                aria-expanded="false"
+                aria-controls="filtros-disponibilidad"
+            >
+                <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+                Filtros
+                <i class="fa-solid fa-chevron-down icono-flecha" aria-hidden="true"></i>
+            </button>
+
+            <form
+                action="{{ route('reportes.disponibilidad-docente') }}"
+                method="GET"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="formulario-reporte"
+            >
+
+                <div class="panel-filtros-reporte" id="filtros-disponibilidad" hidden>
+
+                    <div class="campo-filtro-reporte">
+                        <label for="periodo-disponibilidad">Periodo escolar</label>
+
+                        <select
+                            id="periodo-disponibilidad"
+                            name="id_periodo"
+                            required
+                        >
+                            <option value="" selected disabled>
+                                Selecciona un periodo
+                            </option>
+
+                            @foreach ($periodos as $periodo)
+                                <option value="{{ $periodo->id_periodo }}">
+                                    {{ $periodo->estacion }} {{ $periodo->anio }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
 
                 </div>
-            </article>
+
+                <button
+                    type="submit"
+                    class="boton-general-reporte boton-generar-deshabilitado"
+                    id="boton-generar-disponibilidad"
+                    disabled
+                >
+                    <i class="fa-solid fa-chart-simple" aria-hidden="true"></i>
+                    Generar
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+</article>
+
 
             <!-- REPORTE 4: MATERIAS CON DOCENTE ASIGNADO -->
             <article class="tarjeta-reporte">
@@ -330,25 +347,13 @@
 
                     <div class="acciones-reporte">
 
-                        <button
-                            type="button"
-                            class="boton-filtros-reporte"
-                            data-filtros="filtros-materias"
-                            aria-expanded="false"
-                            aria-controls="filtros-materias"
-                        >
+                        <button type="button" class="boton-filtros-reporte" data-filtros="filtros-materias" aria-expanded="false" aria-controls="filtros-materias" >
                             <i class="fa-solid fa-sliders" aria-hidden="true"></i>
                             Filtros
                             <i class="fa-solid fa-chevron-down icono-flecha" aria-hidden="true"></i>
                         </button>
 
-                        <form
-                            action="{{ route('reportes.materias-asignadas-cuatrimestre') }}"
-                            method="GET"
-                            class="formulario-reporte"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
+                        <form action="{{ route('reportes.materias-asignadas-cuatrimestre') }}" method="GET" class="formulario-reporte" target="_blank" rel="noopener noreferrer" >
 
                             <div class="panel-filtros-reporte" id="filtros-materias" hidden>
 

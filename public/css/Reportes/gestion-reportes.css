@@ -385,3 +385,16 @@
     }
 
 }
+
+/* Botón bloqueado mientras no se seleccione un periodo */
+.boton-general-reporte.boton-bloqueado {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Botón Generar deshabilitado del reporte 03 */
+.boton-generar-deshabilitado {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

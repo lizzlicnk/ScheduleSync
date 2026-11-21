@@ -199,74 +199,7 @@
     </section>
 
 
-    <!-- RESUMEN DE DISPONIBILIDADES PENDIENTES -->
-    <section class="seccion-disponibilidades-pendientes">
-
-        <div class="encabezado-pendientes">
-            <div>
-                <h2>Docentes con disponibilidad pendiente</h2>
-
-                <p>
-                    Docentes que todavía no han confirmado su disponibilidad
-                    académica para el periodo consultado.
-                </p>
-            </div>
-
-            <span class="total-pendientes">
-                {{ $totalPendientes ?? 0 }}
-            </span>
-        </div>
-
-
-        @php
-            $docentesPendientes = ($datosReporte ?? collect())
-                ->where('estadoDisponibilidad', 'Pendiente');
-        @endphp
-
-
-        @if ($docentesPendientes->isNotEmpty())
-
-            <div class="lista-disponibilidades-pendientes">
-
-                @foreach ($docentesPendientes as $docente)
-
-                    <article class="elemento-disponibilidad-pendiente">
-
-                        <div class="informacion-docente-pendiente">
-
-                            <h3>
-                                {{ $docente->nombreDocente }}
-                            </h3>
-
-                            <span>
-                                Tipo de docente: {{ $docente->tipoDocente }}
-                            </span>
-
-                        </div>
-
-                        <span class="etiqueta-pendiente">
-                            <i class="fa-solid fa-clock" aria-hidden="true"></i>
-                            Pendiente de confirmación
-                        </span>
-
-                    </article>
-
-                @endforeach
-
-            </div>
-
-        @else
-
-            <p class="mensaje-sin-pendientes">
-                <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
-
-                Todos los docentes han confirmado su disponibilidad académica.
-            </p>
-
-        @endif
-
-    </section>
-
+    
 
     <!-- GRÁFICA DE DISPONIBILIDAD -->
     <section class="seccion-grafica-disponibilidad">
