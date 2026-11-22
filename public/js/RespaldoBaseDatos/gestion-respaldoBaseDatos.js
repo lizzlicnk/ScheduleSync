@@ -77,6 +77,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // Comprobar que los elementos existan.
     if (formularioRestaurar && selectorRespaldo && botonRestaurar) {
 
+        // Habilitar el botón cuando se seleccione un respaldo.
+        selectorRespaldo.addEventListener('change', function () {
+
+            botonRestaurar.disabled = selectorRespaldo.value === '';
+
+        });
+
         // Escuchar el envío del formulario.
         formularioRestaurar.addEventListener('submit', function (evento) {
 
@@ -96,48 +103,89 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
+            // Obtener el nombre del respaldo seleccionado.
+            const nombreArchivo = selectorRespaldo.options[
+                selectorRespaldo.selectedIndex
+            ].text;
+
             // Solicitar confirmación antes de restaurar.
             Swal.fire({
-                icon: 'warning',
-                title: '¿Deseas restaurar la base de datos?',
                 html: `
-                    <p>
-                        La información actual será reemplazada por la contenida
-                        en el respaldo seleccionado.
-                    </p>
-                    <p>
-                        <strong>
-                            Los cambios posteriores al respaldo podrían perderse
-                            y no podrán recuperarse si no existe otra copia de seguridad.
-                        </strong>
-                    </p>
-                    <p>
-                        ¿Estás seguro de continuar?
-                    </p>
+                    <div class="modal-restauracion">
+
+                        <div class="icono-modal-restauracion">
+                            <i class="fa-solid fa-database"></i>
+                            <span class="icono-alerta-restauracion">
+                                <i class="fa-solid fa-exclamation"></i>
+                            </span>
+                        </div>
+
+                        <h2>¿Restaurar este respaldo?</h2>
+
+                        <p class="descripcion-modal-restauracion">
+                            Se utilizará el siguiente archivo para recuperar
+                            la base de datos:
+                        </p>
+
+                        <div class="archivo-modal-restauracion">
+                            <i class="fa-solid fa-file-code"></i>
+                            <span class="nombre-archivo-restauracion"></span>
+                        </div>
+
+                        <div class="advertencia-modal-restauracion">
+                            <div class="titulo-advertencia-restauracion">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                Ten en cuenta
+                            </div>
+
+                            <p>
+                                Los datos actuales serán reemplazados por los
+                                del respaldo. Los cambios posteriores a su
+                                generación se perderán.
+                            </p>
+                        </div>
+
+                        <p class="nota-modal-restauracion">
+                            Esta operación no se puede deshacer.
+                        </p>
+
+                    </div>
                 `,
                 showCancelButton: true,
-                confirmButtonText: 'Sí, restaurar',
+                confirmButtonText: `
+                    <i class="fa-solid fa-rotate-left"></i>
+                    Restaurar respaldo
+                `,
                 cancelButtonText: 'Cancelar',
-                confirmButtonColor: '#DC3545',
-                cancelButtonColor: '#5A3E7D',
-                reverseButtons: true
-            }).then(function (resultado) {
+                buttonsStyling: false,
+                customClass: {
+                    popup: 'modal-sweet-restauracion',
+                    confirmButton: 'boton-confirmar-restauracion',
+                    cancelButton: 'boton-cancelar-restauracion',
+                    actions: 'acciones-modal-restauracion'
+                },
+                reverseButtons: true,
+                focusCancel: true,
+                allowOutsideClick: false,
 
-                // Enviar el formulario únicamente si se confirma.
+                // Insertar el nombre del respaldo de forma segura.
+                didOpen: () => {
+                    const nombreArchivoModal = Swal.getPopup().querySelector(
+                        '.nombre-archivo-restauracion'
+                    );
+
+                    nombreArchivoModal.textContent = nombreArchivo;
+                }
+
+            }).then((resultado) => {
+
+                // Restaurar únicamente cuando se confirme la operación.
                 if (resultado.isConfirmed) {
-
-                    // Evitar nuevos envíos.
-                    botonRestaurar.disabled = true;
-
-                    // Mostrar el proceso de restauración.
-                    botonRestaurar.innerHTML = `
-                        <i class="fa-solid fa-spinner fa-spin"></i>
-                        Restaurando...
-                    `;
-
                     formularioRestaurar.submit();
                 }
+
             });
+
         });
     }
 

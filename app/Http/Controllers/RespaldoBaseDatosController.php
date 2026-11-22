@@ -7,23 +7,37 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Process\Process;
+use Illuminate\Support\Facades\Schema;
 
 class RespaldoBaseDatosController extends Controller
 {
+    // Ubicación de los ejecutables de MySQL de XAMPP.
+    private const MYSQLDUMP = 'C:\\xampp\\mysql\\bin\\mysqldump.exe';
+    private const MYSQL = 'C:\\xampp\\mysql\\bin\\mysql.exe';
+
+    // Tablas técnicas de Laravel que no deben respaldarse ni restaurarse.
+    private const TABLAS_IGNORADAS = [
+        'sessions',
+        'cache',
+        'cache_locks',
+        'jobs',
+        'job_batches',
+        'failed_jobs',
+    ];
+
     /**
      * Descripción: Muestra la interfaz de respaldo y restauración
      * y obtiene los respaldos almacenados.
      *
-     * Entradas:
-     * Ninguna.
+     * Entradas: Ninguna.
      *
-     * Salidas:
-     * Vista de gestión de respaldos con los archivos disponibles.
+     * Salidas: Vista de gestión de respaldos con los archivos disponibles.
      */
     public function index()
     {
-        // Verificar que el usuario tenga el rol de Administrador.
         $this->verificarRol([1]);
 
         // Obtener los archivos de respaldo almacenados.
@@ -35,13 +49,12 @@ class RespaldoBaseDatosController extends Controller
                 Storage::disk('local')->size($archivo) > 0;
         });
 
-        // Ordenar los respaldos del más reciente al más antiguo.
+        // Ordenar del más reciente al más antiguo.
         rsort($respaldos);
 
-        // Mostrar la vista de gestión de respaldos.
         return view(
             'RespaldoBaseDatos.GestionRespaldoBaseDatos',
-            compact('respaldos')
+            ['respaldos' => array_values($respaldos)]
         );
     }
 
@@ -50,50 +63,40 @@ class RespaldoBaseDatosController extends Controller
      * Descripción: Genera un respaldo de la base de datos
      * mediante el ejecutable mysqldump.
      *
-     * Entradas:
-     * Configuración de conexión a la base de datos.
+     * Entradas: Configuración de conexión a la base de datos.
      *
-     * Salidas:
-     * Archivo SQL almacenado en la carpeta privada de respaldos.
+     * Salidas: Archivo SQL almacenado en la carpeta privada de respaldos.
      */
     public function generarRespaldo()
     {
-        // Verificar que el usuario tenga el rol de Administrador.
         $this->verificarRol([1]);
 
-        // Inicializar la ruta del respaldo.
+        // Evitar que PHP detenga el script por tiempo de ejecución.
+        set_time_limit(0);
+
         $rutaAlmacenamiento = null;
 
         try {
-            // Obtener la configuración de conexión a la base de datos.
             $configuracion = DB::connection()->getConfig();
 
-            // Definir la ubicación del ejecutable mysqldump.
-            $ejecutable = 'C:\\xampp\\mysql\\bin\\mysqldump.exe';
-
-            // Comprobar que el ejecutable exista.
-            if (!file_exists($ejecutable)) {
-                throw new \RuntimeException(
-                    'No se encontró el ejecutable mysqldump.'
-                );
+            if (!file_exists(self::MYSQLDUMP)) {
+                throw new \RuntimeException('No se encontró el ejecutable mysqldump.');
             }
 
             // Crear la carpeta privada de respaldos.
             Storage::disk('local')->makeDirectory('respaldos');
 
-            // Generar el nombre del archivo.
+            // Generar el nombre y la ubicación del archivo.
             $nombreArchivo = 'respaldo_' .
                 $configuracion['database'] . '_' .
                 now()->format('Ymd_His') . '.sql';
 
-            // Definir la ubicación del archivo.
             $rutaAlmacenamiento = 'respaldos/' . $nombreArchivo;
-
-            $rutaArchivo = Storage::disk('local')->path( $rutaAlmacenamiento );
+            $rutaArchivo = Storage::disk('local')->path($rutaAlmacenamiento);
 
             // Preparar los argumentos del comando.
             $comando = [
-                $ejecutable,
+                self::MYSQLDUMP,
                 '--protocol=tcp',
                 '--host=' . $configuracion['host'],
                 '--port=' . $configuracion['port'],
@@ -102,63 +105,49 @@ class RespaldoBaseDatosController extends Controller
                 '--single-transaction',
                 '--routines',
                 '--triggers',
+                '--events',
                 '--result-file=' . $rutaArchivo,
-                $configuracion['database']
             ];
 
-            // Obtener la contraseña de la conexión.
-            $contrasena = $configuracion['password'] ?? '';
-
-            // Configurar las variables de entorno del proceso.
-            $entorno = getenv();
-
-            if ($contrasena !== '') {
-                $entorno['MYSQL_PWD'] = $contrasena;
+            // Excluir las tablas técnicas de Laravel.
+            foreach (self::TABLAS_IGNORADAS as $tabla) {
+                $comando[] = '--ignore-table=' . $configuracion['database'] . '.' . $tabla;
             }
 
-            // Crear el proceso desde la carpeta principal del proyecto.
+            // El nombre de la base de datos debe ir al final.
+            $comando[] = $configuracion['database'];
+
             $proceso = new Process(
                 $comando,
                 base_path(),
-                $entorno
+                $this->entornoProceso($configuracion)
             );
 
-            // Establecer el tiempo máximo de ejecución.
             $proceso->setTimeout(600);
-
-            // Ejecutar el respaldo.
             $proceso->run();
 
-            // Comprobar el resultado de la ejecución.
             if (!$proceso->isSuccessful()) {
                 throw new \RuntimeException(
                     'mysqldump finalizó con código: ' .
-                    $proceso->getExitCode() .
-                    '. ' . $proceso->getErrorOutput()
+                    $proceso->getExitCode() . '. ' .
+                    $proceso->getErrorOutput()
                 );
             }
 
-            // Comprobar que el archivo exista.
             if (!file_exists($rutaArchivo)) {
-                throw new \RuntimeException(
-                    'No se generó el archivo de respaldo.'
-                );
+                throw new \RuntimeException('No se generó el archivo de respaldo.');
             }
 
-            // Comprobar que el archivo tenga información.
             if (filesize($rutaArchivo) === 0) {
-                throw new \RuntimeException(
-                    'El archivo de respaldo se generó vacío.'
-                );
+                throw new \RuntimeException('El archivo de respaldo se generó vacío.');
             }
 
-            // Regresar a la vista con un mensaje de éxito.
             return redirect()
                 ->route('respaldo.index')
-                ->with(
-                    'alerta_exito',
-                    'El respaldo de la base de datos se generó correctamente.'
-                );
+                ->with('alerta_exito', 'El respaldo de la base de datos se generó correctamente.');
+
+        } catch (HttpException $error) {
+            throw $error;
 
         } catch (\Throwable $error) {
 
@@ -170,18 +159,13 @@ class RespaldoBaseDatosController extends Controller
                 Storage::disk('local')->delete($rutaAlmacenamiento);
             }
 
-            // Registrar los detalles del error.
             Log::error('Error al generar el respaldo de la base de datos.', [
                 'error' => $error->getMessage()
             ]);
 
-            // Regresar a la vista sin descargar ningún archivo.
             return redirect()
                 ->route('respaldo.index')
-                ->with(
-                    'alerta_error',
-                    'No fue posible generar el respaldo de la base de datos.'
-                );
+                ->with('alerta_error', 'No fue posible generar el respaldo de la base de datos.');
         }
     }
 
@@ -189,15 +173,12 @@ class RespaldoBaseDatosController extends Controller
     /**
      * Descripción: Permite descargar un respaldo previamente generado.
      *
-     * Entradas:
-     * Nombre del archivo de respaldo.
+     * Entradas: Nombre del archivo de respaldo.
      *
-     * Salidas:
-     * Descarga del archivo SQL solicitado.
+     * Salidas: Descarga del archivo SQL solicitado.
      */
     public function descargarRespaldo($archivo)
     {
-        // Verificar que el usuario tenga el rol de Administrador.
         $this->verificarRol([1]);
 
         // Comprobar que el nombre no contenga rutas externas.
@@ -208,199 +189,200 @@ class RespaldoBaseDatosController extends Controller
             abort(404);
         }
 
-        // Definir la ubicación privada del archivo.
         $rutaArchivo = 'respaldos/' . $archivo;
 
-        // Comprobar que el respaldo exista.
-        if (!Storage::disk('local')->exists($rutaArchivo)) {
+        if (
+            !Storage::disk('local')->exists($rutaArchivo) ||
+            Storage::disk('local')->size($rutaArchivo) === 0
+        ) {
             abort(404);
         }
 
-        // Comprobar que el archivo tenga información.
-        if (Storage::disk('local')->size($rutaArchivo) === 0) {
-            abort(404);
-        }
-
-        // Descargar únicamente el respaldo válido.
-        return Storage::disk('local')->download(
-            $rutaArchivo,
-            $archivo
-        );
+        return Storage::disk('local')->download($rutaArchivo, $archivo);
     }
 
 
     /**
-     * Descripción: Restaura la base de datos utilizando un respaldo
-     * previamente generado.
+     * Descripción: Restaura la base de datos utilizando un respaldo SQL
+     * previamente generado por el sistema.
      *
-     * Entradas:
-     * Nombre del archivo SQL seleccionado para la restauración.
+     * Entradas: $solicitud: contiene el nombre del archivo seleccionado.
      *
-     * Salidas:
-     * Base de datos restaurada a partir del archivo seleccionado.
+     * Salidas: Redirige a la vista de respaldos con el resultado.
      */
     public function restaurarRespaldo(Request $solicitud)
     {
-        // Verificar que el usuario tenga el rol de Administrador.
         $this->verificarRol([1]);
 
-        // Validar el nombre del archivo seleccionado.
-        $datosValidados = $solicitud->validate([
-            'archivo' => ['required', 'string', 'max:255']
-        ]);
+        // Evitar que PHP detenga el script por tiempo de ejecución
+        // o porque el navegador cierre la conexión.
+        set_time_limit(0);
+        ignore_user_abort(true);
 
-        // Inicializar el proceso de restauración.
+        $flujo = null;
         $proceso = null;
+        $nombreArchivo = null;
 
         try {
-            // Obtener el nombre del respaldo seleccionado.
-            $archivo = $datosValidados['archivo'];
+            // Validar el archivo seleccionado.
+            $datosValidados = $solicitud->validate([
+                'archivo' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    'regex:/^respaldo_[a-zA-Z0-9_-]+\.sql$/i'
+                ]
+            ]);
 
-            // Comprobar que el nombre no contenga rutas externas.
-            if (
-                basename($archivo) !== $archivo ||
-                !str_ends_with(strtolower($archivo), '.sql')
-            ) {
-                throw new \RuntimeException(
-                    'El archivo seleccionado no es válido.'
-                );
+            $nombreArchivo = basename($datosValidados['archivo']);
+            $rutaRelativa = 'respaldos/' . $nombreArchivo;
+
+            if (!Storage::disk('local')->exists($rutaRelativa)) {
+                return $this->respuestaError('El respaldo seleccionado no existe.');
             }
 
-            // Definir la ubicación privada del respaldo.
-            $rutaArchivo = 'respaldos/' . $archivo;
+            $rutaCompleta = Storage::disk('local')->path($rutaRelativa);
 
-            // Comprobar que el archivo exista.
-            if (!Storage::disk('local')->exists($rutaArchivo)) {
-                throw new \RuntimeException(
-                    'El respaldo seleccionado no existe.'
-                );
+            if (filesize($rutaCompleta) === 0) {
+                return $this->respuestaError('El archivo de respaldo está vacío.');
             }
 
-            // Comprobar que el archivo tenga información.
-            if (Storage::disk('local')->size($rutaArchivo) === 0) {
-                throw new \RuntimeException(
-                    'El archivo de respaldo está vacío.'
-                );
+            if (!is_readable($rutaCompleta)) {
+                return $this->respuestaError('No se puede leer el archivo de respaldo.');
             }
 
-            // Obtener la ruta completa del archivo SQL.
-            $rutaCompleta = Storage::disk('local')->path($rutaArchivo);
-
-            // Definir la ubicación del ejecutable mysql.
-            $ejecutable = 'C:\\xampp\\mysql\\bin\\mysql.exe';
-
-            // Comprobar que el ejecutable exista.
-            if (!file_exists($ejecutable)) {
-                throw new \RuntimeException(
-                    'No se encontró el ejecutable mysql.'
-                );
+            if (!file_exists(self::MYSQL)) {
+                throw new \RuntimeException('No se encontró el ejecutable de MySQL.');
             }
 
-            // Obtener la configuración de conexión a la base de datos.
             $configuracion = DB::connection()->getConfig();
 
-            // Preparar los argumentos para ejecutar mysql.
             $comando = [
-                $ejecutable,
+                self::MYSQL,
                 '--protocol=tcp',
                 '--host=' . $configuracion['host'],
                 '--port=' . $configuracion['port'],
                 '--user=' . $configuracion['username'],
                 '--default-character-set=utf8mb4',
+                '--max-allowed-packet=256M',
                 $configuracion['database']
             ];
 
-            // Obtener la contraseña de la conexión.
-            $contrasena = $configuracion['password'] ?? '';
-
-            // Configurar las variables de entorno del proceso.
-            $entorno = getenv();
-
-            if ($contrasena !== '') {
-                $entorno['MYSQL_PWD'] = $contrasena;
-            }
-
-            // Crear el proceso de restauración.
             $proceso = new Process(
                 $comando,
                 base_path(),
-                $entorno
+                $this->entornoProceso($configuracion)
             );
 
-            // Establecer el tiempo máximo de ejecución.
             $proceso->setTimeout(600);
 
-            // Leer el contenido del archivo SQL.
-            $contenidoRespaldo = file_get_contents($rutaCompleta);
+            // Enviar el archivo como flujo, sin cargarlo completo en memoria.
+            $flujo = fopen($rutaCompleta, 'rb');
 
-            // Comprobar que se haya podido leer el archivo.
-            if ($contenidoRespaldo === false || $contenidoRespaldo === '') {
-                throw new \RuntimeException(
-                    'No fue posible leer el archivo de respaldo.'
-                );
+            if ($flujo === false) {
+                throw new \RuntimeException('No fue posible abrir el archivo SQL.');
             }
 
-            // Enviar el contenido SQL al proceso mysql.
-            $proceso->setInput($contenidoRespaldo);
-
-            // Ejecutar la restauración.
+            $proceso->setInput($flujo);
             $proceso->run();
 
-            // Comprobar si la restauración terminó correctamente.
             if (!$proceso->isSuccessful()) {
-                throw new \RuntimeException(
-                    'mysql finalizó con código: ' .
-                    $proceso->getExitCode() .
-                    '. ' . $proceso->getErrorOutput()
+                Log::error('Error al restaurar la base de datos.', [
+                    'archivo' => $nombreArchivo,
+                    'codigo'  => $proceso->getExitCode(),
+                    'error'   => $proceso->getErrorOutput(),
+                    'salida'  => $proceso->getOutput()
+                ]);
+
+                return $this->respuestaError(
+                    'No fue posible completar la restauración de la base de datos.'
                 );
             }
 
-            // Regresar a la vista con un mensaje de éxito.
+            Log::info('Base de datos restaurada correctamente.', [
+                'archivo' => $nombreArchivo,
+                'usuario' => Auth::id()
+            ]);
+
             return redirect()
                 ->route('respaldo.index')
-                ->with(
-                    'alerta_exito',
-                    'La base de datos se restauró correctamente.'
-                );
+                ->with('alerta_exito', 'La base de datos se restauró correctamente.');
+
+        } catch (ValidationException | HttpException $error) {
+            // Validación y 403/404 se manejan con su comportamiento normal.
+            throw $error;
 
         } catch (\Throwable $error) {
 
-            // Detener el proceso si continúa en ejecución.
             if ($proceso !== null && $proceso->isRunning()) {
                 $proceso->stop();
             }
 
-            // Registrar el error para su revisión.
-            Log::error('Error al restaurar la base de datos.', [
-                'error' => $error->getMessage()
+            Log::error('Error durante la restauración de la base de datos.', [
+                'archivo' => $nombreArchivo,
+                'error'   => $error->getMessage(),
+                'usuario' => Auth::id()
             ]);
 
-            // Regresar a la vista con un mensaje de error.
-            return redirect()
-                ->route('respaldo.index')
-                ->with(
-                    'alerta_error',
-                    'No fue posible restaurar la base de datos.'
-                );
+            return $this->respuestaError('Ocurrió un problema al restaurar la base de datos.');
+
+        } finally {
+            if (is_resource($flujo)) {
+                fclose($flujo);
+            }
         }
+    }
+
+
+    /**
+     * Descripción: Construye las variables de entorno del proceso,
+     * enviando la contraseña sin incluirla en el comando.
+     *
+     * Entradas: Configuración de la conexión.
+     *
+     * Salidas: Arreglo con las variables de entorno adicionales.
+     */
+    private function entornoProceso(array $configuracion): array
+    {
+        // Conservar las variables del sistema (necesarias en Windows).
+        $entorno = getenv();
+
+        $contrasena = $configuracion['password'] ?? '';
+
+        if ($contrasena !== '') {
+            $entorno['MYSQL_PWD'] = $contrasena;
+        }
+
+        return $entorno;
+    }
+
+
+    /**
+     * Descripción: Regresa a la vista de respaldos con un mensaje de error.
+     *
+     * Entradas: Mensaje que se mostrará.
+     *
+     * Salidas: Redirección con la alerta de error.
+     */
+    private function respuestaError(string $mensaje)
+    {
+        return redirect()
+            ->route('respaldo.index')
+            ->with('alerta_error', $mensaje);
     }
 
 
     /**
      * Descripción: Verifica que el usuario tenga uno de los roles permitidos.
      *
-     * Entradas:
-     * Arreglo con los identificadores de los roles permitidos.
+     * Entradas: Arreglo con los identificadores de los roles permitidos.
      *
-     * Salidas:
-     * No devuelve información. Restringe el acceso cuando el rol no está permitido.
+     * Salidas: No devuelve información. Restringe el acceso si el rol no está permitido.
      */
     private function verificarRol(array $rolesPermitidos): void
     {
-        // Obtener el usuario autenticado.
         $usuarioAutenticado = Auth::user();
 
-        // Comprobar que el usuario tenga un rol autorizado.
         abort_unless(
             $usuarioAutenticado &&
             in_array((int) $usuarioAutenticado->rol, $rolesPermitidos),

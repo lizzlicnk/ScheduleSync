@@ -288,12 +288,7 @@
                         <span aria-hidden="true">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </span>
-                        <input
-                            type="search"
-                            id="buscar-consulta-carrera"
-                            placeholder="Escribe una clave o nombre..."
-                            autocomplete="off"
-                        >
+                        <input type="search" id="buscar-consulta-carrera" placeholder="Escribe una clave o nombre..." autocomplete="off" >
                     </div>
                 </div>
 
@@ -303,13 +298,9 @@
                     <div id="resultados-consulta-carrera" aria-live="polite">
                         @forelse ($carrerasRegistradas as $carrera)
                             <!--Letras minusculas mb_strtolower-->
-                            <button
-                                type="button"
-                                class="resultado-consulta-item"
-                                data-resultado-carrera="{{ $carrera->id_carrera }}"
+                            <button type="button" class="resultado-consulta-item" data-resultado-carrera="{{ $carrera->id_carrera }}"
                                 data-clave-consulta="{{ mb_strtolower($carrera->claveCarrera) }}"
-                                data-nombre-consulta="{{ mb_strtolower($carrera->nombreCarrera) }}"
-                            >
+                                data-nombre-consulta="{{ mb_strtolower($carrera->nombreCarrera) }}">
                                 <span class="texto-resultado">
                                     <strong>{{ $carrera->nombreCarrera }}</strong>
                                     <small>{{ $carrera->claveCarrera }}</small>

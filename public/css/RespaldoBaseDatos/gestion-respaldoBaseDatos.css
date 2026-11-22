@@ -390,13 +390,7 @@
     line-height: 1.6;
 }
 
-.campo-restauracion {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    max-width: 550px;
-    margin-bottom: 17px;
-}
+
 
 .campo-restauracion label {
     color: #51346F;
@@ -404,17 +398,7 @@
     font-weight: 600;
 }
 
-.selector-respaldo {
-    width: 100%;
-    min-height: 43px;
-    padding: 9px 12px;
-    border: 1px solid #D8D0E0;
-    border-radius: 7px;
-    outline: none;
-    background-color: #FFFFFF;
-    color: #555;
-    font-size: 13px;
-}
+
 
 .selector-respaldo:focus {
     border-color: #5A3E7D;
@@ -426,9 +410,7 @@
     cursor: not-allowed;
 }
 
-.boton-restaurar-respaldo {
-    background-color: #DC3545;
-}
+
 
 .boton-restaurar-respaldo:hover:not(:disabled) {
     background-color: #BB2635;
@@ -439,12 +421,132 @@
     cursor: not-allowed;
 }
 
-.mensaje-restauracion-pendiente {
-    margin: 12px 0 0;
-    color: #888;
-    font-size: 12px;
+
+/* =====================================================
+   RESTAURACIÓN DE LA BASE DE DATOS
+===================================================== */
+
+/* Contenedor del selector */
+.campo-restauracion {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 20px;
 }
 
+/* Etiqueta del selector */
+.campo-restauracion label {
+    color: #51346F;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Selector de respaldos */
+.selector-respaldo {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    min-height: 45px;
+    box-sizing: border-box;
+    padding: 10px 13px;
+
+    border: 1px solid #D8D0E0;
+    border-radius: 7px;
+    outline: none;
+
+    background-color: #FFFFFF;
+    color: #555;
+    font-size: 13px;
+
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Efecto al seleccionar */
+.selector-respaldo:focus {
+    border-color: #5A3E7D;
+    box-shadow: 0 0 0 3px rgba(90, 62, 125, 0.12);
+}
+
+/* Selector deshabilitado */
+.selector-respaldo:disabled {
+    background-color: #F1F1F1;
+    cursor: not-allowed;
+}
+
+/* Contenedor del mensaje y botón */
+.acciones-restauracion {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    width: 100%;
+}
+
+/* Mensaje centrado */
+.mensaje-restauracion-pendiente {
+    flex: 1;
+    margin: 0;
+    color: #888;
+    font-size: 12px;
+    text-align: center;
+    line-height: 1.5;
+}
+
+/* Botón de restauración */
+.boton-restaurar-respaldo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+
+    min-height: 43px;
+    padding: 11px 18px;
+    flex-shrink: 0;
+
+    border: none;
+    border-radius: 8px;
+
+    background-color: #DC3545;
+    color: #FFFFFF;
+
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.boton-restaurar-respaldo:hover:not(:disabled) {
+    background-color: #BB2635;
+    transform: translateY(-1px);
+}
+
+.boton-restaurar-respaldo:disabled {
+    background-color: #B9B9B9;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Adaptación para dispositivos móviles */
+@media (max-width: 767.98px) {
+
+    .acciones-restauracion {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+
+    .mensaje-restauracion-pendiente {
+        text-align: center;
+    }
+
+    .boton-restaurar-respaldo {
+        width: 100%;
+    }
+
+}
 
 /* =====================================================
    DISEÑO RESPONSIVO
@@ -751,4 +853,247 @@
         align-items: flex-start;
     }
 
+}
+
+
+/* ========================================
+   MODAL DE CONFIRMACIÓN DE RESTAURACIÓN
+======================================== */
+
+.modal-sweet-restauracion {
+    width: 440px !important;
+    max-width: calc(100% - 30px) !important;
+    padding: 32px 30px 26px !important;
+    border-radius: 20px !important;
+    font-family: inherit !important;
+}
+
+/* Contenedor principal */
+.modal-restauracion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* Icono principal */
+.icono-modal-restauracion {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    margin-bottom: 20px;
+    border-radius: 50%;
+    background-color: #F0EAF6;
+    color: #5A3E7D;
+    font-size: 30px;
+}
+
+.icono-alerta-restauracion {
+    position: absolute;
+    right: -3px;
+    bottom: -3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 27px;
+    height: 27px;
+    border: 3px solid #ffffff;
+    border-radius: 50%;
+    background-color: #E5A13B;
+    color: #ffffff;
+    font-size: 12px;
+}
+
+/* Título */
+.modal-restauracion h2 {
+    margin: 0 0 10px;
+    color: #382449;
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+/* Descripción */
+.descripcion-modal-restauracion {
+    margin: 0 0 17px;
+    color: #756B7D;
+    font-size: 0.91rem;
+    line-height: 1.5;
+}
+
+/* Archivo seleccionado */
+.archivo-modal-restauracion {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px;
+    margin-bottom: 17px;
+    border: 1px solid #E5DCEC;
+    border-radius: 11px;
+    background-color: #F8F5FA;
+    color: #5A3E7D;
+    text-align: left;
+}
+
+.archivo-modal-restauracion i {
+    flex-shrink: 0;
+    font-size: 21px;
+}
+
+.archivo-modal-restauracion span {
+    overflow-wrap: anywhere;
+    color: #49375A;
+    font-size: 0.83rem;
+    font-weight: 600;
+}
+
+/* Advertencia */
+.advertencia-modal-restauracion {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15px;
+    border: 1px solid #F0D9B6;
+    border-radius: 11px;
+    background-color: #FFF8ED;
+    text-align: left;
+}
+
+.titulo-advertencia-restauracion {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 7px;
+    color: #A66B20;
+    font-size: 0.91rem;
+    font-weight: 700;
+}
+
+.advertencia-modal-restauracion p {
+    margin: 0;
+    color: #765B36;
+    font-size: 0.84rem;
+    line-height: 1.55;
+}
+
+/* Nota inferior */
+.nota-modal-restauracion {
+    margin: 15px 0 0;
+    color: #928A98;
+    font-size: 0.76rem;
+}
+
+/* Contenedor de botones */
+.acciones-modal-restauracion {
+    display: flex !important;
+    gap: 10px !important;
+    width: 100%;
+    margin-top: 25px !important;
+}
+
+/* Botón cancelar */
+.boton-cancelar-restauracion {
+    flex: 1;
+    padding: 12px 15px;
+    border: 1px solid #D8CDE2;
+    border-radius: 9px;
+    background-color: #ffffff;
+    color: #5A3E7D;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.boton-cancelar-restauracion:hover {
+    background-color: #F5F0F8;
+    border-color: #5A3E7D;
+}
+
+/* Botón confirmar */
+.boton-confirmar-restauracion {
+    flex: 1.3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 15px;
+    border: 1px solid #5A3E7D;
+    border-radius: 9px;
+    background-color: #5A3E7D;
+    color: #ffffff;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.boton-confirmar-restauracion:hover {
+    background-color: #472C65;
+    border-color: #472C65;
+}
+
+.boton-confirmar-restauracion:focus-visible,
+.boton-cancelar-restauracion:focus-visible {
+    outline: 3px solid rgba(90, 62, 125, 0.25);
+    outline-offset: 3px;
+}
+
+/* Adaptación para pantallas pequeñas */
+@media (max-width: 480px) {
+
+    .modal-sweet-restauracion {
+        padding: 25px 18px 20px !important;
+    }
+
+    .acciones-modal-restauracion {
+        flex-direction: column-reverse;
+    }
+
+    .boton-confirmar-restauracion,
+    .boton-cancelar-restauracion {
+        width: 100%;
+        min-height: 44px;
+    }
+}
+
+/* ========================================
+   FRANJA INSTITUCIONAL
+======================================== */
+
+.pagina-respaldo .franja-institucional {
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(
+        90deg,
+        #4C1D95 0%,
+        #7E22CE 42%,
+        #A78BFA 72%,
+        #E9D5FF 100%
+    );
+}
+
+/* ========================================
+   SECCIONES CON FRANJA INSTITUCIONAL
+======================================== */
+
+.seccion-respaldo.con-franja {
+    padding: 0;
+}
+
+.pagina-respaldo .con-franja > .franja-institucional {
+    border-radius: 12px 12px 0 0;
+}
+
+.contenido-seccion-respaldo {
+    padding: 23px;
+}
+
+@media (max-width: 767.98px) {
+    .contenido-seccion-respaldo {
+        padding: 17px;
+    }
 }

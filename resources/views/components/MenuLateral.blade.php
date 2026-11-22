@@ -130,6 +130,17 @@
             </a>
         @endif
 
+        <!-- Respaldo y restauración de la base de datos -->
+        @if ((int) auth()->user()->rol === 1)
+            <a href="{{ route('respaldo.index') }}"
+                class="menu-item {{ request()->routeIs('respaldo.*') ? 'activo' : '' }}">
+
+                <i class="fa-solid fa-database"></i>
+                <span>Respaldo y restauración</span>
+
+            </a>
+        @endif
+        
     </nav>
 
     <!-- Información del usuario -->

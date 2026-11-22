@@ -43,87 +43,87 @@
     </div>
 
     <!-- Sección para generar respaldos -->
-    <section class="seccion-respaldo">
+    <section class="seccion-respaldo con-franja">
 
-        <div class="encabezado-seccion-respaldo">
-            <div>
-                <h2>Generar respaldo</h2>
-                <p>Crea una copia de seguridad de la base de datos actual.</p>
-            </div>
+        <div class="franja-institucional"></div>
 
-            <span class="etiqueta-respaldo">
-                <i class="fa-solid fa-cloud-arrow-down"></i>
-                Copia de seguridad
-            </span>
-        </div>
-
-        <div class="contenido-generar-respaldo">
-
-            <div class="descripcion-generar-respaldo">
-                <div class="icono-generar-respaldo">
-                    <i class="fa-solid fa-file-circle-plus"></i>
+        <div class="contenido-seccion-respaldo">
+            <div class="encabezado-seccion-respaldo">
+                <div>
+                    <h2>Generar respaldo</h2>
+                    <p>Crea una copia de seguridad de la base de datos actual.</p>
                 </div>
 
-                <div class="titulo-generar-respaldo">
-                    <div class="titulo-con-informacion">
-                        <h3>Crear nuevo respaldo</h3>
+                <span class="etiqueta-respaldo">
+                    <i class="fa-solid fa-cloud-arrow-down"></i>
+                    Copia de seguridad
+                </span>
+            </div>
 
-                        <!-- Icono con información del respaldo -->
-                        <div class="contenedor-informacion-respaldo">
+            <div class="contenido-generar-respaldo">
 
-                            <i class="fa-solid fa-circle-info icono-informacion-respaldo"></i>
-
-                            <div class="tooltip-informacion-respaldo">
-                                <h4>¿Qué contiene este respaldo?</h4>
-
-                                <p>
-                                    El archivo SQL contiene una copia de la estructura
-                                    y los datos almacenados en la base de datos ScheduleSync.
-                                </p>
-
-                                <ul>
-                                    <li>
-                                        <i class="fa-solid fa-table"></i>
-                                        Estructura de las tablas: usuario, docente, carrera,
-                                        grupo, asignatura, asignatura_preferida, periodo,
-                                        horario, detalle_horario, disponibilidadprofesor,
-                                        notificacion.
-                                    </li>
-
-                                    <li>
-                                        <i class="fa-solid fa-database"></i>
-                                        Registros almacenados en las tablas.
-                                    </li>
-                                </ul>
-
-                                <span>
-                                    Formato del archivo: .SQL
-                                </span>
-                            </div>
-
-                        </div>
+                <div class="descripcion-generar-respaldo">
+                    <div class="icono-generar-respaldo">
+                        <i class="fa-solid fa-file-circle-plus"></i>
                     </div>
 
-                    <p>
-                        El sistema generará un archivo SQL con la información
-                        almacenada actualmente en la base de datos.
-                    </p>
+                    <div class="titulo-generar-respaldo">
+                        <div class="titulo-con-informacion">
+                            <h3>Crear nuevo respaldo</h3>
+
+                            <!-- Icono con información del respaldo -->
+                            <div class="contenedor-informacion-respaldo">
+
+                                <i class="fa-solid fa-circle-info icono-informacion-respaldo"></i>
+
+                                <div class="tooltip-informacion-respaldo">
+                                    <h4>¿Qué contiene este respaldo?</h4>
+
+                                    <p>
+                                        El archivo SQL contiene una copia de la estructura
+                                        y los datos almacenados en la base de datos ScheduleSync.
+                                    </p>
+
+                                    <ul>
+                                        <li>
+                                            <i class="fa-solid fa-table"></i>
+                                            Estructura de las tablas: usuario, docente, carrera,
+                                            grupo, asignatura, asignatura_preferida, periodo,
+                                            horario, detalle_horario, disponibilidadprofesor,
+                                            notificacion.
+                                        </li>
+
+                                        <li>
+                                            <i class="fa-solid fa-database"></i>
+                                            Registros almacenados en las tablas.
+                                        </li>
+                                    </ul>
+
+                                    <span>
+                                        Formato del archivo: .SQL
+                                    </span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <p>
+                            El sistema generará un archivo SQL con la información
+                            almacenada actualmente en la base de datos.
+                        </p>
+                    </div>
                 </div>
+
+                <form id="formulario-generar-respaldo" action="{{ route('respaldo.generar') }}" method="POST">
+                    @csrf
+
+                    <button type="submit" class="boton-generar-respaldo">
+                        <i class="fa-solid fa-database"></i>
+                        Generar respaldo
+                    </button>
+
+                </form>
             </div>
-
-            <form id="formulario-generar-respaldo"
-                  action="{{ route('respaldo.generar') }}"
-                  method="POST">
-
-                @csrf
-
-                <button type="submit" class="boton-generar-respaldo">
-                    <i class="fa-solid fa-database"></i>
-                    Generar respaldo
-                </button>
-
-            </form>
-
         </div>
 
     </section>
@@ -256,87 +256,79 @@
 
     </section>
 
-    <!-- Sección para restaurar la base de datos -->
-    <section class="seccion-respaldo seccion-restauracion">
+        <!-- Sección para restaurar la base de datos -->
+    <section class="seccion-respaldo seccion-restauracion con-franja">
 
-        <div class="encabezado-seccion-respaldo">
+        <div class="franja-institucional"></div>
 
-            <div>
-                <h2>Restaurar base de datos</h2>
-                <p>Recupera la información utilizando un respaldo generado anteriormente.</p>
+        <div class="contenido-seccion-respaldo">
+
+            <div class="encabezado-seccion-respaldo">
+
+                <div>
+                    <h2>Restaurar base de datos</h2>
+                    <p>Recupera la información utilizando un respaldo generado anteriormente.</p>
+                </div>
+
+                <span class="etiqueta-restauracion">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    Restauración
+                </span>
+
             </div>
 
-            <span class="etiqueta-restauracion">
-                <i class="fa-solid fa-clock-rotate-left"></i>
-                Restauración
-            </span>
+            <div class="advertencia-restauracion">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                <div>
+                    <h3>Advertencia importante</h3>
+                    <p>
+                        La restauración reemplazará la información actual de la base de datos
+                        por la contenida en el respaldo seleccionado. Los cambios realizados
+                        después de generar ese respaldo podrían perderse y no podrán recuperarse
+                        si no existe otra copia de seguridad.
+                    </p>
+                </div>
+
+            </div>
+
+            <form id="formulario-restaurar-respaldo" action="{{ route('respaldo.restaurar') }}" method="POST">
+                @csrf
+
+                <!-- Selector del respaldo -->
+                <div class="campo-restauracion">
+
+                    <label for="archivo-respaldo">
+                        Seleccionar respaldo
+                    </label>
+
+                    <select id="archivo-respaldo" name="archivo" class="selector-respaldo" required @if (count($respaldos) === 0) disabled @endif>
+                        <option value="">Selecciona un respaldo disponible</option>
+
+                        @foreach ($respaldos as $respaldo)
+                            <option value="{{ basename($respaldo) }}">
+                                {{ basename($respaldo) }}
+                            </option>
+                        @endforeach
+
+                    </select>
+
+                </div>
+
+                <!-- Acciones de restauración -->
+                <div class="acciones-restauracion">
+
+                    <button type="submit" id="boton-restaurar-respaldo" class="boton-restaurar-respaldo" disabled>
+                        <i class="fa-solid fa-rotate-left"></i>
+                        Restaurar respaldo
+                    </button>
+
+                </div>
+
+            </form>
 
         </div>
-
-        <div class="advertencia-restauracion">
-
-            <i class="fa-solid fa-triangle-exclamation"></i>
-
-            <div>
-                <h3>Advertencia importante</h3>
-                <p>
-                    La restauración reemplazará la información actual de la base de datos
-                    por la contenida en el respaldo seleccionado. Los cambios realizados
-                    después de generar ese respaldo podrían perderse y no podrán recuperarse
-                    si no existe otra copia de seguridad.
-                </p>
-            </div>
-
-        </div>
-
-        <form id="formulario-restaurar-respaldo"
-              action="{{ route('respaldo.restaurar') }}"
-              method="POST">
-
-            @csrf
-
-            <div class="campo-restauracion">
-
-                <label for="archivo-respaldo">
-                    Seleccionar respaldo
-                </label>
-
-                <select id="archivo-respaldo"
-                        name="archivo"
-                        class="selector-respaldo"
-                        required
-                        disabled>
-
-                    <option value="">Selecciona un respaldo disponible</option>
-
-                    @foreach ($respaldos as $respaldo)
-
-                        <option value="{{ basename($respaldo) }}">
-                            {{ basename($respaldo) }}
-                        </option>
-
-                    @endforeach
-
-                </select>
-
-            </div>
-
-            <button type="submit"
-                    id="boton-restaurar-respaldo"
-                    class="boton-restaurar-respaldo"
-                    disabled>
-
-                <i class="fa-solid fa-rotate-left"></i>
-                Restaurar respaldo
-
-            </button>
-
-            <p class="mensaje-restauracion-pendiente">
-                La restauración estará disponible cuando se complete la implementación
-                de esta operación.
-            </p>
-
-        </form>
 
     </section>
 
